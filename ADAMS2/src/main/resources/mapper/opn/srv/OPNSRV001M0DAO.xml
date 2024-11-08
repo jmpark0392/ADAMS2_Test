@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rds.adams.web.opn.srv.dao.OPNSRV001M0DAO">
+    <select id="selectSrvcList" parameterType="com.rds.adams.web.opn.srv.dto.OPNSRV001M0P0DTO" resultType="com.rds.adams.web.opn.srv.dto.OPNSRV001M0R0DTO">
+        /* web.opn.srv.dao.OPNSRV001M0DAO.selectSrvcList */
+        SELECT
+               ROW_NUMBER() OVER(ORDER BY A.SRVC_CD)   AS seqNo
+             , A.SRVC_CD                               AS srvcCd
+             , A.SRVC_NM                               AS srvcNm
+             , B.SRVC_UPRC                             AS srvcUprc
+             , B.BASICS_USR_CNT                        AS basicsUsrCnt
+             , CONVERT(CHAR(10), B.SRVC_STR_DTM, 23)   AS srvcStrDtm
+             , CONVERT(CHAR(10), B.SRVC_STR_DTM, 23)   AS oldSrvcStrDtm
+             , A.SRVC_DESC                             AS srvcDesc
+          FROM RDSDB.dbo.TB_SVRC_INF                   A
+          LEFT OUTER JOIN [RDSDB].[dbo].[TB_SVRC_HIST] B
+                       ON A.SRVC_CD = B.SRVC_CD
+                      AND B.SEQ_NO  = ( SELECT MAX(Z.SEQ_NO) FROM [RDSDB].[dbo].[TB_SVRC_HIST] Z WHERE 1=1  AND A.SRVC_CD = Z.SRVC_CD AND GETDATE() BETWEEN B.SRVC_STR_DTM AND B.SRVC_END_DTM )
+         WHERE 1=1
+        <if test='srvcCdNm != "" and srvcCdNm != null'>
+           AND ( A.SRVC_CD LIKE '%' + #{srvcCdNm} + '%' OR A.SRVC_NM LIKE '%' + #{srvcCdNm} + '%' )
+        </if>
+         ORDER BY A.SRVC_CD
+    </select>
+    
+    <select id="selectSrvcHistList" parameterType="com.rds.adams.web.opn.srv.dto.OPNSRV001M0P1DTO" resultType="com.rds.adams.web.opn.srv.dto.OPNSRV001M0R1DTO">
+        /* web.opn.srv.dao.OPNSRV001M0DAO.selectSrvcHistList */
+        SELECT 
+               ROW_NUMBER() OVER(ORDER BY A.SRVC_STR_DTM DESC, A.SEQ_NO DESC)   AS seqNoHist
+             , A.SRVC_CD                                   AS srvcCdHist
+			 , A.SRVC_NM                                   AS srvcNmHist
+			 , A.SRVC_STR_DTM                              AS srvcStrDtmHist
+			 , A.SRVC_END_DTM                              AS srvcEndDtmHist
+			 , A.SRVC_UPRC                                 AS srvcUprcHist
+			 , A.BASICS_USR_CNT                            AS basicsUsrCntHist
+			 , A.SRVC_DESC                                 AS srvcDescHist
+          FROM [RDSDB].[dbo].[TB_SVRC_HIST] A
+		 WHERE 1=1
+		   AND A.SRVC_CD = #{srvcCd}
+		 ORDER BY A.SRVC_STR_DTM DESC
+		        , A.SEQ_NO DESC
+    </select>
+    
+    <select id="selectChkDate" parameterType="com.rds.adams.web.opn.srv.dto.OPNSRV001M0R0DTO" resultType="java.lang.String">
+        /* web.opn.srv.dao.OPNSRV001M0DAO.selectChkDate */
+        SELECT 
+               CASE WHEN #{srvcStrDtm} <![CDATA[<]]> CONVERT(CHAR(10), GETDATE(), 23) THEN '1'
+                    ELSE '0'
+               END  AS cd
+    </select>
+    
+    <select id="selectChkHist" parameterType="com.rds.adams.web.opn.srv.dto.OPNSRV001M0R0DTO" resultType="java.lang.String">
+        /* web.opn.srv.dao.OPNSRV001M0DAO.selectChkHist */
+        SELECT 
+               CASE WHEN #{srvcStrDtm} = CONVERT(CHAR(10), A.SRVC_STR_DTM, 23) THEN '1'
+                    ELSE '2'
+               END  AS cd
+          FROM [RDSDB].[dbo].[TB_SVRC_HIST] A
+		 WHERE 1=1
+		   AND A.SRVC_CD     = #{srvcCd}
+		   AND #{srvcStrDtm} BETWEEN A.SRVC_STR_DTM AND A.SRVC_END_DTM
+    </select>
+    
+    <update id="updateSrvc">
+        /* web.opn.srv.dao.OPNSRV001M0DAO.updateSrvc */
+        UPDATE RDSDB.dbo.TB_SVRC_INF
+           SET SRVC_NM        = #{srvcNm}
+             , SRVC_DESC      = #{srvcDesc}
+             , FNL_UPD_EMP_NO = #{usrId}
+             , FNL_UPD_DTM    = GETDATE()
+         WHERE 1=1
+           AND SRVC_CD = #{srvcCd}
+    </update>
+    
+    <update id="updateSrvcHistDay">
+        /* web.opn.srv.dao.OPNSRV001M0DAO.updateSrvcHistDay */
+        UPDATE RDSDB.dbo.TB_SVRC_HIST
+           SET SRVC_NM        = #{srvcNm}
+             , SRVC_UPRC      = #{srvcUprc}
+             , BASICS_USR_CNT = #{basicsUsrCnt}
+             , SRVC_DESC      = #{srvcDesc}
+             , FNL_UPD_EMP_NO = #{usrId}
+             , FNL_UPD_DTM    = GETDATE()
+         WHERE 1=1
+           AND SRVC_CD = #{srvcCd}
+           AND SEQ_NO  = (
+                           SELECT 
+                                  MAX( CAST( A.SEQ_NO AS numeric(5, 0) ) ) AS SEQ_NO
+                             FROM RDSDB.dbo.TB_SVRC_HIST A
+                            WHERE 1=1
+                              AND A.SRVC_CD      = #{srvcCd}
+                              AND A.SRVC_STR_DTM = #{srvcStrDtm}
+                         )
+    </update>
+    
+    <update id="updateSrvcHistBefor">
+        /* web.opn.srv.dao.OPNSRV001M0DAO.updateSrvcHistBefor */
+        UPDATE RDSDB.dbo.TB_SVRC_HIST
+           SET SRVC_END_DTM   = DATEADD(DAY, -1, CAST(#{srvcStrDtm} AS DATE))
+             , FNL_UPD_EMP_NO = #{usrId}
+             , FNL_UPD_DTM    = GETDATE()
+         WHERE 1=1
+           AND SRVC_CD = #{srvcCd}
+           AND SEQ_NO  = (
+                           SELECT 
+                                  MAX( CAST( A.SEQ_NO AS numeric(5, 0) ) ) AS SEQ_NO
+                             FROM RDSDB.dbo.TB_SVRC_HIST A
+                            WHERE 1=1
+                              AND A.SRVC_CD    = #{srvcCd}
+                              AND #{srvcStrDtm} BETWEEN A.SRVC_STR_DTM AND A.SRVC_END_DTM
+                         )
+    </update>
+    
+    <insert id="insertSrvcHist">
+        /* web.opn.srv.dao.OPNSRV001M0DAO.insertSrvcHist */
+        INSERT INTO [RDSDB].[dbo].[TB_SVRC_HIST]
+               (
+                 SEQ_NO
+               , SRVC_CD
+               , SRVC_NM
+               , SRVC_UPRC
+               , BASICS_USR_CNT
+               , SRVC_DESC
+               , SRVC_STR_DTM
+               , SRVC_END_DTM
+               , FNL_UPD_EMP_NO
+               , FNL_UPD_DTM
+               , FRST_REG_EMP_NO
+               , FRST_REG_DTM
+               )
+        VALUES (
+                 ( SELECT ISNULL(MAX(CAST(SEQ_NO AS numeric(5,0) )), 0)  + 1 FROM [RDSDB].[dbo].[TB_SVRC_HIST] WHERE SRVC_CD = #{srvcCd} )
+               , #{srvcCd}
+               , #{srvcNm}
+               , #{srvcUprc}
+               , #{basicsUsrCnt}
+               , #{srvcDesc}
+               , #{srvcStrDtm}
+               , ( CASE WHEN ( SELECT COUNT(1) FROM [RDSDB].[dbo].[TB_SVRC_HIST] WHERE SRVC_CD = #{srvcCd} AND SRVC_STR_DTM > #{srvcStrDtm} ) = 0 THEN '2999-12-31' 
+                        ELSE  DATEADD(DAY, -1, CAST((SELECT MIN(SRVC_STR_DTM) FROM [RDSDB].[dbo].[TB_SVRC_HIST] WHERE SRVC_CD = #{srvcCd} AND SRVC_STR_DTM > #{srvcStrDtm} )AS DATE))
+	               END )
+               , #{usrId}
+               , GETDATE()
+               , #{usrId}
+               , GETDATE()
+               )
+    </insert>
+    
+    <insert id="insertSrvc">
+        /* web.opn.srv.dao.OPNSRV001M0DAO.insertSrvc */
+        INSERT INTO [RDSDB].[dbo].[TB_SVRC_INF]
+               (
+                 SRVC_CD
+               , SRVC_NM
+               , SRVC_UPRC
+               , BASICS_USR_CNT
+               , SRVC_DESC
+               , FNL_UPD_EMP_NO
+               , FNL_UPD_DTM
+               , FRST_REG_EMP_NO
+               , FRST_REG_DTM
+               )
+        VALUES (
+                 #{srvcCd}
+               , #{srvcNm}
+               , #{srvcUprc}
+               , #{basicsUsrCnt}
+               , #{srvcDesc}
+               , #{usrId}
+               , GETDATE()
+               , #{usrId}
+               , GETDATE()
+               )
+    </insert>
+</mapper>

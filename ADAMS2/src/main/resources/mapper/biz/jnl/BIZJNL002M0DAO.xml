@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rds.adams.web.biz.jnl.dao.BIZJNL002M0DAO">
+    <select id="selectList" parameterType="com.rds.adams.web.biz.jnl.dto.BIZJNL002M0P0DTO" resultType="com.rds.adams.web.biz.jnl.dto.BIZJNL002M0R0DTO">
+        SELECT
+               ROW_NUMBER() OVER(ORDER BY AA.INSC_DV_CD, AA.VALU_METD_CD, AA.LVL_1_CD, AA.LVL_2_CD, AA.LVL_3_CD ) AS rowNumber     /* 행번호 */
+             , AA.CS_NO                               AS csNo          /* 고객사번호 */
+             , AA.INSC_DV_CD                          AS inscDvCd      /* 보험계약구분코드 */
+             , AA.VALU_METD_CD                        AS valuMetdCd    /* 평가방법코드 */
+             , AA.LVL_1_CD                            AS lvl1Cd        /* 레벨1 */
+             , AA.LVL_2_CD                            AS lvl2Cd        /* 레벨2 */
+             , AA.LVL_3_CD                            AS lvl3Cd        /* 레벨3 */
+             , AA.DR_AC_SUBJ_CD                       AS drAcSubjCd    /* 차변계정코드 */
+             , AA.ATIT_ENG_NM                         AS drAcSubjNm    /* 차변계정명 */
+             , AA.CR_AC_SUBJ_CD                       AS crAcSubjCd    /* 대변계정코드 */
+             , BB.ATIT_ENG_NM                         AS crAcSubjNm    /* 대변계정명 */
+             , AA.ETC_DESC                            AS etcDesc       /* 기타내용 */
+             , AA.USE_YN                              AS useYn         /* 사용여부 */
+             , CC.USR_NM                              AS frstRegEmpNo  /* 최초등록사원번호 */
+             , CONVERT(CHAR(10), AA.FRST_REG_DTM, 23) AS frstRegDtm    /* 최초등록일시 */
+          FROM (
+                 SELECT
+                        A.CS_NO           AS CS_NO
+                      , A.INSC_DV_CD      AS INSC_DV_CD
+                      , A.VALU_METD_CD    AS VALU_METD_CD
+                      , A.LVL_1_CD        AS LVL_1_CD
+                      , A.LVL_2_CD        AS LVL_2_CD
+                      , A.LVL_3_CD        AS LVL_3_CD
+                      , A.DR_AC_SUBJ_CD   AS DR_AC_SUBJ_CD
+                      , B.ATIT_ENG_NM     AS ATIT_ENG_NM
+                      , A.CR_AC_SUBJ_CD   AS CR_AC_SUBJ_CD
+                      , A.ETC_DESC        AS ETC_DESC
+                      , A.USE_YN          AS USE_YN
+                      , A.FNL_UPD_EMP_NO  AS FNL_UPD_EMP_NO
+                      , A.FRST_REG_DTM    AS FRST_REG_DTM
+                   FROM TB_JNL_RUL_MNG_LST AS A
+                  INNER JOIN TB_ATIT_MNG_LST AS B
+                     ON A.DR_AC_SUBJ_CD = B.ATIT_CD
+                    AND A.CS_NO         = B.CS_NO
+                  WHERE 1=1
+				<if test= 'csNo != "999"'>
+					AND A.CS_NO        = #{csNo}
+				</if>
+                 ) AA
+         INNER JOIN TB_ATIT_MNG_LST AS BB
+           ON AA.CR_AC_SUBJ_CD = BB.ATIT_CD
+          AND AA.CS_NO         = BB.CS_NO
+         LEFT OUTER JOIN TB_USR_MNG_LST CC 
+           ON AA.FNL_UPD_EMP_NO = CC.USR_ID
+         WHERE 1=1
+		<if test= 'csNo != "999"'>
+			AND AA.CS_NO        = #{csNo}
+		</if>
+		<if test='searchTxt != ""'>
+			AND (
+					DR_AC_SUBJ_CD  LIKE '%' + #{searchTxt} + '%'
+				OR  AA.ATIT_ENG_NM LIKE '%' + #{searchTxt} + '%'
+				OR  CR_AC_SUBJ_CD  LIKE '%' + #{searchTxt} + '%'
+				OR  AA.ATIT_ENG_NM LIKE '%' + #{searchTxt} + '%'
+				)
+		</if>
+		ORDER BY AA.INSC_DV_CD, AA.VALU_METD_CD, AA.LVL_1_CD, AA.LVL_2_CD, AA.LVL_3_CD
+    </select>
+    <insert id="insertList" parameterType="com.rds.adams.web.biz.jnl.dto.BIZJNL002M0P1DTO">
+		INSERT INTO [dbo].[TB_JNL_RUL_MNG_LST] 
+			(
+			  [CS_NO]
+			, [INSC_DV_CD]
+			, [VALU_METD_CD]
+			, [LVL_1_CD]
+			, [LVL_2_CD]
+			, [LVL_3_CD]
+			, [DR_AC_SUBJ_CD]
+			, [CR_AC_SUBJ_CD]
+			, [ETC_DESC]
+			, [USE_YN]
+			, [FRST_REG_EMP_NO]
+			, [FRST_REG_DTM]
+			, [FNL_UPD_EMP_NO]
+			, [FNL_UPD_DTM]
+			)
+		VALUES (
+				  #{csNo}
+				, #{inscDvCd}
+				, #{valuMetdCd}
+				, #{lvl1Cd}
+				, #{lvl2Cd}
+				, #{lvl3Cd}
+				, #{drAcSubjCd}
+				, #{crAcSubjCd}
+				, #{etcDesc}
+				, #{useYn}
+				, #{frstRegEmpNo}
+				, CONVERT(CHAR(10), getdate(), 23)
+				, #{frstRegEmpNo}
+				, CONVERT(CHAR(10), getdate(), 23)
+				)
+	</insert>
+	<update id="updateList" parameterType="com.rds.adams.web.biz.jnl.dto.BIZJNL002M0P1DTO">
+        UPDATE TB_JNL_RUL_MNG_LST
+           SET
+               DR_AC_SUBJ_CD  = #{drAcSubjCd}
+             , CR_AC_SUBJ_CD  = #{crAcSubjCd}
+             , ETC_DESC       = #{etcDesc}
+             , USE_YN         = #{useYn}
+             , FNL_UPD_EMP_NO = #{frstRegEmpNo}
+             , FNL_UPD_DTM    = CONVERT(CHAR(10), getdate(), 23)
+         WHERE 1=1
+           AND CS_NO        = #{csNo}
+           AND INSC_DV_CD   = #{inscDvCd}
+           AND VALU_METD_CD = #{valuMetdCd}
+           AND LVL_1_CD     = #{lvl1Cd}
+           AND LVL_2_CD     = #{lvl2Cd}
+           AND LVL_3_CD     = #{lvl3Cd}
+  </update>
+    <delete id="deleteList" parameterType="com.rds.adams.web.biz.jnl.dto.BIZJNL002M0P1DTO">
+        DELETE FROM TB_JNL_RUL_MNG_LST
+         WHERE 1=1
+           AND CS_NO        = #{csNo}
+           AND INSC_DV_CD   = #{inscDvCd}
+           AND VALU_METD_CD = #{valuMetdCd}
+           AND LVL_1_CD     = #{lvl1Cd}
+           AND LVL_2_CD     = #{lvl2Cd}
+           AND LVL_3_CD     = #{lvl3Cd}
+    </delete>
+</mapper>

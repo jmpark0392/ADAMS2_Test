@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+ 	<head>
+		<meta charset="utf-8"/>
+		<meta http-equiv="X-UA-Compatible" content="ie=edge; chrome=1"/>
+		<!-- CSRF Token -->
+		<meta name="_csrf_token" th:content="${csrfToken}">
+		<meta name="_csrf_parameter" th:content="${csrfParameterName}">
+		<meta name="_csrf_header" th:content="${csrfHeaderName}">
+		<title>iFrame 2.0 - Cloud IFRS17 Closing Services</title>
+		<!-- CSS file -->
+		<link href="css/css-tabler/tabler.min.css?1692870487" rel="stylesheet"/>
+		<!-- Javascript file -->
+		<script src="js/js-tabler/tabler.min.js?1692870487" defer></script>
+		<script src="js/jquery-3.7.1.min.js"></script>
+    	<script src="js/utils.js"></script>
+    	<script>
+    		window.addEventListener('pageshow', function(event) {
+				if (event.persisted) {
+					location.reload(true);
+				}
+			});
+    	</script>
+		<style>
+			@import url('css/inter.css');
+			:root {
+			--tblr-font-sans-serif: 'Inter Var', -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+			}
+		</style>
+	</head>
+	<body oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
+		<div class="row g-0 flex-fill">
+			<div class="col-12 col-lg-6 col-xl-4 d-flex flex-column justify-content-center">
+				<div class="container container-tight my-5 px-lg-5">
+					<div class="text-center mb-5">
+						<span class="navbar-brand" data-bs-toggle="tooltip" data-bs-placement="top" title="Cloud IFRS17 Closing Services">
+						<span style="font-style: italic; font-size: 2em; font-family: Times New Roman; color: #0054a6;">i</span><span style="font-size: 2em; color: #0054a6;">Frame 2.0</span></span>
+					</div>
+					<div class="text-center mb-4">
+						<span style="font-size: 1em;">Please login to your account.</span>
+					</div>
+					<form id="loginForm" name="loginForm" method="post" action="/auth/adamsLogin" autocomplete="off" onsubmit="return false;">
+						<input type="hidden" th:name="${csrfParameterName}" th:value="${csrfToken}" />
+						<div class="form-floating mb-2">
+							<input type="email" class="form-control" id="inpUsrId" name="inpUsrId" minLength="8" maxLength="50" placeholder="your@email.com" autocomplete="off" required>
+							<label for="inpUsrId">your@email.com</label>
+						</div>
+						<div class="form-floating">
+							<input type="password" class="form-control" id="inpUsrPassword" name="inpUsrPassword" minLength="6" maxLength="20" placeholder="your password" autocomplete="off" required>
+							<label for="inpUsrPassword">your password</label>
+						</div>
+						<div class="form-footer">
+							<button type="submit" class="btn btn-primary w-100" onclick="login()">Sign in</button>
+						</div>
+					</form>
+					<div class="text-center text-secondary mt-4">
+						<a href="javascript:register();" tabindex="-1" class="navbar-text" data-bs-toggle="tooltip" data-bs-placement="top" title="Sign up for a new contract" style="text-decoration: none;">
+						<span style="font-size: 1em;">I don't have an account.</span></a>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<a href="javascript:resetPassword();" tabindex="-1" class="navbar-text" data-bs-toggle="tooltip" data-bs-placement="top" title="Request to reset" style="text-decoration: none;">
+						<span style="font-size: 1em;">I forgot my password.</span></a>
+					</div>
+				</div>
+				<div class="text-center text-secondary mb-7">
+					<span style="font-size: 0.7em;">Copyright © 2024 RNA Data System. All Rights Reserved.</span>
+				</div>
+			</div>
+			<div class="col-lg-6 col-xl-8 d-none d-lg-block">
+				<!-- Main Image -->
+				<div class="bg-cover h-100 min-vh-100" style="background-image: url(images/main_image.jpg)"></div>
+			</div>
+		</div>
+		<form id="form" name="form" method="post" action="/menuLink">
+			<input type="hidden" id="pageName" name="pageName" />
+			<input type="hidden" th:name="${csrfParameterName}" th:value="${csrfToken}" />
+		</form>
+		<script>
+			function login() {
+				var vUsrId       = $("#inpUsrId").val();
+				var vUsrPassword = $("#inpUsrPassword").val();
+
+		    	if ( isNull(vUsrId) == "" ) {
+		            alert("Enter your e-mail.");
+		            $("#inpUsrId").focus();
+		    		return false;
+		    	}
+
+		    	if ( isNull(vUsrPassword) == "" ) {
+		            alert("Enter your password.");
+		            $("#inpUsrPassword").focus();
+		    		return false;
+		    	}
+				
+		        // 이메일 형식이 올바르지 않은 경우
+		        if (!validateEmail(vUsrId)) {
+		            alert("Incorrect e-mail address. Please enter it again."); // 오류 메시지 표시
+		            $("#inpUsrId").focus();
+		            // TO-DO : 테스트 ID 사용 안할 시 주석해제
+		            return false;
+		        }
+				
+		     	// CSRF 토큰과 헤더 이름을 메타 태그에서 가져오기
+		        var csrfToken = $("meta[name='_csrf_token']").attr("content");
+		        var csrfHeader = "X-CSRF-Token";
+		        				
+				$.ajax({
+					type: "post",
+					url: "/auth/adamsLogin",
+					async: true,
+					dataType: "json",
+					contentType: "application/json; charset=utf-8",
+					data: JSON.stringify({
+						usrId: vUsrId,
+						usrPassword: vUsrPassword
+					}),
+					beforeSend: function(xhr){
+				        xhr.setRequestHeader(csrfHeader, csrfToken);
+				    },
+					success: function (data) {
+						console.log("AJAX request successful. Data received:", data);
+						var sMsg = data.loginMsg;
+						if ( sMsg != null && sMsg != undefined && sMsg != "" ) {
+							alert(sMsg);
+						}
+						$("#pageName").val(data.redirectUrl);
+						$("#form").submit();
+					},
+					error: function (xhr, status, error) {
+						gf_errorHandler(xhr);
+					},
+				});
+			}
+			function register() {
+				$("#pageName").val("newReq");
+				$("#form").submit();
+			}
+			function resetPassword() {
+				$("#pageName").val("pwReset");
+				$("#form").submit();
+			}
+	</script>
+	</body>
+</html>

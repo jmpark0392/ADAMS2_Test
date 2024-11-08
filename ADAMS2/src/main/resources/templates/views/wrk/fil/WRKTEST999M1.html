@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/file_layout}">
+<th:block layout:fragment="content">
+    <div class="page-wrapper" id="page-wrapper">
+        <div class="container" id="container">
+            <h2>비밀번호 변경</h2>
+            <div class="form-container">
+                <div class="form-box">
+                    <form id="passwordChangeForm" th:action="@{/change-password}" method="post" onsubmit="return false;">
+                        <table>
+                            <tr>
+                                <td>새 비밀번호</td>
+                                <td>
+                                    <input type="password" id="newPassword" name="newPassword" placeholder="새 비밀번호를 입력하세요" required="required" class="form-control"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>새 비밀번호 확인</td>
+                                <td>
+                                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="비밀번호를 다시 입력하세요" required="required" class="form-control"/>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary" onclick="validatePassword()">신청</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        function validatePassword() {
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (newPassword !== confirmPassword) {
+                alert('비밀번호가 일치하지 않습니다. 다시 입력해 주세요.');
+            } else {
+                alert('비밀번호가 성공적으로 변경되었습니다.');
+                // 서버에 비밀번호 변경 요청을 보낼 수 있는 코드 추가
+                document.getElementById('passwordChangeForm').submit();
+            }
+        }
+    </script>
+</th:block>
+</html>

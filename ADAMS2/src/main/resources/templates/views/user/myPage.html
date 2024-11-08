@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+	<th:block layout:fragment="content">
+		<div class="page-wrapper">
+			<div class="container" id="container">
+				<h2>My Activities</h2>
+				<div class="ptag-container mb-2">
+					<span>Today is the</span> 
+					<span id="accuDate" class="text-primary fs-3"></span>
+					<span>day since you subscribed to iFrame2.0.</span>
+				</div>
+			</div>
+			<div class="container-xl mb-6">
+				<div class="col-12">
+					<div class="row row-cards">
+						<div class="col-sm-12 col-xxl-4">
+							<div class="card card-sm">
+								<div class="ribbon ribbon-top bg-primary">
+									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-login-2"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 8v-2a2 2 0 0 1 2 -2h7a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-7a2 2 0 0 1 -2 -2v-2" /><path d="M3 12h13l-3 -3" /><path d="M13 15l3 -3" /></svg>
+								</div>
+								<div class="card-body ms-3 me-3">
+									<div class="col align-items-center mb-3">
+										<span>
+											Last login time :
+										</span>
+										<span id="lastLoginDtm" class="text-primary fs-3"></span>
+									</div>
+									<div class="col align-items-center mb-5">
+										<span>
+											You've logged in 
+										</span>
+										<span id="loginCntTotal" class="text-primary fs-3"></span>
+										<span>
+											times so far.
+										</span>
+									</div>
+									<div id="chart-01" class="chart-sm"></div>
+									<div class="col align-items-center mt-2">
+										<span class="fs-5">Login trends in the last 30 days</span>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-12 col-xxl-4">
+							<div class="card card-sm">
+								<div class="ribbon ribbon-top bg-success">
+									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-upload"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 9l5 -5l5 5" /><path d="M12 4l0 12" /></svg>
+								</div>
+								<div class="card-body ms-3 me-3">
+									<div class="col align-items-center mb-3">
+										<span>
+											Last upload time :
+										</span>
+										<span id="lastUploadDtm" class="text-success fs-3"></span>
+									</div>
+									<div class="col align-items-center mb-5">
+										<span>
+											You've uploaded 
+										</span>
+										<span id="uploadCntTotal" class="text-success fs-3"></span>
+										<span>
+											times so far.
+										</span>
+									</div>
+									<div id="chart-02" class="chart-sm"></div>
+									<div class="col align-items-center mt-2">
+										<span class="fs-5">Upload trends in the last 30 days</span>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-12 col-xxl-4">
+							<div class="card card-sm">
+								<div class="ribbon ribbon-top bg-warning">
+									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-settings"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" /><path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" /></svg>
+								</div>
+								<div class="card-body ms-3 me-3">
+									<div class="col align-items-center mb-3">
+										<span>
+											Last run time :
+										</span>
+										<span id="lastBatDtm" class="text-warning fs-3"></span>
+									</div>
+									<div class="col align-items-center mb-5">
+										<span>
+											You've run 
+										</span>
+										<span id="batCntTotal" class="text-warning fs-3"></span>
+										<span>
+											times so far.
+										</span>
+									</div>
+									<div id="chart-03" class="chart-sm"></div>
+									<div class="col align-items-center mt-2">
+										<span class="fs-5">Run trends in the last 30 days</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="container" id="container">
+				<h2>My Account</h2>
+				<div class="ptag-container mb-5">
+					<span>
+						You can change some of your information in
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-id-badge-2"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 12h3v4h-3z" /><path d="M10 6h-6a1 1 0 0 0 -1 1v12a1 1 0 0 0 1 1h16a1 1 0 0 0 1 -1v-12a1 1 0 0 0 -1 -1h-6" /><path d="M10 3m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v3a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z" /><path d="M14 16h2" /><path d="M14 12h4" /></svg>
+						Profile tab. Especially, if you want to change your password, please click
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-lock-password"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z" /><path d="M8 11v-4a4 4 0 1 1 8 0v4" /><path d="M15 16h.01" /><path d="M12.01 16h.01" /><path d="M9.02 16h.01" /></svg>
+						Password tab.
+					</span>
+				</div>
+			</div>
+			<div class="container-xl mb-6">
+				<div class="card">
+					<div class="card-header">
+						<ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
+							<li class="nav-item">
+								<a href="#tabs-profile" class="nav-link active" data-bs-toggle="tab">
+								<span class="text-secondary">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-id-badge-2"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 12h3v4h-3z" /><path d="M10 6h-6a1 1 0 0 0 -1 1v12a1 1 0 0 0 1 1h16a1 1 0 0 0 1 -1v-12a1 1 0 0 0 -1 -1h-6" /><path d="M10 3m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v3a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z" /><path d="M14 16h2" /><path d="M14 12h4" /></svg>&nbsp;
+								Profile
+								</span>
+								</a>
+							</li>
+							<li class="nav-item">
+								<a href="#tabs-password" class="nav-link" data-bs-toggle="tab">
+								<span class="text-secondary">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-lock-password"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z" /><path d="M8 11v-4a4 4 0 1 1 8 0v4" /><path d="M15 16h.01" /><path d="M12.01 16h.01" /><path d="M9.02 16h.01" /></svg>&nbsp;
+								Password
+								</span>
+								</a>
+							</li>
+						</ul>
+					</div>
+					<div class="card-body">
+						<div class="tab-content">
+							<div class="tab-pane active show" id="tabs-profile">
+							    <form id="userProfileForm" name="userProfileForm" method="post" action="/auth/adamsNewCs" autocomplete="off" onsubmit="return false;">
+							    	<input type="hidden" th:name="${csrfParameterName}" th:value="${csrfToken}" />
+									<div class="row">
+										<div class="col-xl-4">
+											<div class="form-floating mb-2">
+												<input type="email" th:value="${loginDTO.usrId}" class="form-control" id="userEmail" name="userEmail" minLength="8" maxLength="50" placeholder="your@email.com (ID)" autocomplete="off" disabled>
+												<label for="userEmail">your@email.com (ID)</label>
+											</div>
+										</div>
+										<div class="col-xl-4">
+											<div class="form-floating mb-2">
+												<input type="text" th:value="${loginDTO.usrNm}" class="form-control" id="userName" name="userName" maxLength="50" placeholder="your name" autocomplete="off" disabled>
+												<label for="userName">your name</label>
+											</div>
+										</div>
+										<div class="col-xl-4">
+											<div class="form-floating mb-2">
+												<input type="text" th:value="${loginDTO.useStrDtm}" class="form-control" id="useStartDate" name="useStartDate" maxLength="50" placeholder="Subscription Start Date" autocomplete="off" disabled>
+												<label for="useStartDate">Subscription Start Date</label>
+											</div>
+										</div>
+									</div>
+										<div class="row">
+										<div class="col-xl-4">
+											<div class="form-floating mb-2">
+												<input type="text" th:value="${loginDTO.usrDeptNm}" class="form-control" id="userTeam" name="userTeam" maxLength="50" placeholder="your team name (or division, department etc.)" autocomplete="off" required>
+												<label for="userTeam">your team name (or division, department etc.)</label>
+											</div>
+										</div>
+										<div class="col-xl-4">
+											<div class="form-floating mb-2">
+												<input type="text" th:value="${loginDTO.usrPhNo}" class="form-control" id="userPhone" name="userPhone" maxLength="20" placeholder="ditect phone number (without -)" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required>
+												<label for="userPhone">direct phone number (without -)</label>
+											</div>
+										</div>
+										<div class="col-xl-4">
+											<div class="form-floating mb-2">
+												<input type="password" class="form-control" id="userPassword" name="userPassword" minLength="8" maxLength="20" placeholder="your password" autocomplete="off" required>
+												<label for="userPassword">your password</label>
+											</div>
+										</div>
+									</div>
+										<div class="row">
+										<div class="col-xl-4">
+										</div>
+										<div class="col-xl-4">
+											<div class="form-footer">
+												<button id="updateButton" class="btn btn-secondary w-100" onclick="updateMyAccount()">Update</button>
+											</div>
+										</div>
+										<div class="col-xl-4">
+										</div>
+									</div>
+   								</form>
+							</div>
+							<div class="tab-pane" id="tabs-password">
+							    <form id="userPasswordForm" name="userPasswordForm" method="post" action="/auth/adamsNewCs" autocomplete="off" onsubmit="return false;">
+						    	<input type="hidden" th:name="${csrfParameterName}" th:value="${csrfToken}" />
+									<div class="row">
+										<div class="col-xl-4">
+											<div class="form-floating mb-2">
+												<input type="password" class="form-control" id="userCurrentPassword" name="userCurrentPassword" minLength="8" maxLength="20" placeholder="your current password" autocomplete="off" required>
+												<label for="userCurrentPassword">your current password</label>
+											</div>
+										</div>
+										<div class="col-xl-4">
+											<div class="form-floating mb-2">
+												<input type="password" class="form-control" id="userNewPassword" name="userNewPassword" minLength="8" maxLength="20" placeholder="your new password" autocomplete="off" required>
+												<label for="userNewPassword">your new password</label>
+											</div>
+										</div>
+										<div class="col-xl-4">
+											<div class="form-floating mb-2">
+												<input type="password" class="form-control" id="userNewPasswordAgain" name="userNewPasswordAgain" minLength="8" maxLength="20" placeholder="your new password again" autocomplete="off" required>
+												<label for="userNewPasswordAgain">your new password again</label>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-xl-4">
+										</div>
+										<div class="col-xl-4">
+											<div class="form-footer">
+												<button id="changePasswordButton" class="btn btn-secondary w-100" onclick="changeMyPassword()">Change password</button>
+											</div>
+										</div>
+										<div class="col-xl-4">
+										</div>
+									</div>
+			    				</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+			
+		<script>
+			// @formatter:off
+			document.addEventListener("DOMContentLoaded", function () {
+				window.ApexCharts && (new ApexCharts(document.getElementById('chart-01'), {
+					chart: {
+						id: "chartId-01",
+						type: "area",
+						fontFamily: 'inherit',
+						height: 60.0,
+						sparkline: {
+							enabled: true
+						},
+						animations: {
+							enabled: false
+						},
+					},
+					dataLabels: {
+						enabled: false,
+					},
+					fill: {
+						opacity: .16,
+						type: 'solid'
+					},
+					stroke: {
+		      			width: 3,
+		      			lineCap: "round",
+		      			curve: "smooth",
+					},
+					series: [{
+						name: "count",
+						data: []
+					}],
+					tooltip: {
+						theme: 'dark'
+					},
+					grid: {
+						strokeDashArray: 4,
+					},
+					xaxis: {
+						labels: {
+							padding: 0,
+						},
+						tooltip: {
+							enabled: false
+						},
+						axisBorder: {
+							show: false,
+						},
+						type: 'datetime',
+					},
+					yaxis: {
+						labels: {
+							padding: 4
+						},
+					},
+					labels: [],
+					colors: [tabler.getColor("primary")],
+					legend: {
+						show: false,
+					},
+				})).render();
+			});
+			// @formatter:on
+		</script>
+
+		<script>
+			// @formatter:off
+			document.addEventListener("DOMContentLoaded", function () {
+				window.ApexCharts && (new ApexCharts(document.getElementById('chart-02'), {
+					chart: {
+						id: "chartId-02",
+						type: "area",
+						fontFamily: 'inherit',
+						height: 60.0,
+						sparkline: {
+							enabled: true
+						},
+						animations: {
+							enabled: false
+						},
+					},
+					dataLabels: {
+						enabled: false,
+					},
+					fill: {
+						opacity: .16,
+						type: 'solid'
+					},
+					stroke: {
+		      			width: 3,
+		      			lineCap: "round",
+		      			curve: "smooth",
+					},
+					series: [{
+						name: "count",
+						data: []
+					}],
+					tooltip: {
+						theme: 'dark'
+					},
+					grid: {
+						strokeDashArray: 4,
+					},
+					xaxis: {
+						labels: {
+							padding: 0,
+						},
+						tooltip: {
+							enabled: false
+						},
+						axisBorder: {
+							show: false,
+						},
+						type: 'datetime',
+					},
+					yaxis: {
+						labels: {
+							padding: 4
+						},
+					},
+					labels: [],
+					colors: [tabler.getColor("success")],
+					legend: {
+						show: false,
+					},
+				})).render();
+			});
+			// @formatter:on
+		</script>
+
+		<script>
+			// @formatter:off
+			document.addEventListener("DOMContentLoaded", function () {
+				window.ApexCharts && (new ApexCharts(document.getElementById('chart-03'), {
+					chart: {
+						id: "chartId-03",
+						type: "area",
+						fontFamily: 'inherit',
+						height: 60.0,
+						sparkline: {
+							enabled: true
+						},
+						animations: {
+							enabled: false
+						},
+					},
+					dataLabels: {
+						enabled: false,
+					},
+					fill: {
+						opacity: .16,
+						type: 'solid'
+					},
+					stroke: {
+		      			width: 3,
+		      			lineCap: "round",
+		      			curve: "smooth",
+					},
+					series: [{
+						name: "count",
+						data: []
+					}],
+					tooltip: {
+						theme: 'dark'
+					},
+					grid: {
+						strokeDashArray: 4,
+					},
+					xaxis: {
+						labels: {
+							padding: 0,
+						},
+						tooltip: {
+							enabled: false
+						},
+						axisBorder: {
+							show: false,
+						},
+						type: 'datetime',
+					},
+					yaxis: {
+						labels: {
+							padding: 4
+						},
+					},
+					labels: [],
+					colors: [tabler.getColor("warning")],
+					legend: {
+						show: false,
+					},
+				})).render();
+			});
+			// @formatter:on
+		</script>
+
+		<script>
+			$(document).ready(function () {
+				console.log("Document is ready.");
+				//화면 접속시 바로 조회
+				main();
+			});
+			
+			function main() {
+				// 화면 초기화 및 데이터 로드
+				console.log("Initializing myPage...");
+				
+				// 그래프 초기화 및 데이터 로드 - ajax 공통 함수
+				getAdamsRegDtmTotal((input = JSON.stringify({usrId: ""})));
+				getAdamsLastLoginDtm((input = JSON.stringify({usrId: ""})));
+				getAdamsLoginCntTotal((input = JSON.stringify({usrId: ""})));
+				getAdamsMonthLoginCnt((input = JSON.stringify({usrId: ""})));
+				
+				getAdamsLastUploadDtm((input = JSON.stringify({usrId: ""})));
+				getAdamsUploadCntTotal((input = JSON.stringify({usrId: ""})));
+				getAdamsMonthUploadCnt((input = JSON.stringify({usrId: ""})));
+				
+				getAdamsLastBatDtm((input = JSON.stringify({usrId: ""})));
+				getAdamsBatCntTotal((input = JSON.stringify({usrId: ""})));
+				getAdamsMonthBatCnt((input = JSON.stringify({usrId: ""})));
+			}
+			
+			/**
+			* Transaction callback 함수
+			**/
+			function fn_callback(result){
+				let resultData = typeof result.data === "string" ? JSON.parse(result.data) : result.data;
+				if( result.resultCd == "S" ){
+					switch (result.id){
+						case "getAdamsRegDtmTotal" :
+							fn_regDtmTotal(resultData);
+							break;
+						case "getAdamsLastLoginDtm" :
+							fn_lastLoginDtm(resultData);
+							break;
+						case "getAdamsLoginCntTotal" :
+							fn_loginCntTotal(resultData);
+							break;
+						case "getAdamsMonthLoginCnt" :
+							fn_monthLoginCnt(resultData);
+							break;
+							
+						case "getAdamsLastUploadDtm" :
+							fn_lastUploadDtm(resultData);
+							break;
+						case "getAdamsUploadCntTotal" :
+							fn_uploadCntTotal(resultData);
+							break;
+						case "getAdamsMonthUploadCnt" :
+							fn_monthUploadCnt(resultData);
+							break;
+							
+						case "getAdamsLastBatDtm" :
+							fn_lastBatDtm(resultData);
+							break;
+						case "getAdamsBatCntTotal" :
+							fn_batCntTotal(resultData);
+							break;
+						case "getAdamsMonthBatCnt" :
+							fn_monthBatCnt(resultData);
+							break;
+							
+						case "updateMyAccount" :	
+							if(resultData.resultCode =="200"){
+								alert("Your profile has been updated successfully, and it will be redirected to the login page.");
+								window.location.href="/";
+								
+							} else if(resultData.resultCode == "300"){
+								alert( resultData.resultMessage );
+								
+							} else if(resultData.resultCode == "400"){ // 사용자가 입력한 비밀번호가 DB와 일치하지 않을 때 
+								alert( resultData.resultMessage );
+								$("#userPassword").focus();
+								
+							} else {
+								alert( "Sorry, Update Fail. " + resultData.resultMessage );
+							}
+							break;
+							
+						case "changeMyPassword" :							
+							if(resultData.resultCode =="200"){
+								alert("Your password has been changed successfully, and it will be redirected to the login page.");
+								window.location.href="/";
+								
+							} else if(resultData.resultCode == "300"){
+								alert( resultData.resultMessage );
+							
+							} else if(resultData.resultCode == "400"){ // 사용자가 입력한 비밀번호가 DB와 일치하지 않을 때 
+								alert( resultData.resultMessage );
+								$("#userCurrentPassword").focus();
+								
+							} else{
+								alert( "Sorry, Update Fail. " + resultData.resultMessage );
+							}
+							break;
+					}
+				} else if(result.resultCd == "E") {
+				} else {
+					console.log("fn_callback result : ", result);
+				}
+			}
+			
+			function getAdamsRegDtmTotal(input) {
+				// 계정 누적일 생성 수
+				var option = {
+					id: "getAdamsRegDtmTotal"
+					, type: "post"
+					, url: "/mypage/adamsRegDtmTotal"
+					, async: true
+					, dataType: "json"
+					, contentType: "application/json; charset=utf-8"
+					, data: input,
+				};
+
+				gf_Transaction(option, fn_callback);
+			}
+
+			function Cardinal2Ordinal(n) {
+			    n = parseInt(n, 10);
+			    const suffix = ['th', 'st', 'nd', 'rd'];
+			    const mod100 = n % 100;
+			    return n+(suffix[(mod100-20)%10] || suffix[mod100] || suffix[0]);
+			}
+
+			function fn_regDtmTotal(data) {
+				
+				if (data && data.regDtmTotal > 0){
+					let regDtmTotal = data.regDtmTotal;
+					
+					if(regDtmTotal > 0){
+						$("#accuDate").text(Cardinal2Ordinal(regDtmTotal).toLocaleString()).css("font-weight", "bold");
+					} else {
+						// No subscription info found
+						$("#accuDate").text("1st").css("font-weight", "bold"); // accuDate 초기값은 1
+					}
+				} else if (data && data.regDtmTotal === 0) {
+                    // No subscription info found
+                    $("#accuDate").text("1st").css("font-weight", "bold");
+                }
+			}
+			
+			function getAdamsLastLoginDtm(input) {
+				// 가장 최근에 로그인한 날짜
+				var option = {
+					id: "getAdamsLastLoginDtm"
+					, type: "post"
+					, url: "/mypage/adamsLastLoginDtm"
+					, async: true
+					, dataType: "json"
+					, contentType: "application/json; charset=utf-8"
+					, data: input,
+				};
+
+				gf_Transaction(option, fn_callback);
+			}
+			
+			function fn_lastLoginDtm(data) {
+				
+				let formattedDate; // date 초기화 배열
+				
+				let now = new Date();
+				formattedDate = now.getFullYear() + '-' +
+								('0' + (now.getMonth() + 1)).slice(-2) + '-' +
+				                ('0' + now.getDate()).slice(-2) + ' ' +
+				                ('0' + now.getHours()).slice(-2) + ':' +
+				                ('0' + now.getMinutes()).slice(-2) + ':' +
+				                ('0' + now.getSeconds()).slice(-2);
+				                
+				if (data && data.lastLoginDtm){
+					let lastLoginDtm = data.lastLoginDtm;
+					
+					if(lastLoginDtm){
+						$("#lastLoginDtm").text(lastLoginDtm).css("font-weight", "bold");
+					}else {
+						// No subscription info found
+						$("#lastLoginDtm").text("This is your first login.").css("font-weight", "bold");
+					}
+				}else {
+                    // No subscription info found
+                    $("#lastLoginDtm").text("No record of login").css("font-weight", "bold");
+                }
+			} 
+			
+			function getAdamsLoginCntTotal(input) {
+				// 로그인 총 횟수
+				var option = {
+					id: "getAdamsLoginCntTotal"
+					, type: "post"
+					, url: "/mypage/adamsLoginCntTotal"
+					, async: true
+					, dataType: "json"
+					, contentType: "application/json; charset=utf-8"
+					, data: input,
+				};
+
+				gf_Transaction(option, fn_callback);
+			}
+			
+			function fn_loginCntTotal(data){
+				
+				if (data && typeof data.loginCntTotal === "number"){
+					let loginCntTotal = data.loginCntTotal;
+					
+					if(loginCntTotal >= 0){
+						$("#loginCntTotal").text(loginCntTotal.toLocaleString()).css("font-weight", "bold");
+					}else {
+						// No subscription info found
+						$("#loginCntTotal").text("0").css("font-weight", "bold");
+					}
+				}else {
+                    // No subscription info found
+                    $("#loginCntTotal").text("0").css("font-weight", "bold");
+                }
+			}
+			
+			function getAdamsMonthLoginCnt(input) {
+				// (전날 기준) 30일간 일별 로그인 횟수
+				var option = {
+					id: "getAdamsMonthLoginCnt"
+					, type: "post"
+					, url: "/mypage/adamsMonthLoginCnt"
+					, async: true
+					, dataType: "json"
+					, contentType: "application/json; charset=utf-8"
+					, data: input,
+				};
+
+				gf_Transaction(option, fn_callback);
+			}
+			
+			function fn_monthLoginCnt(data){
+				
+				if (data && data.length > 0) {
+                    let accDtm = data[0].accDtm;
+                    let loginCnt = data[0].loginCnt;
+                    
+                    if (accDtm && typeof loginCnt === 'number' && loginCnt >= 0) {
+                    	// 차트를 위한 리스트 변환
+						loginDtms = [], loginCnts = []
+						
+						data.forEach(item =>{
+							loginDtms.push(item.accDtm);
+							loginCnts.push(item.loginCnt);
+						});
+						
+						// 차트 정보 업데이트							
+						ApexCharts.exec('chartId-01', 'updateOptions', {
+							series: [{
+								name: "count",
+								data: loginCnts
+							}],
+							labels: loginDtms,
+						}, true, true);
+						
+					} else {
+						// No positive values found
+						console.error("Invalid month login count");
+					}
+				} else if (data && data.length === 0) {
+                	// No subscription info found
+                	console.error("Invalid month login count")
+                }
+			}
+			
+			function getAdamsLastUploadDtm(input) {
+				// 가장 최근에 파일 업로드 했던 날짜
+				var option = {
+					id: "getAdamsLastUploadDtm"
+					, type: "post"
+					, url: "/mypage/adamsLastUploadDtm"
+					, async: true
+					, dataType: "json"
+					, contentType: "application/json; charset=utf-8"
+					, data: input,
+				};
+
+				gf_Transaction(option, fn_callback);
+			}
+			
+			function fn_lastUploadDtm(data){
+				
+				if (data && data.lastUploadDtm){
+					let lastUploadDtm = data.lastUploadDtm;
+					
+					if(lastUploadDtm){
+						$("#lastUploadDtm").text(lastUploadDtm).css("font-weight", "bold");
+					}else {
+						// No subscription info found
+						$("#lastUploadDtm").text("No record of upload").css("font-weight", "bold");
+					}
+				}else {
+                    // No subscription info found
+                    $("#lastUploadDtm").text("No record of upload").css("font-weight", "bold");
+                }
+			}
+			
+			function getAdamsUploadCntTotal(input) {
+				// 파일 업로드 총 횟수
+				var option = {
+					id: "getAdamsUploadCntTotal"
+					, type: "post"
+					, url: "/mypage/adamsUploadCntTotal"
+					, async: true
+					, dataType: "json"
+					, contentType: "application/json; charset=utf-8"
+					, data: input,
+				};
+				
+				gf_Transaction(option, fn_callback);
+			}
+			
+			function fn_uploadCntTotal(data){
+				
+				if (data && typeof data.uploadCntTotal === "number"){
+					let uploadCntTotal = data.uploadCntTotal;
+					
+					if(uploadCntTotal >= 0){
+						$("#uploadCntTotal").text(uploadCntTotal.toLocaleString()).css("font-weight", "bold");
+					}else {
+						// No subscription info found
+						$("#uploadCntTotal").text("0").css("font-weight", "bold");
+					}
+				}else {
+                    // No subscription info found
+                    $("#uploadCntTotal").text("0").css("font-weight", "bold");
+                }
+			}
+			
+			function getAdamsMonthUploadCnt(input) {
+				// (전날 기준)30일간 일별 파일 업로드 횟수
+				var option = {
+					id: "getAdamsMonthUploadCnt"
+					, type: "post"
+					, url: "/mypage/adamsMonthUploadCnt"
+					, async: true
+					, dataType: "json"
+					, contentType: "application/json; charset=utf-8"
+					, data: input,
+				};
+
+				gf_Transaction(option, fn_callback);
+			}
+			
+			function fn_monthUploadCnt(data){
+				
+				if (data && data.length > 0) {
+                    let uploadStrDtm = data[0].uploadStrDtm;
+                    let uploadCnt = data[0].uploadCnt;
+                    
+                    if (uploadStrDtm && typeof uploadCnt === 'number' && uploadCnt >= 0) {
+                    	// 차트를 위한 리스트 변환
+						uploadDtms = [], uploadCnts = []
+						
+						data.forEach(item =>{
+							uploadDtms.push(item.uploadStrDtm);
+							uploadCnts.push(item.uploadCnt);
+						});
+						
+						// 차트 정보 업데이트							
+						ApexCharts.exec('chartId-02', 'updateOptions', {
+							series: [{
+								name: "count",
+								data: uploadCnts
+							}],
+							labels: uploadDtms,
+						}, true, true);
+						
+					} else {
+						// No positive values found
+						console.error("Invalid month upload count graph");
+					}
+				} else if (data && data.length === 0) {
+                	// No subscription info found
+					console.error("Invalid month upload count graph");
+                }
+			}
+			
+			function getAdamsLastBatDtm(input) {
+				// 가장 최근에 배치를 실행 했던 날짜
+				var option = {
+					id: "getAdamsLastBatDtm"
+					, type: "post"
+					, url: "/mypage/adamsLastBatDtm"
+					, async: true
+					, dataType: "json"
+					, contentType: "application/json; charset=utf-8"
+					, data: input,
+				};
+
+				gf_Transaction(option, fn_callback);
+			}
+			
+			function fn_lastBatDtm(data){
+			    
+				if (data && data.lastBatDtm){
+					let lastBatDtm = data.lastBatDtm;
+					
+					if(lastBatDtm){
+						$("#lastBatDtm").text(lastBatDtm).css("font-weight", "bold");
+					}else {
+						// No subscription info found
+						$("#lastBatDtm").text("No record of run").css("font-weight", "bold");
+					}
+				}else {
+                    // No subscription info found
+                    $("#lastBatDtm").text("No record of run").css("font-weight", "bold");
+                }
+			}
+			
+			function getAdamsBatCntTotal(input) {
+				// 배치 실행 총 횟수
+				var option = {
+					id: "getAdamsBatCntTotal"
+					, type: "post"
+					, url: "/mypage/adamsBatCntTotal"
+					, async: true
+					, dataType: "json"
+					, contentType: "application/json; charset=utf-8"
+					, data: input,
+				};
+
+				gf_Transaction(option, fn_callback);
+			}
+			
+			function fn_batCntTotal(data) {
+				if (data && typeof data.batCntTotal === "number"){
+					let batCntTotal = data.batCntTotal;
+					
+					if(batCntTotal >= 0){
+						$("#batCntTotal").text(batCntTotal.toLocaleString()).css("font-weight", "bold");
+					}else {
+						// No subscription info found
+						$("#batCntTotal").text("0").css("font-weight", "bold");
+					}
+				}else {
+                    // No subscription info found
+                    $("#batCntTotal").text("0").css("font-weight", "bold");
+                }
+			}
+			
+			function getAdamsMonthBatCnt(input) {
+				// (전날 기준)30일간 일별 배치를 실행한 횟수
+				var option = {
+					id: "getAdamsMonthBatCnt"
+					, type: "post"
+					, url: "/mypage/adamsMonthBatCnt"
+					, async: true
+					, dataType: "json"
+					, contentType: "application/json; charset=utf-8"
+					, data: input,
+				};
+
+				gf_Transaction(option, fn_callback);
+			}
+			
+			function fn_monthBatCnt(data) {
+				if (data && data.length > 0) {
+                    let batStrDtm = data[0].batStrDtm;
+                    let batCnt = data[0].batCnt;
+                    
+                    if (batStrDtm && typeof batCnt === 'number' && batCnt >= 0) {
+                    	// 차트를 위한 리스트 변환
+						batDtms = [], batCnts = []
+						
+						data.forEach(item =>{
+							batDtms.push(item.batStrDtm);
+							batCnts.push(item.batCnt);
+						});
+						
+						// 차트 정보 업데이트							
+						ApexCharts.exec('chartId-03', 'updateOptions', {
+							series: [{
+								name: "count",
+								data: batCnts
+							}],
+							labels: batDtms,
+						}, true, true);
+						
+					} else {
+						// No positive values found
+						console.error("Invalid month batch count graph");
+					}
+				} else if (data && data.length === 0) {
+                	// No subscription info found
+					console.error("Invalid month batch count graph");
+                }
+			}
+
+		    function updateMyAccount() {
+		        
+		    	var vPtbEmail     = $("#userEmail").val();
+		    	var vPtbNm        = $("#userName").val();
+		    	var vPtbDeptNm    = $("#userTeam").val();
+		    	var vPtbPhNo      = $("#userPhone").val();
+		    	var vUsrPassword  = $("#userPassword").val();
+		    	
+	    	
+		    	if ( isNull(vPtbDeptNm) == "" ) {
+		            alert("Enter your team name.");
+		            $("#userTeam").focus();
+		    		return;
+		    	}
+		    	
+		    	if ( isNull(vPtbPhNo) == "" ) {
+		            alert("Enter your phone number.");
+		            $("#userPhone").focus();
+		    		return;
+		    	}
+
+		    	if ( isNull(vUsrPassword) == "" ) {
+		            alert("Enter your password.");
+		            $("#userPassword").focus();
+		    		return;
+		    	}
+
+		    	const myAccountData = {
+		            ptbEmail    : vPtbEmail
+		    		, ptbNm       : vPtbNm
+		            , ptbDeptNm   : vPtbDeptNm
+		            , ptbPhNo     : vPtbPhNo
+		            , usrPassword : vUsrPassword
+		        };
+
+		    	var option = {
+						id: "updateMyAccount"
+						, type: "post"
+						, url: "/mypage/updateMyAccount"
+						, async: true
+						, dataType: "json"
+						, contentType: "application/json; charset=utf-8"
+						, data: JSON.stringify(myAccountData), // JSON 문자열로 변환
+				};
+		    	
+		    	var cfm_notice = confirm("Once your profile is changed, you need to log in anew. Shall we proceed?");
+		    	
+				if (cfm_notice) {
+					gf_Transaction(option, fn_callback);
+				} else {
+					return false;
+				}
+		    }
+
+		    function changeMyPassword() {
+		        
+		    	var vUsrCurrentPassword  = $("#userCurrentPassword").val();
+		    	var vUsrNewPassword  = $("#userNewPassword").val();
+		    	var vUsrNewPasswordAgain  = $("#userNewPasswordAgain").val();
+	    	
+		    	if ( isNull(vUsrCurrentPassword) == "" ) {
+		            alert("Enter your current password.");
+		            $("#userCurrentPassword").focus();
+		    		return;
+		    	}
+
+		    	if ( isNull(vUsrNewPassword) == "" ) {
+		            alert("Enter your new password.");
+		            $("#userNewPassword").focus();
+		    		return;
+		    	}
+
+		    	if ( isNull(vUsrNewPasswordAgain) == "" ) {
+		            alert("Re-enter your new password.");
+		            $("#userNewPasswordAgain").focus();
+		    		return;
+		    	}
+
+		    	if ( vUsrNewPassword != vUsrNewPasswordAgain ) {
+		            alert("The two inputs for your password do not match. Please enter it again.");
+		            $("#userNewPasswordAgain").focus();
+		    		return;
+		    	}
+
+		    	if ( vUsrNewPassword == vUsrCurrentPassword ) {
+		            alert("The new password cannot be the same as the current password.");
+		            $("#userNewPassword").focus();
+		    		return;
+		    	}		    	
+		    	
+		    	
+		    	const myPasswordData = {
+		            usrCurrentPassword    : vUsrCurrentPassword
+		    		, usrNewPassword       : vUsrNewPassword
+		        };
+
+		    	var option = {
+						id: "changeMyPassword"
+						, type: "post"
+						, url: "/mypage/changeMyPassword"
+						, async: true
+						, dataType: "json"
+						, contentType: "application/json; charset=utf-8"
+						, data: JSON.stringify(myPasswordData), // JSON 문자열로 변환
+				};
+		    	
+		    	var cfm_notice = confirm("Once your password is changed, you need to log in anew. Shall we proceed?");
+		    	
+				if (cfm_notice) {
+					gf_Transaction(option, fn_callback);					
+				} else {
+					return false;
+				}
+		    }
+		    
+		</script>
+	</th:block>
+</html>

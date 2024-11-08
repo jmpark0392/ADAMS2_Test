@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+<th:block layout:fragment="content">
+	<script src="js/js-tabler/demo-theme.min.js?1692870487"></script>
+	<div class="page-wrapper" id="page-wrapper">
+		<div class="container" id="container">
+			<h2>[[${menuNm}]]</h2>
+			<div class="ptag-container">
+				<span>[[${navigator}]]</span>
+				<div class="form-container">
+					<div class="form-box">
+						<form id="filter-form" name="form" method="post" action="/BIZINS001M0SelectList" onsubmit="return false;">
+							<div class="row">
+								<!-- Year Select -->
+								<div class="col-auto">
+									<label class="form-label">Standard Year / Month :</label>
+									<select name="user[year]" class="form-select select-month-year p-1" id="inputYear">
+									<option selected value="">- Year -</option>
+									<!-- Year Options -->
+										<option value="2024">2024</option>
+									</select>
+								</div>
+								<!-- Month Select -->
+								<div class="col-auto">
+									<label class="form-label"> &nbsp; </label>
+									<select name="user[month]" class="form-select select-month-year p-1" id="inputMonth">
+									<option selected value="">- Month -</option>
+									<!-- Month Options -->
+									<option value="1">January</option>
+									<option value="2">February</option>
+									<option value="3">March</option>
+									<option value="4">April</option>
+									<option value="5">May</option>
+									<option value="6">June</option>
+									<option value="7">July</option>
+									<option value="8">August</option>
+									<option value="9">September</option>
+									<option value="10">October</option>
+									<option value="11">November</option>
+									<option value="12">December</option>
+									</select>
+								</div>
+								<div class="col-auto">
+									<button type="button" class="btn btn-primary search-button p-1" style="padding: 4px 10px; color: white; font-size: 13px" onclick="getSearch()">Search</button>
+								</div>
+								<div class="col text-end">
+									<p style="height:27px;">&nbsp;</p>
+									<button form="new-form" type="button" class="btn btn-primary" style="padding: 4px 10px; color: white; font-size: 13px" onclick="getSummarize()" data-test="create-button" onsubmit="return false;">Calculate</button>
+									<button type="button" class="btn btn-lime" style="padding: 4px 10px; color: white; font-size: 13px" id="downloadExcel">Download</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div style="padding-top: 2em"></div>
+				<div class="card card-md" id="divMyGrid">
+				</div>
+			</div>
+			<div class="popupDataForm">
+				<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="display: none">Launch modal with form</button>
+				<div class="modal fade" id="exampleModal" tabindex="-1" style="display: none">
+					<div class="modal-dialog modal-small" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title">New report</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+							<div class="modal-body">
+								<div class="row">
+									<!-- Removed repetitive content for clarity -->
+									<!-- Add necessary modal content here -->
+								</div>
+							</div>
+							<div class="modal-footer">
+								<a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">Cancel</a> <a href="#" class="btn btn-primary ms-auto" data-bs-dismiss="modal" style="padding: 4px 10px; color: white; font-size: 13px">Save changes</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+		function checkData(data){
+			return parentCheckData(data, check_cols);
+		}
+		
+		function getStdYymm(){
+			var inputYear = $("#inputYear").val();
+			var inputMonth = $("#inputMonth").val();
+			var inputStdYymm = inputYear + ((inputMonth.length != 0) ? inputMonth.padStart(2, "0"): "");
+			if (inputStdYymm.length != 6){
+				inputStdYymm = null;
+			}
+			return inputStdYymm
+		}
+		
+		function getList(input) {
+			console.log("getList input : " + input);
+			var option = {
+							id			:	"SelectList"
+						,	type		:	"post"
+						,	url			:	"/BIZINS001M0SelectList"
+						,	async		:	false
+						,	dataType	:	"json"
+						,	contentType	:	"application/json; charset=utf-8"
+						,	data		:	input
+						};
+			
+			gf_Transaction(option, fn_callback);
+		}
+		
+		// settle 함수에 보낼 데이터를 가져오는 함수
+		async function getSummarize(){
+			var inputStdYymm = getStdYymm();
+			var input = JSON.stringify({ stdYymm: inputStdYymm });
+			//console.log("getsummarize input : " + input);
+		
+			if(confirm("Do you want to calculate Insurance movement?") == true){
+				await showSpinner();
+				try {
+					const resultData = await summarize (input);
+					await hideSpinner();
+					alert("Successfully Calculated!");
+					main(); // will refrsh the data
+				} catch (error) {
+					await hideSpinner();
+					console.log("error occured" + error.message);
+				}
+			}
+		}
+		
+		function summarize(input) {
+			return new Promise((resolve, reject) => {
+				var option = {
+						id			: "ExecuteList"
+					,	type		: "post"
+					,	url			: "/BIZINS001M0ExecuteList"
+					,	dataType	: "text"
+					,	contentType	: "application/json; charset=utf-8"
+					,	data		: input
+				}
+				gf_Transaction(option, async function(result) {
+					if(result.resultCd === "S") {
+						let resultData = typeof result.data === "string" ? JSON.parse(result.data) : result.data;
+						if(resultData.resultCode === "200" && result.id === "ExecuteList") {
+							resolve(resultData);
+							// document.getElementById("executeBatch").disabled = false;
+						} else {
+							reject(resultData);
+							alert("Save Fail Error : " + resultData.resultMessage);
+						}
+					} else {
+						console.log("fn_callback result : ", result);
+						reject(result);
+					}
+				});
+			});
+		}
+
+	</script>
+	<script src="js/utils.js"></script>
+	<script>
+		$(document).ready(function() {
+			
+			console.log("Document is ready.");
+			
+			$("#inputYear").val(gv_year);
+			$("#inputMonth").val(gv_month);
+			
+			//화면 접속시 바로 조회
+			main();
+			
+			//send버튼 누르면, 조건적용하여 검색
+			$("#send").click(main);
+			
+			//엔터키누르면, 조건적용하여 검색
+			$("input").on("keyup", function(key) {
+				if (key.keyCode == 13) {
+					main();
+				}
+			});
+			
+		});
+
+		var grid;
+		var dataView;
+		var data;
+		var unqId = "rowNumber";
+		var xcpt_cols = [unqId, "regUsrid", "regDt"];
+		var check_cols = [unqId, ];
+		var columns = [
+				{id: "ptfCd",				name: "Portfolio",							field: "ptfCd",					width: 400,	sortable: true, editor: Slick.Editors.Text, validator: createValidator, 								headerCssClass: "slick-header-columns", cssClass: "slick-column-left"},
+				{id: "basAmt",				name: "Basis",								field: "basAmt",				width: 150,	sortable: true, editor: Slick.Editors.Text, validator: createValidator, formatter: currencyFormatter, 	headerCssClass: "slick-header-columns", cssClass: "slick-column-right" },
+				{id: "ociAmt",				name: "OCI",								field: "ociAmt",				width: 150,	sortable: true, editor: Slick.Editors.Text, validator: createValidator, formatter: currencyFormatter, 	headerCssClass: "slick-header-columns", cssClass: "slick-column-right" },
+				{id: "newContAmt",			name: "New Contract",						field: "newContAmt",			width: 150,	sortable: true, editor: Slick.Editors.Text, validator: createValidator, formatter: currencyFormatter, 	headerCssClass: "slick-header-columns", cssClass: "slick-column-right" },
+				{id: "intEfftAmt",			name: "Interest Effect", 					field: "intEfftAmt",			width: 150,	sortable: true, editor: Slick.Editors.Text, validator: createValidator, formatter: currencyFormatter, 	headerCssClass: "slick-header-columns", cssClass: "slick-column-right" },
+				{id: "estmPrm",				name: "Expected Premium", 					field: "estmPrm",				width: 150,	sortable: true, editor: Slick.Editors.Text, validator: createValidator, formatter: currencyFormatter, 	headerCssClass: "slick-header-columns", cssClass: "slick-column-right" },
+				{id: "estmFee",   			name: "Expected Cost & Fee", 				field: "estmFee",				width: 150,	sortable: true, editor: Slick.Editors.Text, validator: createValidator, formatter: currencyFormatter, 	headerCssClass: "slick-header-columns", cssClass: "slick-column-right" },
+				{id: "estmNewContCclsAmt",	name: "Expected Acquisition Expense",		field: "estmNewContCclsAmt",	width: 200,	sortable: true, editor: Slick.Editors.Text, validator: createValidator, formatter: currencyFormatter, 	headerCssClass: "slick-header-columns", cssClass: "slick-column-right" },
+				{id: "estmFeeRfndAmt",		name: "Expected Cost Refund",				field: "estmFeeRfndAmt",		width: 150,	sortable: true, editor: Slick.Editors.Text, validator: createValidator, formatter: currencyFormatter, 	headerCssClass: "slick-header-columns", cssClass: "slick-column-right" },
+				{id: "estmContMtnAmt",		name: "Expected Administration Expense",	field: "estmContMtnAmt",		width: 220,	sortable: true, editor: Slick.Editors.Text, validator: createValidator, formatter: currencyFormatter, 	headerCssClass: "slick-header-columns", cssClass: "slick-column-right" },
+				{id: "estmIvsgExpAmt",		name: "Expected Survey Fee",				field: "estmIvsgExpAmt",		width: 150, sortable: true, editor: Slick.Editors.Text, validator: createValidator, formatter: currencyFormatter, 	headerCssClass: "slick-header-columns", cssClass: "slick-column-right" },
+				{id: "atsAssmUpdAmt",		name: "Assumption Change",					field: "atsAssmUpdAmt",			width: 150, sortable: true, editor: Slick.Editors.Text, validator: createValidator, formatter: currencyFormatter, 	headerCssClass: "slick-header-columns", cssClass: "slick-column-right" },
+				{id: "exrtEfftAmt",			name: "Fx Effect",							field: "exrtEfftAmt",			width: 150, sortable: true, editor: Slick.Editors.Text, validator: createValidator, formatter: currencyFormatter, 	headerCssClass: "slick-header-columns", cssClass: "slick-column-right" },
+				{id: "entmAmt",				name: "End",								field: "entmAmt",				width: 150, sortable: true, editor: Slick.Editors.Text, validator: createValidator, formatter: currencyFormatter, 	headerCssClass: "slick-header-columns", cssClass: "slick-column-right" },
+				{id: "frstRegEmpNo",		name: "Registrant",							field: "frstRegEmpNo",			width: 100, sortable: true, editor: Slick.Editors.Text, validator: createValidator, 								headerCssClass: "slick-header-columns", cssClass: "slick-column-center"},
+				{id: "frstRegDtm",			name: "Registration Date",					field: "frstRegDtm",			width: 120, sortable: true, editor: Slick.Editors.Text, validator: createValidator, 								headerCssClass: "slick-header-columns", cssClass: "slick-column-center"}
+		];
+
+		var options = {
+			enableCellNavigation: true,
+			enableColumnReorder: false,
+			forceFitColumns: false,
+			multiColumnSort: true,
+			numberedMultiColumnSort: true,
+			tristateMultiColumnSort: true,
+			sortColNumberInSeparateSpan: true,
+			enableAutoSizeColumns: true,
+			editable: false,   // grid도 편집가능.. grid 편집 기능 제거 필요..
+			enableAddRow: true,
+			asyncEditorLoading: false,
+			autoEdit: false,
+			autoEditNewRow: false,
+			rowHeight: 35,
+		};
+		
+		var newRowIds = 0;
+	
+		var pluginOptions = {
+			clipboardCommandHandler: function(editCommand){ undoRedoBuffer.queueAndExecuteCommand.call(undoRedoBuffer,editCommand); },
+			readOnlyMode : false,
+			includeHeaderWhenCopying : false,
+			newRowCreator: function(count) {
+				for (var i = 0; i < count; i++) {
+					var item = {
+						id: "newRow_" + newRowIds++
+					}
+				grid.getData().addItem(item);
+				}
+			}
+		};
+		
+		function main() {
+			// 그리드 초기화 및 데이터 로드
+			console.log("Initializing SlickGrid...");
+			var inputStdYymm = getStdYymm();
+			getList(
+						(input = JSON.stringify({ 
+												  stdYymm: inputStdYymm
+						}))
+					);
+		}
+
+		function getSearch() {
+			// 그리드 초기화 및 데이터 로드
+			console.log("Initializing SlickGrid...");
+			var inputStdYymm = getStdYymm();
+			
+			if ( $("#inputMonth").val() === "" && $("#inputYear").val() === "") {
+				alert("Please select a year, month!");
+			return;
+			} else if ($("#inputYear").val() === "") {
+				alert("Please select a year to continue!");
+			return;
+			} else if ($("#inputMonth").val() === "") {
+				alert("Please select a month to continue!");
+			return;
+			} 
+			
+			const element = document.getElementById("divMyGrid");
+			element.innerHTML = "";
+			
+			getList(
+						(input = JSON.stringify({ 
+												  stdYymm: inputStdYymm
+						}))
+					);
+		}
+
+		/**
+		 * Transaction callback 함수
+		 **/
+		function fn_callback(result){
+			console.log("fn_callback : " + result.id);
+			if( result.resultCd == "S" ){
+				let resultData = typeof result.data === "string" ? JSON.parse(result.data) : result.data;
+				switch (result.id){
+					case "SelectList" :
+						
+						fn_setGrid(resultData);
+						break;
+					case "ExecuteList" :
+						console.log("executeList case");
+						if ( resultData.resultCode == "200" ) {
+							alert("Successfully Calculated!");
+							main();
+						} else {
+							alert( "Save Fail Error : " + resultData.resultMessage );
+						}
+						
+					break;
+				}
+			} else if( result.resultCd == "E") {
+			} else {
+				 console.log("fn_callback result : ", result);
+			}
+		}
+
+		function fn_setGrid(data){
+
+			dataView = new Slick.Data.DataView( { idField: unqId });
+			grid	 = new Slick.Grid("#divMyGrid", dataView, columns, options);
+				
+			// Make the grid respond to DataView change events.
+			dataView.onRowCountChanged.subscribe(function (e, args) {
+				grid.updateRowCount();
+				grid.render();
+			});
+				
+			dataView.onRowsChanged.subscribe(function (e, args) {
+				grid.invalidate();
+				grid.render();
+			});
+					
+			// setItems의 두번째 argument를 통해 unique id에 해당하는 컬럼 지정가능
+			dataView.setItems(data, unqId);
+				
+			// when "onBeforeSort" returns false, the "onSort" won't execute (for example a backend server error while calling backend query to sort)
+			grid.onBeforeSort.subscribe(function (e, args) {
+			return true;
+			});				   
+	
+			// 정렬
+			grid.onSort.subscribe(function (e, args) {
+				var cols = args.sortCols;
+	
+				data.sort(function (dataRow1, dataRow2) {
+					for (var i = 0, l = cols.length; i < l; i++) {
+						var field  = cols[i].sortCol.field;
+						var sign   = cols[i].sortAsc ? 1 : -1;
+						var value1 = dataRow1[field], value2 = dataRow2[field];
+						var result = (value1 == value2 ? 0 : value1 > value2 ? 1 : -1) * sign;
+						if (result != 0) {
+						return result;
+						}
+					}
+				return 0;
+				});
+	
+				grid.render();
+			});
+	
+			grid.setSelectionModel(new Slick.CellSelectionModel());
+			grid.registerPlugin(new Slick.AutoTooltips());
+	
+			// set keyboard focus on the grid
+			//grid.getCanvasNode().focus();
+			grid.registerPlugin(new Slick.CellExternalCopyManager(pluginOptions));
+	
+			grid.onAddNewRow.subscribe(function (e, args) {
+				var newItem = args.item;
+				var column = args.column;
+				dataView.beginUpdate();
+				dataView.setItems(data);
+				dataView.endUpdate();
+				grid.updateRowCount();
+				grid.render();
+			});
+	
+			grid.onBeforeEditCell.subscribe(function (e, args) {
+				console.log("onBeforeEditCell");
+			});
+	
+			grid.onCellChange.subscribe(function (e, args) {
+				dataView.beginUpdate();
+				dataView.setItems(data);
+				dataView.endUpdate();
+				grid.updateRowCount();
+				grid.render();
+			});
+	
+			grid.onValidationError.subscribe(function (e, args) {
+				// handle validation errors originating from the CompositeEditor
+				if (args.validationResults) {
+					let errorMsg = args.validationResults.msg || "";
+					if (args.editor && args.editor instanceof Slick.CompositeEditor) {
+						if (args.validationResults.errors) {
+							errorMsg += "\n";
+							args.validationResults.errors.forEach(function (error, errorIndex) {
+								const columnName = error.editor.args.column.id;
+								errorMsg += `${columnName.toUpperCase()}: ${error.msg}`;
+							});
+						}
+						console.log(errorMsg);
+					}
+				} else {
+					alert(errorMessages);
+				}
+			});
+	
+			grid.setActiveCell(0, 0);
+			console.log("SlickGrid initialized.");
+		}
+
+		// Download Excel functionality
+		document.getElementById('downloadExcel').addEventListener('click', function() {
+			const currDate = getCurrentDateTime();
+			const fileName = 'BIZINS001_FM_' + currDate; // 원하는 파일 이름으로 변경 가능
+			const sheetName = '보험손익(BEL)'; // 시트 이름
+			const gridColumns = columns; // SlickGrid의 컬럼 배열
+			const gridData = dataView.getItems(); // SlickGrid의 데이터 배열
+			exportToExcel(fileName, sheetName, gridColumns, gridData);
+		});
+	</script>
+</th:block>
+</html>

@@ -1,0 +1,211 @@
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta charset="UTF-8" />
+    <title th:insert="~{fragments/title}">파일관리 - File Management</title>
+    <link
+      rel="stylesheet"
+      href="static/js/slickgrid/dist/styles/css/slick.grid.css"
+      type="text/css"
+    />
+    <link
+      rel="stylesheet"
+      href="static/js/slickgrid/dist/styles/css/slick-alpine-theme.css"
+      type="text/css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
+    />
+
+    <link
+      href="static/css/css-tabler/tabler.min.css?1692870487"
+      rel="stylesheet"
+    />
+    <link
+      href="static/css/css-tabler/tabler-flags.min.css?1692870487"
+      rel="stylesheet"
+    />
+    <link
+      href="static/css/css-tabler/tabler-payments.min.css?1692870487"
+      rel="stylesheet"
+    />
+    <link
+      href="static/css/css-tabler/tabler-vendors.min.css?1692870487"
+      rel="stylesheet"
+    />
+    <link
+      href="static/css/css-tabler/demo.min.css?1692870487"
+      rel="stylesheet"
+    />
+    <link href="static/css/file-css.css" rel="stylesheet" />
+    <!-- // this is the tabler css files import : -->
+
+    <link
+      href="static/css/css-tabler/tabler.min.css?1692870487"
+      rel="stylesheet"
+    />
+    <link
+      href="static/css/css-tabler/tabler-flags.min.css?1692870487"
+      rel="stylesheet"
+    />
+    <link
+      href="static/css/css-tabler/tabler-payments.min.css?1692870487"
+      rel="stylesheet"
+    />
+    <link
+      href="static/css/css-tabler/tabler-vendors.min.css?1692870487"
+      rel="stylesheet"
+    />
+    <link
+      href="static/css/css-tabler/demo.min.css?1692870487"
+      rel="stylesheet"
+    />
+
+    <!--  add content here -->
+  </head>
+  <!-- <div class="page"> -->
+  <header class="navbar navbar-expand-md d-print-none">
+    <div class="container-xl">
+      <div class="d-flex align-items-center justify-content-between w-100">
+        <!-- Left Side: Brand and Toggler -->
+        <div class="d-flex align-items-center">
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbar-menu"
+            aria-controls="navbar-menu"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <h1
+            class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3"
+          >
+            <!-- Here -->
+          </h1>
+        </div>
+
+        <!-- Right Side: Nav Items and Avatar/Login Button -->
+        <div class="navbar-nav d-flex align-items-center ms-auto">
+          <a
+            href="?theme=dark"
+            class="nav-link px-0 hide-theme-dark"
+            data-bs-toggle="tooltip"
+            data-bs-placement="bottom"
+            aria-label="Enable dark mode"
+            data-bs-original-title="Enable dark mode"
+          >
+            <!-- Dark mode icon -->
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="icon"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path stroke="none" d="M0 0h24H0z" fill="none"></path>
+              <path
+                d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"
+              ></path>
+            </svg>
+          </a>
+          <a
+            href="?theme=light"
+            class="nav-link px-0 hide-theme-light"
+            data-bs-toggle="tooltip"
+            data-bs-placement="bottom"
+            aria-label="Enable light mode"
+            data-bs-original-title="Enable light mode"
+          >
+            <!-- Light mode icon -->
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="icon"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path stroke="none" d="M0 0h24H0z" fill="none"></path>
+              <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
+              <path
+                d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7"
+              ></path>
+            </svg>
+          </a>
+          <div class="nav-item dropdown">
+            <div
+              class="dropdown-menu dropdown-menu-arrow dropdown-menu-end dropdown-menu-card"
+            >
+              <div class="card">
+                <!-- Notification content -->
+              </div>
+            </div>
+          </div>
+          <div style="justify-content: space-between">
+            <a
+              href="https://www.notion.so/"
+              class="btn"
+              style="
+                padding: 4px 10px;
+                color: rgb(169, 169, 169);
+                font-size: 13px;
+              "
+            >
+              <!-- SVG icon from http://tabler-icons.io -->
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="icon icon-tabler icons-tabler-outline icon-tabler-link"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M9 15l6 -6" />
+                <path d="M11 6l.463 -.536a5 5 0 0 1 7.071 7.072l-.534 .464" />
+                <path
+                  d="M13 18l-.397 .534a5.068 5.068 0 0 1 -7.127 0a4.972 4.972 0 0 1 0 -7.071l.524 -.463"
+                />
+              </svg>
+              Docs
+            </a>
+            <a
+              href="USER/USER_LOGIN.html"
+              class="btn"
+              style="
+                padding: 4px 10px;
+                color: rgb(169, 169, 169);
+                font-size: 13px;
+              "
+            >
+              <span
+                class="avatar"
+                style="
+                  background-image: url(https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=3570&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);
+                "
+              ></span>
+              Log out
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+</html>

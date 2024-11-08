@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rds.adams.web.opn.usr.dao.OPNUSR001M0DAO">
+    <select id="selectMenuList" parameterType="com.rds.adams.web.opn.usr.dto.OPNUSR001M0P0DTO" resultType="com.rds.adams.web.opn.usr.dto.OPNUSR001M0R0DTO">
+        /* web.opn.usr.dao.OPNUSR001M0DAO.selectMenuList */
+        WITH TMP_MEMU AS
+        (
+            SELECT
+                   MM.MENU_ID
+                 , MM.MENU_NM_KOR
+                 , MM.MENU_NM_ENG
+                 , MM.UPPR_MENU_ID
+                 , MM.MENU_SRT_ORD
+                 , MM.MENU_DESC
+                 , MM.PGM_NM
+                 , MM.PGM_PATH_NM
+                 , MM.SRVC_CD
+                 , MM.ADMIN_AUTH_YN
+                 , MM.SYSOP_AUTH_YN
+                 , MM.USE_YN
+                 , MM.DEL_YN
+                 , MM.FRST_REG_EMP_NO
+                 , MM.FRST_REG_DTM
+              FROM [RDSDB].[DBO].[TB_MENU_MNG_LST] MM
+             WHERE 1=1
+               AND MM.USE_YN = 'Y'
+               AND MM.DEL_YN = 'N'
+         )
+         ,    MENUHIERARCHY AS
+         (
+           -- 최상위 메뉴를 선택합니다.
+            SELECT
+                   MENU_ID
+                 , MENU_NM_KOR
+                 , MENU_NM_ENG
+                 , UPPR_MENU_ID
+                 , MENU_SRT_ORD
+                 , MENU_DESC
+                 , PGM_NM
+                 , PGM_PATH_NM
+                 , SRVC_CD
+                 , ADMIN_AUTH_YN
+                 , SYSOP_AUTH_YN
+                 , USE_YN
+                 , DEL_YN
+                 , FRST_REG_EMP_NO
+                 , FRST_REG_DTM
+                 , 0            AS LEVEL   -- 최상위 메뉴의 레벨을 0으로 설정
+                 , CAST( MENU_SRT_ORD AS VARCHAR(3))
+                   + '00'       AS SORT
+              FROM TMP_MEMU      -- 실제 테이블 이름으로 변경하세요
+             WHERE 1=1
+               AND ( UPPR_MENU_ID IS NULL OR UPPR_MENU_ID = '' )  -- 최상위 메뉴 조건
+             UNION ALL
+             -- 재귀적으로 하위 메뉴를 찾습니다.
+           SELECT
+                  M.MENU_ID
+                , M.MENU_NM_KOR
+                , M.MENU_NM_ENG
+                , M.UPPR_MENU_ID
+                , M.MENU_SRT_ORD
+                , M.MENU_DESC
+                , M.PGM_NM
+                , M.PGM_PATH_NM
+                , M.SRVC_CD
+                , M.ADMIN_AUTH_YN
+                , M.SYSOP_AUTH_YN
+                , M.USE_YN
+                , M.DEL_YN
+                , M.FRST_REG_EMP_NO
+                , M.FRST_REG_DTM
+                , H.LEVEL + 1                          AS LEVEL  -- 상위 메뉴의 레벨에 1을 더하여 하위 메뉴의 레벨 설정
+                , CAST(H.MENU_SRT_ORD AS VARCHAR(3))
+                  + CAST(M.MENU_SRT_ORD AS VARCHAR(2)) AS SORT
+             FROM TMP_MEMU M
+            INNER JOIN MENUHIERARCHY H
+               ON M.UPPR_MENU_ID = H.MENU_ID
+            WHERE 1=1
+         )
+        -- 결과를 트리 구조로 조회
+        SELECT
+               MENU_ID                              AS menuId       /* 메뉴ID */
+             , MENU_NM_KOR                          AS menuNmKor    /* 메뉴명_한글 */
+             , MENU_NM_ENG                          AS menuNmEng    /* 메뉴명_영문 */
+             , UPPR_MENU_ID                         AS upprMenuId   /* 상위메뉴ID */
+             , MENU_SRT_ORD                         AS menuSrtOrd   /* 메뉴정렬순서 */
+             , MENU_DESC                            AS menuDesc     /* 메뉴설명 */
+             , PGM_NM                               AS pgmNm
+             , PGM_PATH_NM                          AS pgmPathNm
+             , SRVC_CD                              AS srvcCd
+             , ADMIN_AUTH_YN                        AS adminAuthYn
+             , SYSOP_AUTH_YN                        AS sysopAuthYn
+             , USE_YN                               AS useYn
+             , DEL_YN                               AS delYn
+             , FRST_REG_EMP_NO                      AS frstRegEmpNo
+             , FRST_REG_DTM                         AS frstRegDtm
+             , LEVEL                                AS levelCd        /* LEVEL */
+             , SORT                                 AS sortCd         /* 정렬 */
+          FROM MENUHIERARCHY
+         WHERE 1=1
+         <if test='menuNm != "" and menuNm != null'>
+           AND (MENU_NM_KOR LIKE '%' + #{menuNm} + '%' OR  MENU_NM_ENG LIKE '%' + #{menuNm} + '%')
+         </if>
+         <if test='menuDesc != "" and menuDesc != null'>
+           AND MENU_DESC   LIKE '%' + #{menuDesc} + '%'
+         </if>
+         <if test='pgmNm != "" and pgmNm != null'>
+           AND PGM_NM      LIKE '%' + #{pgmNm} + '%'
+         </if>
+         ORDER BY SORT
+    </select>
+    <insert id="insertList" parameterType="com.rds.adams.web.opn.usr.dto.OPNUSR001M0P1DTO">
+        INSERT INTO [RDSDB].[dbo].[TB_MENU_MNG_LST]
+            (
+              MENU_ID
+            , MENU_NM_KOR
+            , MENU_NM_ENG
+            , UPPR_MENU_ID
+            , MENU_SRT_ORD
+            , MENU_DESC
+            , PGM_NM
+            , PGM_PATH_NM
+            , SRVC_CD
+            , ADMIN_AUTH_YN
+            , SYSOP_AUTH_YN
+            , USE_YN
+            , DEL_YN
+            , FNL_UPD_EMP_NO
+            , FNL_UPD_DTM
+            , FRST_REG_EMP_NO
+            , FRST_REG_DTM
+            )
+        VALUES (
+                 #{menuId}
+               , #{menuNmKor}
+               , #{menuNmEng}
+               , #{upprMenuId}
+               , #{menuSrtOrd}
+               , #{menuDesc}
+               , #{pgmNm}
+               , #{pgmPathNm}
+               , #{srvcCd}
+               , #{adminAuthYn}
+               , #{sysopAuthYn}
+               , #{useYn}
+               , #{delYn}
+               , #{usrId}
+               , GETDATE()
+               , #{usrId}
+               , GETDATE()
+               )
+    </insert>
+    <update id="updateList" parameterType="com.rds.adams.web.opn.usr.dto.OPNUSR001M0P1DTO">
+        UPDATE [RDSDB].[dbo].[TB_MENU_MNG_LST]
+           SET MENU_NM_KOR     = #{menuNmKor}
+             , MENU_NM_ENG     = #{menuNmEng}
+             , UPPR_MENU_ID    = #{upprMenuId}
+             , MENU_SRT_ORD    = #{menuSrtOrd}
+             , MENU_DESC       = #{menuDesc}
+             , PGM_NM          = #{pgmNm}
+             , PGM_PATH_NM     = #{pgmPathNm}
+             , SRVC_CD         = #{srvcCd}
+             , ADMIN_AUTH_YN   = #{adminAuthYn}
+             , SYSOP_AUTH_YN   = #{sysopAuthYn}
+             , USE_YN          = #{useYn}
+             , DEL_YN          = #{delYn}
+             , FNL_UPD_EMP_NO  = #{usrId}
+             , FNL_UPD_DTM     = GETDATE()
+         WHERE MENU_ID = #{menuId}
+    </update>
+    <delete id="deleteList" parameterType="com.rds.adams.web.opn.usr.dto.OPNUSR001M0P1DTO" >
+        DELETE FROM [RDSDB].[dbo].[TB_MENU_MNG_LST]
+         WHERE 1=1
+           AND MENU_ID = #{menuId}
+    </delete>
+</mapper>

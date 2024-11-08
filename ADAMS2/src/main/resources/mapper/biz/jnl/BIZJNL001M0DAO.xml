@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rds.adams.web.biz.jnl.dao.BIZJNL001M0DAO">
+    <select id="selectList" parameterType="com.rds.adams.web.biz.jnl.dto.BIZJNL001M0P0DTO" resultType="com.rds.adams.web.biz.jnl.dto.BIZJNL001M0R0DTO">	
+		SELECT
+				ROW_NUMBER() OVER(ORDER BY (SELECT 1))                  AS rowNumber     /* 행번호 */
+             , A.ATIT_CD                                                AS atitCd        /* 계정과목코드 */
+             , A.ATIT_KOR_NM                                            AS atitKorNm     /* 계정과목한글명 */
+             , A.ATIT_ENG_NM                                            AS atitEngNm     /* 계정과목영문명 */
+             , A.HGRK_ATIT_CD                                           AS hgrkAtitCd    /* 상위계정과목코드 */
+             , A.AC_LVL_CD                                              AS acLvlCd       /* 계정레벨코드 */
+             , A.BKG_AC_YN                                              AS bkgAcYn       /* 기표계정여부 */
+             , A.FS_DV_CD                                               AS fsDvCd        /* 재무제표구분코드 */
+             , A.AC_DV_CD                                               AS acDvCd        /* 계정구분코드 */
+             , A.AC_KIND_CD                                             AS acKindCd      /* 계정종류코드 */
+             , CONVERT(CHAR(10), CONVERT(DATE, A.APP_STR_DT, 112), 23)  AS appStrDt      /* 적용시작일자 */
+             , CONVERT(CHAR(10), CONVERT(DATE, A.APP_END_DT, 112), 23)  AS appEndDt      /* 적용종료일자 */
+             , A.ORD_SEQ                                                AS ordSeq        /* 정렬순서 */
+             , A.ETC_DESC                                               AS etcDesc       /* 기타내용 */
+             , A.USE_YN                                                 AS useYn         /* 사용여부 */
+             , B.USR_NM                                                 AS frstRegEmpNo  /* 최초등록사원번호 */
+             , CONVERT(CHAR(10), A.FRST_REG_DTM, 23)                    AS frstRegDtm    /* 최초등록일시 */
+		  FROM TB_ATIT_MNG_LST A 
+		  LEFT OUTER JOIN TB_USR_MNG_LST B 
+          ON A.FNL_UPD_EMP_NO = B.USR_ID
+		 WHERE 1=1
+		   AND A.APP_STR_DT IS NOT NULL
+		   AND A.APP_END_DT IS NOT NULL
+		<if test= 'csNo != "999"'>	
+			AND A.CS_NO        = #{csNo}
+		</if>
+		<if test='searchTxt != ""'>
+			AND (
+					A.ATIT_CD     LIKE '%' + #{searchTxt} + '%'
+				OR  A.ATIT_KOR_NM LIKE '%' + #{searchTxt} + '%'
+				OR  A.ATIT_ENG_NM LIKE '%' + #{searchTxt} + '%'
+				)
+		</if>
+	</select>
+	<insert id="insertList" parameterType="com.rds.adams.web.biz.jnl.dto.BIZJNL001M0P1DTO">
+		INSERT INTO [dbo].[TB_ATIT_MNG_LST] (
+			  [CS_NO]
+			, [ATIT_CD]
+			, [ATIT_KOR_NM]
+			, [ATIT_ENG_NM]
+			, [HGRK_ATIT_CD]
+			, [AC_LVL_CD]
+			, [BKG_AC_YN]
+			, [FS_DV_CD]
+			, [AC_DV_CD]
+			, [AC_KIND_CD]
+			, [APP_STR_DT]
+			, [APP_END_DT]
+			, [ORD_SEQ]
+			, [ETC_DESC]
+			, [USE_YN]
+			, [FRST_REG_EMP_NO]
+		    , [FRST_REG_DTM]
+			, [FNL_UPD_EMP_NO]
+			, [FNL_UPD_DTM]
+        )
+        VALUES (
+			  #{csNo}
+			, #{atitCd}
+            , #{atitKorNm}
+            , #{atitEngNm}
+            , #{hgrkAtitCd}
+            , #{acLvlCd}
+            , #{bkgAcYn}
+            , #{fsDvCd}
+            , #{acDvCd}
+            , #{acKindCd}
+            , REPLACE(#{appStrDt}, '-', '')
+            , REPLACE(#{appEndDt}, '-', '')
+            , #{ordSeq}
+            , #{etcDesc}
+            , #{useYn}
+			, #{frstRegEmpNo}
+            , CONVERT(CHAR(10), getdate(), 23)
+            , #{frstRegEmpNo}
+            , CONVERT(CHAR(10), getdate(), 23)
+        )
+    </insert>
+    <update id="updateList" parameterType="com.rds.adams.web.biz.jnl.dto.BIZJNL001M0P1DTO">
+        UPDATE TB_ATIT_MNG_LST
+           SET 
+               ATIT_KOR_NM    = #{atitKorNm} 
+             , ATIT_ENG_NM    = #{atitEngNm} 
+             , HGRK_ATIT_CD   = #{hgrkAtitCd} 
+             , AC_LVL_CD      = #{acLvlCd} 
+             , BKG_AC_YN      = #{bkgAcYn} 
+             , FS_DV_CD       = #{fsDvCd} 
+             , AC_DV_CD       = #{acDvCd} 
+             , AC_KIND_CD     = #{acKindCd} 
+             , APP_STR_DT     = REPLACE(#{appStrDt}, '-', '')
+             , APP_END_DT     = REPLACE(#{appEndDt}, '-', '')
+             , ORD_SEQ        = #{ordSeq}
+             , ETC_DESC       = #{etcDesc}
+             , USE_YN         = #{useYn}
+             , FNL_UPD_EMP_NO = #{frstRegEmpNo}
+             , FNL_UPD_DTM    = CONVERT(CHAR(10), getdate(), 23)
+         WHERE 1=1
+           AND ATIT_CD = #{atitCd}
+           AND CS_NO   = #{csNo}
+  </update>
+    <delete id="deleteList" parameterType="com.rds.adams.web.biz.jnl.dto.BIZJNL001M0P1DTO">
+		DELETE FROM TB_ATIT_MNG_LST
+		WHERE 1=1
+		  AND ATIT_CD = #{atitCd}
+		  AND CS_NO   = #{csNo}
+	</delete>
+</mapper>

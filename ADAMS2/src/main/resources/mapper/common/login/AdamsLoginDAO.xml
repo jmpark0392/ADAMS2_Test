@@ -1,0 +1,778 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rds.adams.web.common.login.dao.AdamsLoginDAO">
+
+
+    <!-- 로그인 처리를 위한 resultMap -->
+    <resultMap id="login" type="com.rds.adams.web.common.login.dto.AdamsLoginDTO">
+        <result property="csNo" column="csNo"/>
+        <result property="compNoDvCd" column="compNoDvCd"/>
+        <result property="compNo" column="compNo"/>
+        <result property="compNm" column="compNm"/>
+        <result property="usrDvCd" column="usrDvCd"/>
+        <result property="usrId" column="usrId"/>
+        <result property="usrNm" column="usrNm"/>
+        <result property="usrPassword" column="usrPassword"/>
+        <result property="usrNewPassword" column="usrNewPassword"/>
+        <result property="usrPhNo" column="usrPhNo"/>
+        <result property="usrEmail" column="usrEmail"/>
+        <result property="usrDeptNm" column="usrDeptNm"/>
+        <result property="empNo" column="empNo"/>
+        <result property="statDvCd" column="statDvCd"/>
+        <result property="useStrDtm" column="useStrDtm"/>
+        <result property="useEndDtm" column="useEndDtm"/>
+        <result property="passwordUpdDtm" column="passwordUpdDtm"/>
+        <result property="passwordInitYn" column="passwordInitYn"/>
+        <result property="srvcCd" column="srvcCd"/>
+        <result property="srvcNm" column="srvcNm"/>
+    </resultMap>
+    
+    <!-- 메뉴 처리를 위한 resultMap -->
+    <resultMap id="menu" type="com.rds.adams.web.common.login.dto.AdamsMenuDTO">
+        <result property="menuId" column="menuId"/>
+        <result property="menuNmKor" column="menuNmKor"/>
+        <result property="menuNmEng" column="menuNmEng"/>
+        <result property="upprMenuId" column="upprMenuId"/>
+        <result property="menuSrtOrd" column="menuSrtOrd"/>
+        <result property="menuDesc" column="menuDesc"/>
+        <result property="pgmUrl" column="pgmUrl"/>
+        <result property="level" column="level"/>
+        <result property="sort" column="sort"/>
+    </resultMap>
+
+    <!-- 고객사 목록 조회를 위한 resultMap -->
+    <resultMap id="company" type="com.rds.adams.web.common.login.dto.AdamsCsNoDTO">
+        <result property="csNo" column="csNo"/>
+        <result property="compNm" column="compNm"/>
+    </resultMap>
+    
+    <!-- 아이디 찾기를 위한 resultMap -->
+    <resultMap id="id" type="com.rds.adams.web.common.login.dto.AdamsLoginDTO">
+        <result property="usrId" column="usrId"/>
+    </resultMap>
+    
+    <!-- 비밀번호 처리를 위한 resultMap -->
+    <resultMap id="password" type="com.rds.adams.web.common.login.dto.AdamsLoginDTO">
+        <result property="usrPassword" column="usrPassword"/>
+    </resultMap>
+    
+       <!-- 마이페이지 - 계정 생성 누적일 수 조회를 위한 resultMap -->
+    <resultMap id="regDtmTotal" type="com.rds.adams.web.common.login.dto.AdamsRegDtmTotalDTO">
+        <result property="regDtmTotal" column="regDtmTotal"/>
+    </resultMap>
+    
+    <!-- 마이페이지 - 가장 최근에 로그인 했던 날짜 조회를 위한 resultMap -->
+    <resultMap id="lastLoginDtm" type="com.rds.adams.web.common.login.dto.AdamsLastLoginDtmDTO">
+        <result property="lastLoginDtm" column="lastLoginDtm"/>
+    </resultMap>
+    
+    <!-- 마이페이지 - 로그인 총 횟수 조회를 위한 resultMap -->
+    <resultMap id="loginCntTotal" type="com.rds.adams.web.common.login.dto.AdamsLoginCntTotalDTO">
+        <result property="loginCntTotal" column="loginCntTotal"/>
+    </resultMap>
+    
+    <!-- 마이페이지 - (전날 기준)30일간 일별 로그인 횟수 조회를 위한 resultMap -->
+    <resultMap id="monthLoginCnt" type="com.rds.adams.web.common.login.dto.AdamsMonthLoginCntDTO">
+        <result property="accDtm" column="accDtm"/>
+        <result property="loginCnt" column="loginCnt"/>
+    </resultMap>
+    
+    <!-- 마이페이지 - 가장 최근에 파일 업로드 했던 날짜 조회를 위한 resultMap -->
+    <resultMap id="lastUploadDtm" type="com.rds.adams.web.common.login.dto.AdamsLastUploadDtmDTO">
+        <result property="lastUploadDtm" column="lastUploadDtm"/>
+    </resultMap>
+    
+    <!-- 마이페이지 - 파일 업로드 총 횟수 조회를 위한 resultMap -->
+    <resultMap id="uploadCntTotal" type="com.rds.adams.web.common.login.dto.AdamsUploadCntTotalDTO">
+        <result property="uploadCntTotal" column="uploadCntTotal"/>
+    </resultMap>
+    
+    <!-- 마이페이지 - (전날 기준)30일간 일별 파일 업로드 횟수 조회를 위한 resultMap -->
+    <resultMap id="monthUploadCnt" type="com.rds.adams.web.common.login.dto.AdamsMonthUploadCntDTO">
+        <result property="uploadStrDtm" column="uploadStrDtm"/>
+        <result property="uploadCnt" column="uploadCnt"/>
+    </resultMap>
+    
+    <!-- 마이페이지 - 가장 최근에 배치를 실행했던 날짜 조회를 위한 resultMap -->
+    <resultMap id="lastBatDtm" type="com.rds.adams.web.common.login.dto.AdamsLastBatDtmDTO">
+        <result property="lastBatDtm" column="lastBatDtm"/>
+    </resultMap>
+    
+    <!-- 마이페이지 - 배치를 실행한 총 횟수 조회를 위한 resultMap -->
+    <resultMap id="batCntTotal" type="com.rds.adams.web.common.login.dto.AdamsBatCntTotalDTO">
+        <result property="batCntTotal" column="batCntTotal"/>
+    </resultMap>
+    
+    <!-- 마이페이지 - (전날 기준)30일간 일별 배치를 실행한 횟수 조회를 위한 resultMap -->
+    <resultMap id="monthBatCnt" type="com.rds.adams.web.common.login.dto.AdamsMonthBatCntDTO">
+        <result property="batStrDtm" column="batStrDtm"/>
+        <result property="batCnt" column="batCnt"/>
+    </resultMap>
+    
+    <!-- 마이페이지 - 새 정보 업데이트를 위한 resultMap -->
+    <resultMap id="updateLogin" type="com.rds.adams.web.common.login.dto.AdamsUpdateLoginDTO">
+        <result property="csNo" column="csNo"/>
+        <result property="compNoDvCd" column="compNoDvCd"/>
+        <result property="compNo" column="compNo"/>
+        <result property="compNm" column="compNm"/>
+        <result property="usrDvCd" column="usrDvCd"/>
+        <result property="usrId" column="usrId"/>
+        <result property="usrNm" column="usrNm"/>
+        <result property="usrPassword" column="usrPassword"/>
+        <result property="usrNewPassword" column="usrNewPassword"/>
+        <result property="usrPhNo" column="usrPhNo"/>
+        <result property="usrEmail" column="usrEmail"/>
+        <result property="usrDeptNm" column="usrDeptNm"/>
+        <result property="empNo" column="empNo"/>
+        <result property="statDvCd" column="statDvCd"/>
+        <result property="useStrDtm" column="useStrDtm"/>
+        <result property="useEndDtm" column="useEndDtm"/>
+        <result property="passwordUpdDtm" column="passwordUpdDtm"/>
+        <result property="passwordInitYn" column="passwordInitYn"/>
+        <result property="srvcCd" column="srvcCd"/>
+        <result property="srvcNm" column="srvcNm"/>
+    </resultMap>
+    
+    <!-- 마이페이지 - 비밀번호 변경 전 사용자 인증 결과를 위한 resultMap -->
+    <resultMap id="checkUsrPw" type="com.rds.adams.web.common.login.dto.AdamsCheckUserResDTO">
+        <result property="checkUsrPwd" column="checkUsrPwd"/>
+    </resultMap>
+    
+    
+    <!-- 일반 로그인 -->
+    <select id="actionLogin" resultMap="login">
+        SELECT
+               A.CS_NO AS csNo
+             , B.COMP_NO_DV_CD     AS compNoDvCd     /* 회사번호구분코드 */
+             , B.COMP_NO           AS compNo         /* 회사번호 */
+             , B.COMP_NM           AS compNm         /* 회사명 */
+             , A.USR_DV_CD         AS usrDvCd
+             , A.USR_ID            AS usrId
+             , A.USR_NM            AS usrNm
+             , CASE WHEN A.PASSWORD_INIT_YN = 'Y' THEN #{usrPassword}
+                    ELSE  ''
+               END                 AS usrPassword
+             , A.USR_PH_NO         AS usrPhNo
+             , A.USR_EMAIL         AS usrEmail
+             , A.USR_DEPT_NM       AS usrDeptNm
+             , A.EMP_NO            AS empNo
+             , A.STAT_DV_CD        AS statDvCd
+             , A.USE_STR_DTM       AS useStrDtm
+             , A.USE_END_DTM       AS useEndDtm
+             , A.PASSWORD_UPD_DTM  AS passwordUpdDtm
+             , A.PASSWORD_INIT_YN  AS passwordInitYn
+             , C.SRVC_CD           AS srvcCd
+             , D.SRVC_NM           AS srvcNm
+          FROM RDSDB.[dbo].[TB_USR_MNG_LST] A
+          LEFT OUTER JOIN RDSDB.[dbo].[TB_CS_MNG_LST] B
+                       ON A.CS_NO = B.CS_NO
+          LEFT OUTER JOIN RDSDB.[dbo].[TB_CS_SRVC_OPT_INF] C
+                       ON A.CS_NO = C.CS_NO
+          LEFT OUTER JOIN RDSDB.[dbo].[TB_SVRC_INF] D
+                       ON C.SRVC_CD = D.SRVC_CD
+         WHERE 1=1
+         <if test="csNo == null or csNo == ''">
+           AND A.CS_NO != '999'
+         </if>
+           AND A.USR_ID = #{usrId}
+           AND 1        = PWDCOMPARE(#{usrPassword}, A.USR_PASSWORD)
+    </select>
+    
+    <!-- 사용자 사용가능 여부 체크 -->
+    <select id="checkUserUse" resultType="java.lang.String">
+        SELECT
+               CASE WHEN A.STAT_DV_CD = '9' AND A.USE_END_DTM <![CDATA[ < ]]> GETDATE() THEN '1'
+			        WHEN B.STAT_DV_CD = '9' AND B.USE_END_DTM <![CDATA[ < ]]> GETDATE() THEN '1'
+					ELSE '0'
+			   END
+          FROM RDSDB.[dbo].[TB_USR_MNG_LST] A
+          LEFT OUTER JOIN RDSDB.[dbo].[TB_CS_MNG_LST] B
+                       ON A.CS_NO = B.CS_NO
+         WHERE 1=1
+           AND A.USR_ID = #{usrId}
+    </select>
+    
+    <!-- 로그인 사용자 메뉴 정보 -->
+    <select id="actionMenu" resultMap="menu">
+        WITH TMP_AUTH AS
+             (
+                SELECT
+                       CASE WHEN A.USR_DV_CD = '1' AND #{csNo} != B.CS_NO THEN '8'
+                            WHEN A.USR_DV_CD = '1' THEN '9'
+                            WHEN A.USR_DV_CD = '2' THEN '8'
+                            ELSE '1'
+                       END AS USR_DV_CD
+                     , CASE WHEN A.USR_DV_CD = '1' THEN '99'
+                            ELSE B.SRVC_CD
+                       END AS SRVC_CD
+                  FROM [RDSDB].[dbo].[TB_USR_MNG_LST] A
+                  LEFT OUTER JOIN RDSDB.[dbo].[TB_CS_SRVC_OPT_INF] B
+                               ON A.CS_NO = B.CS_NO
+                 WHERE 1=1
+                   AND A.USR_ID = #{usrId}
+             )
+        ,    TMP_MEMU AS
+             (
+                SELECT
+                       MM.MENU_ID
+                     , MM.MENU_NM_KOR
+                     , MM.MENU_NM_ENG
+                     , MM.UPPR_MENU_ID
+                     , MM.MENU_SRT_ORD
+                     , MM.MENU_DESC
+                     , MM.PGM_PATH_NM + '/' + MM.PGM_NM AS PGM_URL
+                  FROM [RDSDB].[DBO].[TB_MENU_MNG_LST] MM
+                 WHERE 1=1
+                   AND MM.USE_YN        = 'Y'
+                   AND MM.DEL_YN        = 'N'
+				   AND MM.ADMIN_AUTH_YN = 'N'
+				   AND MM.SYSOP_AUTH_YN = 'N'
+                       -- [2024.09.23]SRVC_CD를 숫자로 변환 후 두자리로 포맷팅, DB에서 데이터 수정 필요해보임.
+                   AND FORMAT(CAST(MM.SRVC_CD AS INT), 'D2') <![CDATA[ <= ]]> (
+                                        SELECT
+                                               SRVC_CD
+                                          FROM TMP_AUTH
+                                         WHERE 1=1
+                                      )
+                UNION ALL
+                SELECT
+                       MM.MENU_ID
+                     , MM.MENU_NM_KOR
+                     , MM.MENU_NM_ENG
+                     , MM.UPPR_MENU_ID
+                     , MM.MENU_SRT_ORD
+                     , MM.MENU_DESC
+                     , MM.PGM_PATH_NM + '/' + MM.PGM_NM AS PGM_URL
+                  FROM [RDSDB].[DBO].[TB_MENU_MNG_LST] MM
+                 WHERE 1=1
+                   AND MM.USE_YN = 'Y'
+                   AND MM.DEL_YN = 'N'
+				   AND MM.ADMIN_AUTH_YN = 'Y'
+                   AND '8' = ( SELECT  USR_DV_CD FROM TMP_AUTH WHERE 1=1 )
+                UNION ALL
+                SELECT
+                       MM.MENU_ID
+                     , MM.MENU_NM_KOR
+                     , MM.MENU_NM_ENG
+                     , MM.UPPR_MENU_ID
+                     , MM.MENU_SRT_ORD
+                     , MM.MENU_DESC
+                     , MM.PGM_PATH_NM + '/' + MM.PGM_NM AS PGM_URL
+                  FROM [RDSDB].[DBO].[TB_MENU_MNG_LST] MM
+                 WHERE 1=1
+                   AND MM.USE_YN = 'Y'
+                   AND MM.DEL_YN = 'N'
+				   AND MM.SYSOP_AUTH_YN = 'Y'
+                   AND '9' = ( SELECT  USR_DV_CD FROM TMP_AUTH WHERE 1=1 )
+             )
+        ,    MENUHIERARCHY AS
+             (
+               -- 최상위 메뉴를 선택합니다.
+               SELECT
+                      MENU_ID
+                    , MENU_NM_KOR
+                    , MENU_NM_ENG
+                    , UPPR_MENU_ID
+                    , MENU_SRT_ORD
+                    , MENU_DESC
+                    , PGM_URL
+                    , 0            AS LEVEL   -- 최상위 메뉴의 레벨을 0으로 설정
+                    , CAST( MENU_SRT_ORD AS VARCHAR(3))
+                      + '00'       AS SORT
+                 FROM TMP_MEMU      -- 실제 테이블 이름으로 변경하세요
+                WHERE 1=1
+                  AND ( UPPR_MENU_ID IS NULL OR UPPR_MENU_ID = '' )  -- 최상위 메뉴 조건
+
+               UNION ALL
+
+               -- 재귀적으로 하위 메뉴를 찾습니다.
+               SELECT
+                      M.MENU_ID
+                    , M.MENU_NM_KOR
+                    , M.MENU_NM_ENG
+                    , M.UPPR_MENU_ID
+                    , M.MENU_SRT_ORD
+                    , M.MENU_DESC
+                    , M.PGM_URL
+                    , H.LEVEL + 1                          AS LEVEL  -- 상위 메뉴의 레벨에 1을 더하여 하위 메뉴의 레벨 설정
+                    , CAST(H.MENU_SRT_ORD AS VARCHAR(3))
+                      + CAST(M.MENU_SRT_ORD AS VARCHAR(2)) AS SORT
+                 FROM TMP_MEMU M
+                INNER JOIN MENUHIERARCHY H
+                        ON M.UPPR_MENU_ID = H.MENU_ID
+                WHERE 1=1
+             )
+        -- 결과를 트리 구조로 조회
+        SELECT
+               MENU_ID                              AS menuId       /* 메뉴ID */
+             , REPLICATE('  ', LEVEL) + MENU_NM_KOR AS menuNmKor    /* 메뉴명_한글 */
+             , REPLICATE('  ', LEVEL) + MENU_NM_ENG AS menuNm       /* 메뉴명_영문 */
+             , UPPR_MENU_ID                         AS upprMenuId   /* 상위메뉴ID */
+             , MENU_SRT_ORD                         AS menuSrtOrd   /* 메뉴정렬순서 */
+             , MENU_DESC                            AS menuDesc     /* 메뉴설명 */
+             , PGM_URL                              AS pgmUrl       /* 프로그램URL */
+             , LEVEL                                AS level        /* LEVEL */
+             , SORT                                 AS sort         /* 정렬 */
+          FROM MENUHIERARCHY
+         ORDER BY SORT
+    </select>
+    
+    <!-- 고객사 목록 조회 -->
+    <select id="selectCsNoList" resultMap="company">
+        SELECT
+               A.CS_NO             AS csNo
+             , A.COMP_NM           AS compNm
+          FROM [RDSDB].[dbo].[TB_CS_MNG_LST] A
+         WHERE 1=1
+           AND A.STAT_DV_CD  IN ('0','3','8')
+           AND 1             = CASE WHEN A.STAT_DV_CD = '8' AND GETDATE() <![CDATA[<]]> A.USE_END_DTM THEN 0 ELSE 1 END
+    </select>
+    
+    <!-- 인증서 로그인 -->
+    <select id="actionCrtfctLogin" resultMap="login">
+        SELECT
+               A.CS_NO             AS csNo
+             , A.USR_DV_CD         AS usrDvCd
+             , A.USR_ID            AS usrId
+             , A.USR_NM            AS usrNm
+             , ''                  AS usrPassword
+             , A.USR_PH_NO         AS usrPhNo
+             , A.USR_EMAIL         AS usrEmail
+             , A.USR_DEPT_NM       AS usrDeptNm
+             , A.EMP_NO            AS empNo
+             , A.STAT_DV_CD        AS statDvCd
+             , A.USE_STR_DTM       AS useStrDtm
+             , A.USE_END_DTM       AS useEndDtm
+             , A.PASSWORD_UPD_DTM  AS passwordUpdDtm
+             , A.PASSWORD_INIT_YN  AS passwordInitYn
+             , B.SRVC_CD           AS srvcCd
+          FROM RDSDB.[dbo].[TB_USR_MNG_LST] A
+          LEFT OUTER JOIN RDSDB.[dbo].[TB_CS_SRVC_OPT_INF] B
+                       ON A.CS_NO = B.CS_NO
+         WHERE 1=1
+           AND A.USR_ID = #{usrId}
+           AND 1        = PWDCOMPARE(#{usrPassword}, A.USR_PASSWORD)
+    </select>
+    
+    <!-- 아이디 찾기 -->
+    <select id="searchId" resultMap="id">
+        SELECT 
+               A.USR_ID AS usrId
+          FROM RDSDB.[dbo].[TB_USR_MNG_LST] A
+         WHERE 1=1
+           AND A.USR_NM     = #{usrNm}
+           AND A.STAT_DV_CD = '0'
+    </select>
+    
+    <!-- 비밀번호 찾기 -->
+    <select id="searchPassword" resultMap="login">
+        SELECT 
+               A.CS_NO             AS csNo
+             , A.USR_DV_CD         AS usrDvCd
+             , A.USR_ID            AS usrId
+             , A.USR_NM            AS usrNm
+             , ''                  AS usrPassword
+             , A.USR_PH_NO         AS usrPhNo
+             , A.USR_EMAIL         AS usrEmail
+             , A.USR_DEPT_NM       AS usrDeptNm
+             , A.EMP_NO            AS empNo
+             , A.STAT_DV_CD        AS statDvCd
+             , A.USE_STR_DTM       AS useStrDtm
+             , A.USE_END_DTM       AS useEndDtm
+             , A.PASSWORD_UPD_DTM  AS passwordUpdDtm
+             , A.PASSWORD_INIT_YN  AS passwordInitYn
+             , ''                  AS srvcCd
+          FROM RDSDB.[dbo].[TB_USR_MNG_LST] A  /* 사용자관리 */
+             , RDSDB.[dbo].[TB_CS_MNG_LST]  B  /* 고객사관리 */
+         WHERE 1=1
+           AND A.USR_ID        = #{usrId}
+           AND A.USR_PH_NO     = #{usrPhNo}
+           AND A.STAT_DV_CD    = '0'
+           AND A.CS_NO         = B.CS_NO
+           AND B.COMP_NO_DV_CD = #{compNoDvCd}
+           AND B.COMP_NO       = #{compNo}
+    </select>
+    
+    <!-- 사용자 로그인 저장 -->
+    <insert id="insertLoginHist">
+        INSERT INTO [RDSDB].[dbo].[TB_USR_LOGIN_HIST]
+                  ( [SEQ_NO]
+                  , [CS_NO]
+                  , [USR_ID]
+                  , [ACC_DTM]
+                  , [ACC_IP]
+                  , [FNL_UPD_EMP_NO]
+                  , [FNL_UPD_DTM]
+                  , [FRST_REG_EMP_NO]
+                  , [FRST_REG_DTM]
+                  )
+        SELECT
+               CAST( ( SELECT ISNULL( MAX( CAST( SEQ_NO AS NUMERIC(10) ) ), 0 ) + 1 FROM [RDSDB].[dbo].[TB_USR_LOGIN_HIST] WHERE CS_NO = #{csNo} ) AS VARCHAR(10) ) AS SEQ_NO
+             , #{csNo}           AS CS_NO
+             , #{usrId}          AS USR_ID
+             , GETDATE()         AS ACC_DTM
+             , #{accIp}          AS ACC_IP
+             , 'SYS'             AS FNL_UPD_EMP_NO
+             , GETDATE()         AS FNL_UPD_DTM
+             , 'SYS'             AS FRST_REG_EMP_NO
+             , GETDATE()         AS FRST_REG_DTM
+    </insert>
+    
+    <!-- 신규 고객 저장 -->
+    <insert id="insertNewCs">
+        INSERT INTO [RDSDB].[dbo].[TB_CS_MNG_LST]
+             ( 
+               [CS_NO]
+             , [COMP_NO_DV_CD]
+             , [COMP_NO]
+             , [COMP_NM]
+             , [CPR_DV_CD]
+             , [REP_PH_NO]
+             , [REPER_NM]
+             , [PTB_NM]
+             , [PTB_PH_NO]
+             , [PTB_EMAIL]
+             , [PTB_DEPT_NM]
+             , [ADMIN_ID]
+             , [ADMIN_PASSWORD]
+             , [COMP_HMPG_URL]
+             , [POST_NO]
+             , [ADDRS]
+             , [DTLS_ADDRS]
+             , [STAT_DV_CD]
+             , [USE_STR_DTM]
+             , [USE_END_DTM]
+             , [COUNTRY_CD]
+             , [COUNTRY_NM_KOR]
+             , [COUNTRY_NM_ENG]
+             , [FNL_UPD_EMP_NO]
+             , [FNL_UPD_DTM]
+             , [FRST_REG_EMP_NO]
+             , [FRST_REG_DTM]
+             )
+        VALUES
+             (
+               ( SELECT 
+                        FORMAT( CAST( ISNULL(MAX(CS_NO), '0') AS numeric(5,0) ) + 1, '000') AS CS_NO
+                   FROM [RDSDB].[dbo].[TB_CS_MNG_LST]
+                  WHERE 1=1
+                    AND CS_NO <![CDATA[<>]]> '999'
+               )
+             , #{compNoDvCd}
+             , #{compNo}
+             , #{compNm}
+             , ''
+             , #{repPhNo}
+             , #{reperNm}
+             , #{ptbNm}
+             , #{ptbPhNo}
+             , #{ptbEmail}
+             , #{ptbDeptNm}
+             , #{ptbEmail}
+             , PWDENCRYPT(#{usrPassword})
+             , #{compHmpgUrl}
+             , #{postNo}
+             , #{addrs}
+             , #{dtlsAddrs}
+             , '1'
+             , NULL
+             , NULL
+             , NULL
+             , NULL
+             , #{countryNmEng}
+             , #{ptbEmail}
+             , GETDATE()
+             , #{ptbEmail}
+             , GETDATE()
+             )
+    </insert>
+    
+    <!-- 변경된 비밀번호를 저장 -->
+    <update id="updatePassword">
+        UPDATE RDSDB.[dbo].[TB_USR_MNG_LST]
+           SET USR_PASSWORD = PWDENCRYPT(#{usrNewPassword})
+             , STAT_DV_CD       = '0'
+             , PASSWORD_INIT_YN = 'N'
+         WHERE 1=1
+           AND USR_ID = #{usrId}
+           AND 1        = PWDCOMPARE(#{usrPassword}, USR_PASSWORD)
+    </update>
+    
+    <!-- 변경된 비밀번호를 저장 -->
+    <update id="updatePasswordReset">
+        UPDATE RDSDB.[dbo].[TB_USR_MNG_LST]
+           SET USR_PASSWORD     = PWDENCRYPT(#{usrNewPassword})
+             , STAT_DV_CD       = '4'
+             , PASSWORD_INIT_YN = 'Y'
+         WHERE 1=1
+           AND CS_NO      = #{csNo}
+           AND USR_ID     = #{usrId}
+           AND STAT_DV_CD = '0'
+    </update>
+    
+    <!-- 고객사 목록 조회 -->
+    <select id="selectCsNm" resultMap="company">
+    	/*com.rds.adams.web.common.login.dao.AdamsLoginDAO.selectCsNoList*/
+        SELECT
+               A.CS_NO             AS csNo
+             , A.COMP_NM           AS compNm
+             , A.COMP_NO_DV_CD     AS compNoDvCd
+          FROM [RDSDB].[dbo].[TB_CS_MNG_LST] A
+         WHERE 1=1
+           AND A.CS_NO = #{csNo}
+    </select>
+    
+    <!-- 마이페이지 - 계정 생성 누적일 수 조회 -->
+    <select id="selectRegDtmTotal" parameterType="com.rds.adams.web.common.login.dto.AdamsMypageUsrIdDTO" resultMap="regDtmTotal">
+        SELECT
+               ISNULL(DATEDIFF(DAY, FRST_REG_DTM, GETDATE())+1, 1) AS regDtmTotal
+          FROM RDSDB.[dbo].[TB_USR_MNG_LST]
+         WHERE 1=1
+           AND CS_NO  = #{csNo}
+           AND USR_ID = #{usrId}
+    </select>
+    
+    <!-- 마이페이지 - 가장 최근에 로그인 했던 날짜 조회 -->
+    <select id="selectLastLoginDtm" parameterType="com.rds.adams.web.common.login.dto.AdamsMypageUsrIdDTO" resultMap="lastLoginDtm">
+        SELECT
+               ISNULL(CONVERT(CHAR(19), FRST_REG_DTM, 20), CONVERT(CHAR(19), GETDATE(), 20)) AS lastLoginDtm
+          FROM RDSDB.[dbo].[TB_USR_LOGIN_HIST]
+         WHERE 1=1
+           AND CS_NO  = #{csNo}
+           AND USR_ID = #{usrId}
+		 ORDER BY FRST_REG_DTM DESC
+		OFFSET 1 ROWS
+		 FETCH NEXT 1 ROWS ONLY
+    </select>
+    
+    <!-- 마이페이지 - 로그인 총 횟수 조회 -->
+    <select id="selectLoginCntTotal" parameterType="com.rds.adams.web.common.login.dto.AdamsMypageUsrIdDTO" resultMap="loginCntTotal">
+        SELECT
+               ISNULL(COUNT(*), 1) AS loginCntTotal
+          FROM RDSDB.[dbo].[TB_USR_LOGIN_HIST]
+         WHERE 1=1
+           AND CS_NO  = #{csNo}
+           AND USR_ID = #{usrId}
+    </select>
+    
+    <!-- 마이페이지 - (전날 기준)30일간 일별 로그인 횟수 조회 -->
+    <select id="selectMonthLoginCnt" parameterType="com.rds.adams.web.common.login.dto.AdamsMypageUsrIdDTO" resultMap="monthLoginCnt">
+    <![CDATA[
+       WITH TB_LOGIN_CNT AS 
+	        (
+	        SELECT 
+	        	   COUNT(SEQ_NO) AS LOGIN_CNT
+	        	  ,CONVERT(CHAR(10), ACC_DTM, 23) AS ACC_DTM
+	         FROM  [dbo].TB_USR_LOGIN_HIST
+			 WHERE 1=1
+           		AND CS_NO  = #{csNo}
+			  	AND USR_ID = #{usrId}
+			    AND GETDATE()-30 <= ACC_DTM
+		  	 GROUP BY CONVERT(CHAR(10), ACC_DTM, 23)
+		  ) 
+		, TB_ALL_DTM AS (
+			SELECT   
+				   CONVERT(char(10), DATEADD(d, -(Numbers.number), GETDATE()), 23) AS ACC_DTM
+			  FROM (
+					SELECT TOP 30 ROW_NUMBER() OVER (ORDER BY (SELECT NULL))  AS number
+					  FROM sys.objects AS o1
+					 CROSS JOIN sys.objects AS o2
+			  ) Numbers
+		)
+		SELECT 
+			TOP(30) 
+		   	A.ACC_DTM AS accDtm
+		  	,ISNULL(LOGIN_CNT, 0) AS loginCnt
+		FROM TB_ALL_DTM A
+		LEFT OUTER JOIN TB_LOGIN_CNT B
+					ON A.ACC_DTM=B.ACC_DTM
+		ORDER BY A.ACC_DTM
+    ]]>
+    </select>
+    
+    <!-- 마이페이지 - 가장 최근에 파일 업로드 했던 날짜 조회-->
+    <select id="selectLastUploadDtm" parameterType="com.rds.adams.web.common.login.dto.AdamsMypageUsrIdDTO" resultMap="lastUploadDtm">
+        SELECT
+        	   TOP(1)
+               ISNULL(CONVERT(CHAR(19), LOAD_STR_DTM, 20), '') AS lastUploadDtm
+          FROM RDSDB.[dbo].[TB_UPL_HIST]
+         WHERE 1=1
+           AND CS_NO  = #{csNo}
+           AND FNL_UPD_EMP_NO = #{usrId}
+		 ORDER BY LOAD_STR_DTM DESC
+    </select>
+    
+    <!-- 마이페이지 - 파일 업로드 총 횟수 조회-->
+    <select id="selectUploadCntTotal" parameterType="com.rds.adams.web.common.login.dto.AdamsMypageUsrIdDTO" resultMap="uploadCntTotal">
+        SELECT
+               ISNULL(COUNT(*), 0) AS uploadCntTotal
+          FROM RDSDB.[dbo].[TB_UPL_HIST]
+         WHERE 1=1
+           AND CS_NO  = #{csNo}
+           AND FNL_UPD_EMP_NO = #{usrId}
+    </select>
+    
+    <!-- 마이페이지 - (전날 기준)30일간 일별 파일 업로드 횟수 조회-->
+    <select id="selectMonthUploadCnt" parameterType="com.rds.adams.web.common.login.dto.AdamsMypageUsrIdDTO" resultMap="monthUploadCnt">
+    <![CDATA[
+     WITH TB_UPLOAD_CNT AS 
+	        (
+	        SELECT 
+	        	   COUNT(SEQ_NO) AS UPLOAD_CNT
+	        	  ,CONVERT(char(10), LOAD_STR_DTM, 23) AS LOAD_STR_DTM
+	         FROM  [dbo].TB_UPL_HIST
+			 WHERE 1=1
+           	   AND CS_NO  = #{csNo} 
+			   AND FNL_UPD_EMP_NO = #{usrId}
+			   AND GETDATE()-30 <= LOAD_STR_DTM
+		  	 GROUP BY CONVERT(CHAR(10), LOAD_STR_DTM, 23)
+		  ) 
+		, TB_ALL_DTM AS (
+			SELECT   
+				   CONVERT(char(10), DATEADD(d, -(Numbers.number), GETDATE()), 23) AS LOAD_STR_DTM
+			  FROM (
+					SELECT TOP 30 ROW_NUMBER() OVER (ORDER BY (SELECT NULL))  AS number
+					  FROM sys.objects AS o1
+					 CROSS JOIN sys.objects AS o2
+			  ) Numbers
+		)
+		SELECT 
+			TOP(30) 
+		   	A.LOAD_STR_DTM AS uploadStrDtm
+		  	,ISNULL(UPLOAD_CNT, 0) AS uploadCnt
+		FROM TB_ALL_DTM A
+		LEFT OUTER JOIN TB_UPLOAD_CNT B
+					ON A.LOAD_STR_DTM=B.LOAD_STR_DTM
+		ORDER BY A.LOAD_STR_DTM
+    ]]>
+    </select>
+    
+    <!-- 마이페이지 - 가장 최근에 배치 실행 했던 날짜 조회-->
+    <select id="selectLastBatDtm" parameterType="com.rds.adams.web.common.login.dto.AdamsMypageUsrIdDTO" resultMap="lastBatDtm">
+        SELECT
+        	   TOP(1)
+               ISNULL(CONVERT(CHAR(19), BAT_STR_DTM, 20), '') AS lastBatDtm
+          FROM RDSDB.[dbo].[TB_BAT_RST_LST]
+         WHERE 1=1
+           AND CS_NO  = #{csNo} 
+           AND FNL_UPD_EMP_NO = #{usrId}
+		 ORDER BY BAT_STR_DTM DESC
+    </select>
+    
+    <!-- 마이페이지 - 배치 실행 총 횟수 조회-->
+    <select id="selectBatCntTotal" parameterType="com.rds.adams.web.common.login.dto.AdamsMypageUsrIdDTO" resultMap="batCntTotal">
+        SELECT
+               ISNULL(COUNT(BAT_EXE_ID), 0) AS batCntTotal
+          FROM RDSDB.[dbo].[TB_BAT_RST_LST]
+         WHERE 1=1
+           AND CS_NO  = #{csNo} 
+           AND FNL_UPD_EMP_NO = #{usrId}
+    </select>
+    
+    <!-- 마이페이지 - (전날 기준)30일간 일별 배치 실행 횟수 조회-->
+    <select id="selectMonthBatCnt" parameterType="com.rds.adams.web.common.login.dto.AdamsMypageUsrIdDTO" resultMap="monthBatCnt">
+    <![CDATA[
+     WITH TB_BAT_CNT AS 
+	        (
+	        SELECT 
+	        	   COUNT(BAT_EXE_ID) AS BAT_CNT
+	        	  ,CONVERT(char(10), BAT_STR_DTM, 23) AS BAT_STR_DTM
+	         FROM  [dbo].TB_BAT_RST_LST
+			 WHERE 1=1
+           	   AND CS_NO  = #{csNo} 
+			   AND FNL_UPD_EMP_NO = #{usrId}
+			   AND GETDATE()-30 <= BAT_STR_DTM
+		  	 GROUP BY CONVERT(CHAR(10), BAT_STR_DTM, 23)
+		  ) 
+		, TB_ALL_DTM AS (
+			SELECT   
+				   CONVERT(char(10), DATEADD(d, -(Numbers.number), GETDATE()), 23) AS BAT_STR_DTM
+			  FROM (
+					SELECT TOP 30 ROW_NUMBER() OVER (ORDER BY (SELECT NULL))  AS number
+					  FROM sys.objects AS o1
+					 CROSS JOIN sys.objects AS o2
+			  ) Numbers
+		)
+		SELECT 
+			TOP(30) 
+		   	A.BAT_STR_DTM AS batStrDtm
+		  	,ISNULL(BAT_CNT, 0) AS batCnt
+		FROM TB_ALL_DTM A
+		LEFT OUTER JOIN TB_BAT_CNT B
+					ON A.BAT_STR_DTM=B.BAT_STR_DTM
+		ORDER BY A.BAT_STR_DTM
+    ]]>
+    </select>   
+    
+        
+    <!-- 마이페이지 - 사용자 정보 수정 -->
+    <update id="updateAccount" parameterType="com.rds.adams.web.common.login.dto.AdamsUpdateAccountDTO">
+    	UPDATE RDSDB.[dbo].[TB_USR_MNG_LST]
+           SET 
+               USR_PH_NO 		= #{ptbPhNo}
+           	 , USR_DEPT_NM 		= #{ptbDeptNm}
+         WHERE 1=1
+           AND CS_NO  = #{csNo}
+           AND USR_ID = #{ptbEmail}
+           AND 1        = PWDCOMPARE(#{usrPassword}, USR_PASSWORD)
+    </update>
+    
+    <!-- 마이페이지 - 사용자 정보 세션 업데이트 -->
+    <select id="actionUpdateLogin" parameterType="com.rds.adams.web.common.login.dto.AdamsUpdateLoginDTO" resultMap="login">
+        SELECT
+               A.CS_NO AS csNo
+             , B.COMP_NO_DV_CD     AS compNoDvCd     /* 회사번호구분코드 */
+             , B.COMP_NO           AS compNo         /* 회사번호 */
+             , B.COMP_NM           AS compNm         /* 회사명 */
+             , A.USR_DV_CD         AS usrDvCd
+             , A.USR_ID            AS usrId
+             , A.USR_NM            AS usrNm
+             , ''			       AS usrPassword
+             , A.USR_PH_NO         AS usrPhNo
+             , A.USR_EMAIL         AS usrEmail
+             , A.USR_DEPT_NM       AS usrDeptNm
+             , A.EMP_NO            AS empNo
+             , A.STAT_DV_CD        AS statDvCd
+             , A.USE_STR_DTM       AS useStrDtm
+             , A.USE_END_DTM       AS useEndDtm
+             , A.PASSWORD_UPD_DTM  AS passwordUpdDtm
+             , A.PASSWORD_INIT_YN  AS passwordInitYn
+             , C.SRVC_CD           AS srvcCd
+             , D.SRVC_NM           AS srvcNm
+          FROM RDSDB.[dbo].[TB_USR_MNG_LST] A
+          LEFT OUTER JOIN RDSDB.[dbo].[TB_CS_MNG_LST] B
+                       ON A.CS_NO = B.CS_NO
+          LEFT OUTER JOIN RDSDB.[dbo].[TB_CS_SRVC_OPT_INF] C
+                       ON A.CS_NO = C.CS_NO
+          LEFT OUTER JOIN RDSDB.[dbo].[TB_SVRC_INF] D
+                       ON C.SRVC_CD = D.SRVC_CD
+         WHERE 1=1
+           AND A.CS_NO = #{csNo}
+           AND A.USR_ID = #{usrId}
+    </select>
+    
+    <!-- 마이페이지 - 비밀번호 변경 -->
+    <update id="changeMyPassword" parameterType="com.rds.adams.web.common.login.dto.AdamsUpdatePwDTO">
+    	UPDATE RDSDB.[dbo].[TB_USR_MNG_LST]
+           SET 
+               USR_PASSWORD 	= PWDENCRYPT(#{usrNewPassword})
+             , PASSWORD_UPD_DTM = GETDATE()
+             , FNL_UPD_EMP_NO   = #{usrId} 
+      		 , FNL_UPD_DTM      = GETDATE()
+         WHERE 1=1
+           AND CS_NO  = #{csNo}
+           AND USR_ID = #{usrId}
+           AND 1        = PWDCOMPARE(#{usrCurrentPassword}, USR_PASSWORD)
+    </update>
+    
+    <!-- 마이페이지 - 비밀번호 변경 전 사용자 인증 결과 -->
+    <select id="checkUsrPw" parameterType="com.rds.adams.web.common.login.dto.AdamsCheckUserParDTO" resultMap="checkUsrPw">
+        SELECT
+               PWDCOMPARE(#{usrCurrentPassword}, USR_PASSWORD) AS checkUsrPwd /* 1: 사용자 인증, 0: 사용자 인증 안됨 */
+          FROM RDSDB.[dbo].[TB_USR_MNG_LST]
+         WHERE 1=1
+           AND CS_NO = #{csNo}
+           AND USR_ID = #{usrId}
+    </select>
+</mapper>

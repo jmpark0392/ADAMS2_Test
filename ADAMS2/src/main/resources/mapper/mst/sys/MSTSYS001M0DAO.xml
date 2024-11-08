@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rds.adams.web.mst.sys.dao.MSTSYS001M0DAO">
+    <select id="selectList" parameterType="com.rds.adams.web.mst.sys.dto.MSTSYS001M0P0DTO" resultType="com.rds.adams.web.mst.sys.dto.MSTSYS001M0R0DTO">
+		    SELECT
+               EMP_NO
+             , EMP_NM
+             , ROLE_CD
+             , EMAIL
+             , PWD
+             , USE_YN
+             , REG_ID
+             , REG_DT
+             , UPD_ID
+             , UPD_DT
+          FROM TB_CO_USR_LST
+         WHERE 1=1
+         <if test='searchName != ""'>
+           AND EMP_NM LIKE CONCAT_WS('%', #{searchName}, '%')
+         </if>
+    </select>
+    <insert id="insertList" parameterType="com.rds.adams.web.mst.sys.dto.MSTSYS001M0P1DTO">
+        INSERT INTO [dbo].[TB_CO_USR_LST] (
+            [EMP_NO],
+            [EMP_NM],
+            [ROLE_CD],
+            [EMAIL],
+            [PWD],
+            [USE_YN],
+            [REG_ID],
+            [REG_DT],
+            [UPD_ID],
+            [UPD_DT]
+        )
+        VALUES (
+            #{empNo},
+            #{empNm},
+            #{roleCd},
+            #{email},
+            #{pwd},
+            #{useYn},
+            'admin',
+            CONVERT(CHAR(10), getdate(), 23),
+            'admin',
+            CONVERT(CHAR(10), getdate(), 23)
+        )
+    </insert>
+    <update id="updateList" parameterType="com.rds.adams.web.mst.sys.dto.MSTSYS001M0P1DTO">
+        UPDATE TB_CO_USR_LST
+           SET EMP_NM = #{empNm},
+               ROLE_CD = #{roleCd},
+               EMAIL = #{email},
+               PWD = #{pwd},
+               USE_YN = #{useYn},
+               UPD_ID = 'admin',
+               UPD_DT = CONVERT(CHAR(10), getdate(), 23)
+         WHERE EMP_NO = #{empNo}
+    </update>
+</mapper>

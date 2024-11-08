@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rds.adams.web.core.utils.dao.ExecuteResultDAO">
+	<insert id="insertBatHist" parameterType="com.rds.adams.web.core.utils.dto.ExecuteDTO">
+		<selectKey keyProperty="newBatExeId" resultType="String" order="BEFORE">
+            SELECT TOP (1)
+                    ISNULL( MAX( CAST( BAT_EXE_ID AS numeric(5,0) )), 0) + 1  AS newBatExeId
+              FROM [RDSDB].[dbo].[TB_BAT_RST_LST]
+             WHERE 1=1
+               AND CS_NO = #{csNo}
+        </selectKey>
+		INSERT INTO [dbo].[TB_BAT_RST_LST] (
+			  [CS_NO]
+			, [STD_YYMM]
+			, [BAT_EXE_ID]
+			, [BAT_PROG_ID]
+			, [BAT_EXE_RST_CD]
+			, [BAT_EXE_ERR_CD]
+			, [BAT_STR_DTM]
+			, [BAT_END_DTM]
+			, [BAT_LOAD_STAT_CD]
+			, [FNL_UPD_EMP_NO]
+			, [FNL_UPD_DTM]
+			, [FRST_REG_EMP_NO]
+			, [FRST_REG_DTM]
+		)
+		VALUES
+			 (
+				#{csNo}
+			  , #{stdYymm}
+			  , #{newBatExeId}
+			  , #{batProgId}
+			  , #{batExeRstCd}
+			  , #{batExeErrCd}
+			  , GETDATE()
+			  , NULL
+			  , #{batLoadStatCd}
+			  , #{usrId}
+			  , GETDATE()
+			  , #{usrId}
+			  , GETDATE()
+			 )	
+	</insert>
+    <update id="updateBatHist"  parameterType="com.rds.adams.web.core.utils.dto.ExecuteDTO" >
+        UPDATE RDSDB.dbo.TB_BAT_RST_LST
+           SET 
+               BAT_EXE_RST_CD   = #{batExeRstCd}
+             , BAT_LOAD_STAT_CD = #{batLoadStatCd}
+             , BAT_END_DTM      = GETDATE()
+             , FNL_UPD_EMP_NO   = #{usrId}
+             , FNL_UPD_DTM      = GETDATE()
+         WHERE 1=1
+           AND CS_NO       = #{csNo}
+           AND STD_YYMM    = #{stdYymm}
+           AND BAT_EXE_ID  = #{newBatExeId}
+           AND BAT_PROG_ID = #{batProgId}
+    </update>
+</mapper>

@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rds.adams.web.adm.srv.dao.ADMSRV001M0DAO">
+    <select id="selectSubscriptionList" resultType="com.rds.adams.web.adm.srv.dto.ADMSRV001M0P0DTO">
+        SELECT 
+            A.CS_NO,                 -- 고객사번호 from TB_CS_SRVC_OPT_INF
+            A.SRVC_CD,               -- 서비스코드 from TB_CS_SRVC_OPT_INF
+            A.OPT_CD,                -- 옵션코드 from TB_CS_SRVC_OPT_INF
+            A.OPT_DTLS_CD,           -- 옵션상세코드 from TB_CS_SRVC_OPT_INF
+            A.FNL_UPD_EMP_NO,        -- 최종변경사원번호 from TB_CS_SRVC_OPT_INF
+            A.FNL_UPD_DTM,           -- 최종변경일시 from TB_CS_SRVC_OPT_INF
+            A.FRST_REG_EMP_NO,       -- 최초등록사원번호 from TB_CS_SRVC_OPT_INF
+            A.FRST_REG_DTM,          -- 최초등록일시 from TB_CS_SRVC_OPT_INF
+            B.OPT_DTLS_NM            -- 옵션상세명 from TB_OPT_DTLS_INF
+        FROM TB_CS_SRVC_OPT_INF A
+        LEFT JOIN TB_OPT_DTLS_INF B 
+        ON A.OPT_CD = B.OPT_CD
+        AND A.OPT_DTLS_CD = B.OPT_DTLS_CD
+    </select>
+    <select id="selectAllOptions" resultType="com.rds.adams.web.adm.srv.dto.ADMSRV001M0P2DTO">
+       SELECT 
+             A.OPT_CD                   -- Option Code
+           , B.OPT_DTLS_CD              -- Optional Details Code
+           , B.OPT_DTLS_NM              -- Options Details Name
+           , B.OPT_DTLS_NM + ' | $ ' + FORMAT(A.OPT_UPRC * B.OPT_DTLS_VLU, '#,###') + ' per month' AS OPT_DTLS_DESC
+        FROM TB_OPT_INF      A
+           , TB_OPT_DTLS_INF B
+       WHERE 1=1
+         AND A.OPT_CD = B.OPT_CD
+         AND A.OPT_CD = '01'
+         AND B.USE_YN = 'Y'
+    </select>
+    <select id="selectOptionInfoByCustomer" parameterType="com.rds.adams.web.adm.srv.dto.ADMSRV001M0P0DTO" resultType="com.rds.adams.web.adm.srv.dto.ADMSRV001M0R0DTO">
+        SELECT 
+               A.CS_NO
+             , A.SRVC_CD
+             , A.OPT_CD
+             , A.OPT_DTLS_CD
+             , B.OPT_DTLS_NM
+             , A.FNL_UPD_EMP_NO
+             , A.FNL_UPD_DTM
+             , A.FRST_REG_EMP_NO
+             , A.FRST_REG_DTM
+          FROM TB_CS_SRVC_OPT_INF A
+          LEFT OUTER JOIN TB_OPT_DTLS_HIST B
+                       ON A.OPT_CD     = B.OPT_CD 
+                      AND A.OPT_DTLS_CD = B.OPT_DTLS_CD
+                      AND CONVERT(DATE, GETDATE(), 23)   BETWEEN B.OPT_DTLS_STR_DTM AND B.OPT_DTLS_END_DTM
+         WHERE 1=1
+          AND A.CS_NO = #{csNo}
+    </select>
+    <select id="selectSrvcUprcInfo" parameterType="com.rds.adams.web.adm.srv.dto.ADMSRV001M0P0DTO" resultType="com.rds.adams.web.adm.srv.dto.ADMSRV001M0R3DTO">
+        /* web.adm.srv.dao.ADMSRV001M0DAO.selectSrvcUprcInfo */
+        SELECT
+               SRVC_CD                           AS srvcCd         /* 서비스코드 */
+             , SRVC_NM                           AS srvcNm         /* 서비스명 */
+             , FORMAT( SRVC_UPRC     , '#,###' ) AS srvcUprc       /* 서비스단가 */
+             , FORMAT( BASICS_USR_CNT, '#,###' ) AS basicsUsrCnt   /* 서비스단가 */
+          FROM RDSDB.dbo.TB_SVRC_HIST
+         WHERE 1=1
+           AND GETDATE() BETWEEN SRVC_STR_DTM AND SRVC_END_DTM
+         ORDER BY SRVC_CD
+    </select>
+    <select id="selectUsrCntChk" parameterType="com.rds.adams.web.adm.srv.dto.ADMSRV001M0P1DTO" resultType="java.lang.String">
+        /* web.adm.srv.dao.ADMSRV001M0DAO.selectUsrCntChk */
+        SELECT 
+               CASE WHEN SUM(A.USE_USR_CNT) <![CDATA[ > ]]> SUM(A.MAX_USR_CNT) THEN '1' ELSE '0' END AS chkCd
+          FROM (
+                 SELECT
+                        COUNT(1) AS USE_USR_CNT
+                      , 0        AS MAX_USR_CNT
+                   FROM RDSDB.dbo.TB_USR_MNG_LST
+                  WHERE 1=1
+                    AND CS_NO       = #{csNo}
+                    AND USR_DV_CD   IN ( '2', '3' )
+                    AND ( STAT_DV_CD != '9' OR USE_END_DTM  <![CDATA[ >= ]]>  GETDATE() )
+                 UNION ALL
+                 SELECT
+                        0               AS USE_USR_CNT
+                      , BASICS_USR_CNT  AS MAX_USR_CNT
+                   FROM RDSDB.dbo.TB_SVRC_HIST
+                  WHERE 1 = CASE WHEN #{srvcCd} IS NOT NULL AND #{srvcCd} != '' THEN 1 ELSE 2 END
+                    AND GETDATE() BETWEEN SRVC_STR_DTM AND SRVC_END_DTM
+                    AND SRVC_CD   = #{srvcCd}
+                 UNION ALL
+                 SELECT
+                        0               AS USE_USR_CNT
+                      , BASICS_USR_CNT  AS MAX_USR_CNT
+                   FROM RDSDB.dbo.TB_SVRC_HIST            A
+                  INNER JOIN RDSDB.dbo.TB_CS_SRVC_OPT_INF B
+                          ON A.SRVC_CD = B.SRVC_CD
+                         AND B.CS_NO   = #{csNo}
+                  WHERE 1 = CASE WHEN #{srvcCd} IS NULL OR #{srvcCd} = '' THEN 1 ELSE 2 END
+                    AND GETDATE() BETWEEN SRVC_STR_DTM AND SRVC_END_DTM
+                 UNION ALL
+                 SELECT
+                        0             AS USE_USR_CNT
+                      , OPT_DTLS_VLU  AS MAX_USR_CNT
+                   FROM RDSDB.dbo.TB_OPT_DTLS_HIST
+                  WHERE 1 = CASE WHEN #{optDtlsCd} IS NOT NULL THEN 1 ELSE 2 END
+                    AND GETDATE() BETWEEN OPT_DTLS_STR_DTM AND OPT_DTLS_END_DTM
+                    AND OPT_CD      = #{optCd}
+                    AND OPT_DTLS_CD = #{optDtlsCd}
+                 UNION ALL
+                 SELECT
+                        0             AS USE_USR_CNT
+                      , OPT_DTLS_VLU  AS MAX_USR_CNT
+                   FROM RDSDB.dbo.TB_OPT_DTLS_HIST        A
+                  INNER JOIN RDSDB.dbo.TB_CS_SRVC_OPT_INF B
+                          ON A.OPT_CD      = B.OPT_CD
+                         AND A.OPT_DTLS_CD = B.OPT_DTLS_CD
+                         AND B.CS_NO       = #{csNo}
+                  WHERE 1 = CASE WHEN #{optDtlsCd} IS NULL THEN 1 ELSE 2 END
+                    AND GETDATE() BETWEEN OPT_DTLS_STR_DTM AND OPT_DTLS_END_DTM
+               ) A
+         WHERE 1=1
+    </select>
+    
+    <update id="mergeServiceOption" parameterType="com.rds.adams.web.adm.srv.dto.ADMSRV001M0P1DTO">
+        MERGE INTO TB_CS_SRVC_OPT_INF AS A
+        USING (
+            VALUES (
+                #{csNo}, 
+                #{srvcCd},
+                #{fnlUpdEmpNo}, 
+                GETDATE(),    
+                #{frstRegEmpNo}, 
+                GETDATE()
+            )
+        ) AS B (CS_NO, SRVC_CD, FNL_UPD_EMP_NO, FNL_UPD_DTM, FRST_REG_EMP_NO, FRST_REG_DTM)
+        ON (A.CS_NO = B.CS_NO)
+        WHEN MATCHED THEN
+            UPDATE SET
+                A.SRVC_CD = B.SRVC_CD,
+                A.FNL_UPD_EMP_NO = B.FNL_UPD_EMP_NO,
+                A.FNL_UPD_DTM = B.FNL_UPD_DTM
+        WHEN NOT MATCHED THEN
+            INSERT (CS_NO, SRVC_CD, FNL_UPD_EMP_NO, FNL_UPD_DTM, FRST_REG_EMP_NO, FRST_REG_DTM)
+            VALUES (B.CS_NO, B.SRVC_CD, B.FNL_UPD_EMP_NO, B.FNL_UPD_DTM, B.FRST_REG_EMP_NO, B.FRST_REG_DTM);
+    </update>
+    <update id="mergeOptionDetails" parameterType="com.rds.adams.web.adm.srv.dto.ADMSRV001M0P1DTO">
+    <![CDATA[
+        DECLARE @optionAddChangeDate DATE = GETDATE();
+
+        MERGE INTO TB_CS_SRVC_OPT_INF AS A
+        USING (
+            VALUES (
+                #{csNo},
+                #{optCd}, 
+                #{optDtlsCd},
+                @optionAddChangeDate
+            )
+        ) AS B (CS_NO, OPT_CD, OPT_DTLS_CD, FNL_UPD_DTM)
+        ON (A.CS_NO = B.CS_NO)
+        WHEN MATCHED THEN
+            UPDATE SET
+                A.OPT_CD = B.OPT_CD,
+                A.OPT_DTLS_CD = B.OPT_DTLS_CD,
+                A.FNL_UPD_DTM = B.FNL_UPD_DTM;
+        COMMIT;
+    ]]>
+    </update>
+    <update id="updateCustomerServiceHistory" parameterType="com.rds.adams.web.adm.srv.dto.ADMSRV001M0P1DTO">
+    <![CDATA[
+        DECLARE @newServiceStartDate DATE = GETDATE();
+        DECLARE @newServiceEndDate DATE = '2999-12-31';
+        DECLARE @newSeqNo NUMERIC(10);
+
+
+        SELECT @newSeqNo = ISNULL(MAX(CAST(SEQ_NO AS NUMERIC(10))), 0) + 1 
+        FROM TB_CS_SRVC_HIST
+        WHERE CS_NO = #{csNo};
+
+        -- Check if the user already has a subscription record in the service history table
+        UPDATE TB_CS_SRVC_HIST
+        SET
+            SRVC_END_DTM = @newServiceStartDate,
+            FNL_UPD_EMP_NO = #{fnlUpdEmpNo},
+            FNL_UPD_DTM = GETDATE()
+        WHERE CS_NO = #{csNo}
+            AND SRVC_END_DTM = (SELECT MAX(SRVC_END_DTM) FROM TB_CS_SRVC_HIST WHERE CS_NO = #{csNo});
+        COMMIT;
+
+        -- Insert a new service history reecords
+        INSERT INTO TB_CS_SRVC_HIST (
+            CS_NO, SEQ_NO, SRVC_CD, SRVC_STR_DTM, SRVC_END_DTM, 
+            FNL_UPD_EMP_NO, FNL_UPD_DTM, FRST_REG_EMP_NO, FRST_REG_DTM
+        )
+        VALUES (
+            #{csNo}, @newSeqNo,
+            #{srvcCd}, @newServiceStartDate, @newServiceEndDate, 
+            #{fnlUpdEmpNo}, GETDATE(), #{frstRegEmpNo}, GETDATE()
+        );
+        COMMIT;
+    ]]>
+    </update>
+    <update id="updateCustomerOptionHistory" parameterType="com.rds.adams.web.adm.srv.dto.ADMSRV001M0P1DTO">
+    <![CDATA[
+        DECLARE @newServiceStartDate DATE = GETDATE();
+        DECLARE @newServiceEndDate DATE = '2999-12-31';
+        DECLARE @newSeqNo NUMERIC(10);
+
+        SELECT @newSeqNo = ISNULL(MAX(CAST(SEQ_NO AS NUMERIC(10))), 0) + 1 
+        FROM TB_CS_OPT_HIST
+        WHERE CS_NO = #{csNo};
+
+        -- Update existing active option records
+        UPDATE TB_CS_OPT_HIST 
+        SET 
+            OPT_END_DTM = @newServiceStartDate,
+            FNL_UPD_EMP_NO = #{fnlUpdEmpNo},
+            FNL_UPD_DTM = GETDATE()
+        WHERE CS_NO = #{csNo}
+            AND OPT_END_DTM = (SELECT MAX(SRVC_END_DTM) FROM TB_CS_SRVC_HIST WHERE CS_NO = #{csNo});
+        COMMIT;
+
+        -- Insert a new option history record
+        INSERT INTO TB_CS_OPT_HIST (
+            CS_NO, SEQ_NO, OPT_CD, OPT_DTLS_CD, OPT_STR_DTM, OPT_END_DTM, 
+            FNL_UPD_EMP_NO, FNL_UPD_DTM, FRST_REG_EMP_NO, FRST_REG_DTM
+        )
+        VALUES (
+            #{csNo}, @newSeqNo,
+            #{optCd}, #{optDtlsCd}, @newServiceStartDate, @newServiceEndDate,
+            #{fnlUpdEmpNo}, GETDATE(), #{frstRegEmpNo}, GETDATE()
+        );
+        COMMIT;
+    ]]>
+    </update>
+</mapper>

@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rds.adams.web.adm.usr.dao.ADMUSR002M0DAO">
+    <select id="selectUsrList" parameterType="com.rds.adams.web.adm.usr.dto.ADMUSR002M0P0DTO" resultType="com.rds.adams.web.adm.usr.dto.ADMUSR002M0R0DTO">
+        /* web.opn.usr.dao.ADMUSR002M0DAO.selectUsrList */
+        SELECT 
+               ROW_NUMBER() OVER(ORDER BY A.USR_DV_CD
+                                        , A.USR_ID)        AS seqNo
+             , A.USR_DV_CD                                 AS usrDvCd             /* 사용자구분코드 */
+             , A.USR_ID                                    AS usrId               /* 사용자아이디 */
+             , A.USR_ID                                    AS oldUsrId            /* 사용자아이디 */
+             , A.USR_NM                                    AS usrNm               /* 사용자명 */
+             , A.USR_EMAIL                                 AS usrEmail            /* 사용자이메일 */
+             , A.USR_PH_NO                                 AS usrPhNo             /* 사용자폰넘버 */
+             , A.USR_DEPT_NM                               AS usrDeptNm           /* 사용자부서명 */
+             , A.STAT_DV_CD                                AS statDvCd            /* 상태구분코드 */
+             , A.STAT_DV_CD                                AS oldStatDvCd         /* old상태구분코드 */
+             , CONVERT(CHAR(10), A.USE_STR_DTM     , 23)   AS useStrDtm           /* 사용시작일시 */
+             , CONVERT(CHAR(10), A.USE_END_DTM     , 23)   AS useEndDtm           /* 사용종료일시 */
+             , CONVERT(CHAR(10), A.PASSWORD_UPD_DTM, 23)   AS passwordUpdDtm      /* 비밀번호변경일시 */
+          FROM [RDSDB].[dbo].[TB_USR_MNG_LST]  A  /* 사용자관리 */
+         WHERE 1=1
+           AND A.CS_NO      = #{csNo}
+           AND A.USR_DV_CD  IN ('3','2')
+        <if test='usrIdNm != "" and usrIdNm != null'>
+           AND ( A.USR_ID   LIKE '%' + #{usrIdNm} + '%' OR A.USR_NM LIKE '%' + #{usrIdNm} + '%' )
+        </if>
+        <if test='statDvCd != "" and statDvCd != null'>
+           AND A.STAT_DV_CD = #{statDvCd}
+        </if>
+         ORDER BY A.USR_DV_CD
+                , A.USR_ID
+    </select>
+    
+    <update id="updateUsrAdmin">
+        /* web.opn.usr.dao.ADMUSR002M0DAO.updateUsrAdmin */
+        <![CDATA[
+        UPDATE [RDSDB].[dbo].[TB_USR_MNG_LST]
+           SET USR_DV_CD = '3'
+         WHERE 1=1
+           AND CS_NO = #{csNo};
+        
+        MERGE INTO [RDSDB].[dbo].[TB_USR_MNG_LST] A
+        USING (
+                SELECT
+                       #{csNo}                          AS CS_NO
+                     , #{usrDvCd}                       AS USR_DV_CD
+                     , #{usrId}                         AS USR_ID
+                     , #{usrNm}                         AS USR_NM
+                     , #{usrPhNo}                       AS USR_PH_NO
+                     , #{usrDeptNm}                     AS USR_DEPT_NM
+                     , #{usrId}                         AS USR_EMAIL
+                     , #{statDvCd}                      AS STAT_DV_CD
+                     , CASE WHEN #{useStrDtm} IS NULL OR #{useStrDtm} = '' THEN NULL ELSE CONVERT(DATE, #{useStrDtm}, 23) END  AS USE_STR_DTM
+                     , CASE WHEN #{useEndDtm} IS NULL OR #{useEndDtm} = '' THEN NULL ELSE CONVERT(DATE, #{useEndDtm}, 23) END  AS USE_END_DTM
+              ) B
+        ON    (
+                    A.CS_NO  = B.CS_NO
+                AND A.USR_ID = B.USR_ID
+              )
+        WHEN MATCHED THEN
+             UPDATE
+                SET A.USR_DV_CD       = B.USR_DV_CD
+                  , A.USR_NM          = B.USR_NM
+                  , A.USR_PH_NO       = B.USR_PH_NO
+                  , A.USR_DEPT_NM     = B.USR_DEPT_NM
+                  , A.USR_EMAIL       = B.USR_EMAIL
+                  , A.STAT_DV_CD      = B.STAT_DV_CD
+                  , A.USE_STR_DTM     = CASE WHEN B.USE_STR_DTM IS NULL THEN A.USE_STR_DTM ELSE B.USE_STR_DTM END
+                  , A.USE_END_DTM     = B.USE_END_DTM
+                  , A.FNL_UPD_EMP_NO  = #{updId}
+                  , A.FNL_UPD_DTM     = GETDATE()
+        WHEN NOT MATCHED THEN
+             INSERT
+                  (
+                    CS_NO
+                  , USR_DV_CD
+                  , USR_ID
+                  , USR_NM
+                  , USR_PASSWORD
+                  , USR_PH_NO
+                  , USR_DEPT_NM
+                  , USR_EMAIL
+                  , EMP_NO
+                  , STAT_DV_CD
+                  , USE_STR_DTM
+                  , USE_END_DTM
+                  , PASSWORD_UPD_DTM
+                  , PASSWORD_INIT_YN
+                  , FNL_UPD_EMP_NO
+                  , FNL_UPD_DTM
+                  , FRST_REG_EMP_NO
+                  , FRST_REG_DTM
+                  )
+             VALUES
+                  (
+                    B.CS_NO
+                  , B.USR_DV_CD
+                  , B.USR_ID
+                  , B.USR_NM
+                  , PWDENCRYPT(#{usrPassword})
+                  , B.USR_PH_NO
+                  , B.USR_DEPT_NM
+                  , B.USR_EMAIL
+                  , NULL
+                  , '4'
+                  , CASE WHEN B.USE_STR_DTM IS NULL THEN GETDATE() ELSE B.USE_STR_DTM END
+                  , B.USE_END_DTM
+                  , NULL
+                  , 'Y'
+                  , #{updId}
+                  , GETDATE()
+                  , #{updId}
+                  , GETDATE()
+                  );
+        
+        ]]>
+    </update>
+    
+    <update id="updateUsr">
+        /* web.opn.usr.dao.ADMUSR002M0DAO.updateUsr */
+        MERGE INTO [RDSDB].[dbo].[TB_USR_MNG_LST] A
+        USING (
+                SELECT
+                       #{csNo}                          AS CS_NO
+                     , #{usrDvCd}                       AS USR_DV_CD
+                     , #{usrId}                         AS USR_ID
+                     , #{usrNm}                         AS USR_NM
+                     , #{usrPhNo}                       AS USR_PH_NO
+                     , #{usrDeptNm}                     AS USR_DEPT_NM
+                     , #{usrId}                         AS USR_EMAIL
+                     , #{statDvCd}                      AS STAT_DV_CD
+                     , CASE WHEN #{useStrDtm} IS NULL OR #{useStrDtm} = '' THEN NULL ELSE CONVERT(DATE, #{useStrDtm}, 23) END  AS USE_STR_DTM
+                     , CASE WHEN #{useEndDtm} IS NULL OR #{useEndDtm} = '' THEN NULL ELSE CONVERT(DATE, #{useEndDtm}, 23) END  AS USE_END_DTM
+              ) B
+        ON    (
+                    A.CS_NO  = B.CS_NO
+                AND A.USR_ID = B.USR_ID
+              )
+        WHEN MATCHED THEN
+             UPDATE
+                SET A.USR_DV_CD       = B.USR_DV_CD
+                  , A.USR_NM          = B.USR_NM
+                  , A.USR_PH_NO       = B.USR_PH_NO
+                  , A.USR_DEPT_NM     = B.USR_DEPT_NM
+                  , A.USR_EMAIL       = B.USR_EMAIL
+                  , A.STAT_DV_CD      = B.STAT_DV_CD
+                  , A.USE_STR_DTM     = CASE WHEN B.USE_STR_DTM IS NULL THEN A.USE_STR_DTM ELSE B.USE_STR_DTM END
+                  , A.USE_END_DTM     = B.USE_END_DTM
+                  , A.FNL_UPD_EMP_NO  = #{updId}
+                  , A.FNL_UPD_DTM     = GETDATE()
+        WHEN NOT MATCHED THEN
+             INSERT
+                  (
+                    CS_NO
+                  , USR_DV_CD
+                  , USR_ID
+                  , USR_NM
+                  , USR_PASSWORD
+                  , USR_PH_NO
+                  , USR_DEPT_NM
+                  , USR_EMAIL
+                  , EMP_NO
+                  , STAT_DV_CD
+                  , USE_STR_DTM
+                  , USE_END_DTM
+                  , PASSWORD_UPD_DTM
+                  , PASSWORD_INIT_YN
+                  , FNL_UPD_EMP_NO
+                  , FNL_UPD_DTM
+                  , FRST_REG_EMP_NO
+                  , FRST_REG_DTM
+                  )
+             VALUES
+                  (
+                    B.CS_NO
+                  , B.USR_DV_CD
+                  , B.USR_ID
+                  , B.USR_NM
+                  , PWDENCRYPT(#{usrPassword})
+                  , B.USR_PH_NO
+                  , B.USR_DEPT_NM
+                  , B.USR_EMAIL
+                  , NULL
+                  , '4'
+                  , CASE WHEN B.USE_STR_DTM IS NULL THEN GETDATE() ELSE B.USE_STR_DTM END
+                  , B.USE_END_DTM
+                  , NULL
+                  , 'Y'
+                  , #{updId}
+                  , GETDATE()
+                  , #{updId}
+                  , GETDATE()
+                  );
+    </update>
+    
+    <select id="selectUsrCntChk" resultType="java.lang.String">
+        /* web.opn.usr.dao.ADMUSR002M0DAO.selectUsrCntChk */
+        WITH TMP_CS_CNT AS
+             (
+               SELECT 
+                      ISNULL(B.BASICS_USR_CNT, 0) + ISNULL(CAST( C.OPT_DTLS_VLU AS numeric(5, 0) ), 0) AS MAX_CNT
+                 FROM [RDSDB].[dbo].[TB_CS_SRVC_OPT_INF]    A
+                 LEFT OUTER JOIN [RDSDB].[dbo].[TB_SVRC_INF]      B
+                              ON A.SRVC_CD = B.SRVC_CD
+                 LEFT OUTER JOIN [RDSDB].[dbo].[TB_OPT_DTLS_INF]  C
+                              ON A.OPT_CD      = C.OPT_CD
+                             AND A.OPT_DTLS_CD = C.OPT_DTLS_CD
+                WHERE 1=1
+                  AND A.CS_NO = #{csNo}
+             )
+        ,    TMP_USE_CNT AS
+             (
+               SELECT 
+                      COUNT(1)
+                    + CASE WHEN #{useStrDtm} <![CDATA[ > ]]>  CONVERT(CHAR(10), GETDATE(), 23 ) THEN 0
+                           WHEN #{statDvCd} != '9' OR #{useEndDtm} <![CDATA[ >= ]]> GETDATE()   THEN 1
+                           ELSE 0 
+                      END  AS USE_CNT
+                 FROM [RDSDB].[dbo].[TB_USR_MNG_LST]    A
+                WHERE 1=1
+                  AND A.CS_NO     = #{csNo}
+                  AND A.USR_DV_CD IN ('3', '2')
+                  AND ( A.STAT_DV_CD != '9' OR A.USE_END_DTM <![CDATA[ >= ]]> GETDATE() )
+                  AND A.USR_ID    != #{usrId}
+             )
+        SELECT 
+               CASE WHEN ISNULL((SELECT MAX_CNT FROM TMP_CS_CNT), 0) >= ISNULL((SELECT USE_CNT FROM TMP_USE_CNT), 0) THEN 'Y'
+                    ELSE 'N'
+               END AS sResult
+    </select>
+    
+    <select id="selectUsrAdminCntChk" resultType="java.lang.String">
+        /* web.opn.usr.dao.ADMUSR002M0DAO.selectUsrAdminCntChk */
+        WITH TMP_USE_CNT AS
+             (
+               SELECT 
+                      COUNT(1)
+                    + CASE WHEN #{usrDvCd} = '2' AND ( #{useStrDtm} <![CDATA[ > ]]>  CONVERT(CHAR(10), GETDATE(), 23 ) ) THEN 0
+                           WHEN #{usrDvCd} = '2' AND ( #{statDvCd} != '9' OR #{useEndDtm} <![CDATA[ >= ]]> GETDATE() )   THEN 1
+                           ELSE 0 
+                      END  AS USE_CNT
+                 FROM [RDSDB].[dbo].[TB_USR_MNG_LST]    A
+                WHERE 1=1
+                  AND A.CS_NO     = #{csNo}
+                  AND A.USR_DV_CD = '2'
+                  AND ( A.STAT_DV_CD != '9' OR A.USE_END_DTM <![CDATA[ >= ]]> GETDATE() )
+                  AND A.USR_ID    != #{usrId}
+             )
+        SELECT 
+               CASE WHEN ISNULL((SELECT USE_CNT FROM TMP_USE_CNT), 0) = 1 THEN 'Y'
+                    ELSE 'N'
+               END AS sResult
+    </select>
+    
+    <select id="selectUsrDupChk" resultType="java.lang.Integer">
+        /* web.opn.usr.dao.ADMUSR002M0DAO.selectUsrDupChk */
+        SELECT 
+               COUNT(1) AS CNT
+          FROM [RDSDB].[dbo].[TB_USR_MNG_LST]    A
+         WHERE 1=1
+           AND A.USR_ID = #{usrId}
+    </select>
+</mapper>

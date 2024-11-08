@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rds.adams.web.wrk.fil.dao.WRKFIL001M0DAO">
+    <select id="selectList" parameterType="com.rds.adams.web.wrk.fil.dto.WRKFIL001M0P0DTO" resultType="com.rds.adams.web.wrk.fil.dto.WRKFIL001M0R0DTO">
+		SELECT
+		       A.SEQ_NO                              AS seqNo        /* 순번 */
+		     , A.FILE_NM                             AS fileNm       /* 파일명 */
+		     , A.DB_ID                               AS dbId         /* 데이터베이스ID */
+		     , A.TBL_ID                              AS tblId        /* 테이블ID */
+		     , A.FILE_DSC                            AS fileDsc      /* 파일설명 */
+		     , A.FILE_DEL_YN                         AS fileDelYn    /* 파일삭제여부 */
+		     , A.UI_SEL_YN                           AS uiSelYn      /* 화면조회여부 */
+		     , A.USE_YN                              AS useYn        /* 사용여부 */
+		     , A.VRF_USE_YN                          AS vrfUseYn     /* 검증사용여부 */
+		     , B.USR_NM                              AS frstRegEmpNo /* 사용자명 */
+		     , CONVERT(CHAR(10), A.FRST_REG_DTM, 23) AS frstRegDtm   /* 최초등록일시 */
+		  FROM TB_UPL_FILE_LST A
+		  LEFT OUTER JOIN TB_USR_MNG_LST B 
+			ON A.FNL_UPD_EMP_NO = B.USR_ID
+         WHERE 1=1
+         <if test= 'csNo != "999"'>
+           AND A.CS_NO       = #{csNo}
+         </if>
+           AND A.DEL_YN = 'N'
+         <if test='searchTxt != ""'>
+           AND (
+                   A.FILE_NM  LIKE CONCAT_WS('%', #{searchTxt}, '%')
+                OR A.TBL_ID   LIKE CONCAT_WS('%', #{searchTxt}, '%')
+                )
+         </if>
+    </select>
+    <insert id="insertList" parameterType="com.rds.adams.web.wrk.fil.dto.WRKFIL001M0P1DTO">
+        <selectKey resultType="int" keyProperty="seqNo" order="BEFORE">
+            SELECT MAX(SEQ_NO)+1 FROM TB_UPL_FILE_LST;
+        </selectKey>
+        INSERT INTO [dbo].[TB_UPL_FILE_LST] (
+                [CS_NO] 
+             ,  [SEQ_NO] 
+             ,  [DB_ID] 
+             ,  [TBL_ID] 
+             ,  [FILE_NM] 
+             ,  [FILE_DSC] 
+             ,  [FILE_DEL_YN] 
+             ,  [UI_SEL_YN] 
+             ,  [USE_YN] 
+             ,  [VRF_USE_YN] 
+             ,  [DEL_YN] 
+             ,  [FNL_UPD_EMP_NO] 
+             ,  [FNL_UPD_DTM] 
+             ,  [FRST_REG_EMP_NO] 
+             ,  [FRST_REG_DTM]
+          )
+        VALUES (
+               #{csNo} 
+             , #{seqNo} 
+             , #{dbId} 
+             , #{tblId} 
+             , #{fileNm} 
+             , #{fileDsc} 
+             , #{fileDelYn} 
+             , #{uiSelYn} 
+             , #{useYn} 
+             , #{vrfUseYn} 
+             , 'N' 
+             , #{frstRegEmpNo}
+             , CONVERT(CHAR(10), getdate(), 23)
+             , #{frstRegEmpNo}
+             , CONVERT(CHAR(10), getdate(), 23)
+        )
+    </insert>
+    <update id="updateList" parameterType="com.rds.adams.web.wrk.fil.dto.WRKFIL001M0P1DTO">
+        UPDATE TB_UPL_FILE_LST
+           SET DB_ID          = #{dbId} 
+             , TBL_ID         = #{tblId} 
+             , FILE_NM        = #{fileNm} 
+             , FILE_DSC       = #{fileDsc} 
+             , FILE_DEL_YN    = #{fileDelYn} 
+             , UI_SEL_YN      = #{uiSelYn} 
+             , USE_YN         = #{useYn} 
+             , VRF_USE_YN     = #{vrfUseYn} 
+             , FNL_UPD_EMP_NO = #{frstRegEmpNo} 
+             , FNL_UPD_DTM    = CONVERT(CHAR(10), getdate(), 23)
+         WHERE 1=1
+           AND SEQ_NO = #{seqNo}
+           AND CS_NO  = #{csNo}
+    </update>
+    <delete id="deleteList" parameterType="com.rds.adams.web.wrk.fil.dto.WRKFIL001M0P1DTO" >
+        DELETE FROM TB_UPL_FILE_LST
+        WHERE 1=1
+            AND SEQ_NO  =  #{seqNo}
+            AND CS_NO   = #{csNo}
+    </delete>
+</mapper>

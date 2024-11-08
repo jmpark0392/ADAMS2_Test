@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rds.adams.web.wrk.fil.dao.WRKFIL002M0DAO">
+    <select id="selectList" parameterType="com.rds.adams.web.wrk.fil.dto.WRKFIL002M0P0DTO" resultType="com.rds.adams.web.wrk.fil.dto.WRKFIL002M0R0DTO">
+        SELECT /*TODO 추후 공통으로 빼놓기*/
+               A.SEQ_NO   AS seqNo   /* 순번 */
+             , A.FILE_NM  AS fileNm  /* 파일명 */
+             , A.DB_ID    AS dbId    /* 데이터베이스ID */
+             , A.TBL_ID   AS tblId   /* 테이블ID */
+          FROM TB_UPL_FILE_LST A
+         WHERE 1=1
+         <if test= 'csNo != "999"'>
+           AND CS_NO    = #{csNo}
+           AND A.USE_YN = 'Y'
+         </if>
+         <if test='dummyStr != ""'>
+           AND 1=1
+         </if>
+    </select>
+    <insert id="insertList" parameterType="com.rds.adams.web.wrk.fil.dto.WRKFIL002M0P1DTO">
+        INSERT INTO [dbo].[TB_UPL_ITM_LST] (
+               [CS_NO]                  -- 고객사번호
+             , [TBL_ID]                 -- 테이블ID
+             , [ITM_NM]                 -- 칼럼명
+             , [CLMN_ID]                -- 칼럼ID
+             , [DATA_TP_CD]             -- 데이터타입ID
+             , [PK_YN]                  -- PK여부
+             , [VLVL_VRF_YN]            -- 유효값검증여부
+             , [VLVL_CD]                -- 유효값코드
+             , [ORD_SEQ]                -- 정렬순서
+             , [ITM_DSC]                -- 항목설명
+             , [SEL_BAS_YN]             -- 조회기준여부
+             , [FRST_REG_EMP_NO]        -- 최조등록사원번호
+             , [FRST_REG_DTM]           -- 최초등록일시
+             , [FNL_UPD_EMP_NO]         -- 최종등록사원번호
+             , [FNL_UPD_DTM]            -- 최종등록일시
+        )
+        VALUES (
+               #{csNo}                           -- 고객사번호
+             , #{tblId}                          -- 테이블ID
+             , #{itmNm}                          -- 칼럼명
+             , #{itmId}                          -- 칼럼ID
+             , #{dataTpCd}                       -- 데이터타입ID
+             , #{pkYn}                           -- PK여부
+             , #{vlvlVrfYn}                      -- 유효값검증여부
+             , #{vlvlCd}                         -- 유효값코드
+             , #{ordSeq}                         -- 정렬순서
+             , #{itmDsc}                         -- 항목설명
+             , #{selBasYn}                       -- 조회기준여부
+             , #{frstRegEmpNo}                   -- 최조등록사원번호
+             , CONVERT(CHAR(10), getdate(), 23)  -- 최초등록일시
+             , #{frstRegEmpNo}                   -- 최종등록사원번호
+             , CONVERT(CHAR(10), getdate(), 23)  -- 최종등록일시
+        );
+    </insert>
+    <update id="updateList" parameterType="com.rds.adams.web.wrk.fil.dto.WRKFIL002M0P1DTO">
+        UPDATE TB_UPL_ITM_LST
+           SET ITM_NM = #{itmNm}                  -- 칼럼명
+             , DATA_TP_CD = #{dataTpCd}           -- 데이터타입ID
+             , PK_YN = #{pkYn}                    -- PK여부
+             , VLVL_VRF_YN = #{vlvlVrfYn}         -- 유효값검증여부
+             , VLVL_CD = #{vlvlCd}                -- 유효값코드
+             , ORD_SEQ = #{ordSeq}                -- 정렬순서
+             , ITM_DSC = #{itmDsc}                -- 항목설명
+             , SEL_BAS_YN = #{selBasYn}           -- 조회기준여부
+             , FNL_UPD_DTM    = GETDATE()
+             , FNL_UPD_EMP_NO = #{frstRegEmpNo}
+         WHERE 1=1
+           AND TBL_ID  = #{tblId}                  -- 필터링기준 : 테이블ID
+           AND CLMN_ID = #{itmId}                  -- 필터링기준 : 컬럼ID
+           AND CS_NO   = #{csNo}                   -- 필터링기준 : 고객사번호
+    </update>
+    <delete id="deleteList" parameterType="com.rds.adams.web.wrk.fil.dto.WRKFIL002M0P1DTO">
+        DELETE TB_UPL_ITM_LST
+         WHERE 1=1
+           AND TBL_ID  = #{tblId}                  -- 필터링기준 : 테이블ID
+           AND CLMN_ID = #{itmId}                  -- 필터링기준 : 컬럼ID
+           AND CS_NO   = #{csNo}                   -- 필터링기준 : 고객사번호
+    </delete>
+</mapper>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rds.adams.web.util.file.dao.UuidFileInfoDAO">
+    <insert id="insertUuidFileInf" parameterType="com.rds.adams.web.util.file.dto.UuidFileInfoDTO" >
+        INSERT 
+          INTO RDSDB.dbo.TB_UUID_FILE_INF
+             ( 
+               CS_NO
+             , SEQ_NO
+             , UUID
+             , UPL_PATH
+             , FILE_NM
+             , EXT
+             , FILE_SIZE
+             , FNL_UPD_EMP_NO
+             , FNL_UPD_DTM
+             , FRST_REG_EMP_NO
+             , FRST_REG_DTM
+             )
+        VALUES
+             ( 
+               #{csNo}
+             , ( SELECT ISNULL(MAX( CAST( SEQ_NO AS numeric(5,0) ) ), 0) + 1 AS SEQ FROM RDSDB.dbo.TB_UUID_FILE_INF WHERE CS_NO = #{csNo} )
+             , #{uuid}
+             , #{uplPath}
+             , #{fileNm}
+             , #{ext}
+             , #{fileSize}
+             , #{regUsrid}
+             , GETDATE()
+             , #{regUsrid}
+             , GETDATE()
+             )
+    </insert>
+    
+</mapper>

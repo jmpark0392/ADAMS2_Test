@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+	<th:block layout:fragment="content">
+		<script src="js/js-tabler/demo-theme.min.js?1692870487"></script>
+		<div class="page-wrapper" id="page-wrapper">
+			<div class="container" id="container">
+				<h2>[[${menuNm}]]</h2>
+				<div class="ptag-container">
+					<span>[[${navigator}]]</span>
+					<div class="form-container">
+						<div class="form-box">
+							<form id="filter-form" name="form" method="post" action="/WRKBAT003M0SelectList" onsubmit="return false;">
+								<div class="row">
+									<!-- Year Select -->
+									<div class="col-auto">
+										<label class="form-label">Standard Year / Month :</label>
+										<select name="user[year]" class="form-select select-month-year p-1" id="inputYear">
+										<option selected value="">- Year -</option>
+										<!-- Year Options -->
+											<option value="2024">2024</option>
+										</select>
+									</div>
+									<!-- Month Select -->
+									<div class="col-auto">
+										<label class="form-label"> &nbsp; </label>
+										<select name="user[month]" class="form-select select-month-year p-1" id="inputMonth">
+										<option selected value="">- Month -</option>
+										<!-- Month Options -->
+										<option value="1">January</option>
+										<option value="2">February</option>
+										<option value="3">March</option>
+										<option value="4">April</option>
+										<option value="5">May</option>
+										<option value="6">June</option>
+										<option value="7">July</option>
+										<option value="8">August</option>
+										<option value="9">September</option>
+										<option value="10">October</option>
+										<option value="11">November</option>
+										<option value="12">December</option>
+										</select>
+									</div>
+									<div class="col-sm-6 col-md-3">
+										<label class="form-label">Program ID or Name :</label>
+										<input id="inpSearchTxt" name="inpSearchTxt" type="text" class="form-control p-1" placeholder="Program ID or Name" value=""/>
+									</div>
+									<div class="col-auto">
+										<button id="inpSend" type="button" class="btn btn-primary search-button p-1" style="padding: 4px 10px; color: white; font-size: 13px" onclick="getSearch()">Search</button>
+									</div>
+									<div class="col text-end">
+										<p style="height:27px;">&nbsp;</p>
+										<button type="button" class="btn btn-lime" style="padding: 4px 10px; color: white; font-size: 13px" id="downloadExcel">Download</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+					<div style="padding-top: 2em"></div>
+					<div class="card card-md" id="divMyGrid">
+					</div>
+				</div>
+			</div>
+			<div class="popupDataForm">
+				<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="display: none">
+					Launch modal with form
+				</button>
+				<div class="modal fade" id="exampleModal" tabindex="-1" style="display: none">
+					<div class="modal-dialog modal-small" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title">New report</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+							<div class="modal-body">
+								<div class="row"></div>
+							</div>
+							<div class="modal-footer">
+								<div class="col flex-start">
+									<a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">Cancel</a>
+								</div>
+								<div class="col-auto me-0 p-1"></div>
+								<div class="col-auto m-0">
+									<a href="#" class="btn btn-primary ms-auto" data-bs-dismiss="modal" style="padding: 4px 10px; color: white; font-size: 13px">
+										Save changes
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	<script src="js/utils.js"></script>
+	<script>
+		function checkData(data) {
+			return parentCheckData(data, check_cols);
+		}
+		
+		function getStdYymm(){
+			var inputYear = $("#inputYear").val();
+			var inputMonth = $("#inputMonth").val();
+
+			// inputYear나 inputMonth가 비어있는지 체크
+			if (!inputYear || !inputMonth) {
+			return null; // 년도나 월이 비어 있으면 null을 반환
+			}
+
+			var inputStdYymm = inputYear + ((inputMonth.length != 0) ? inputMonth.padStart(2, "0"): "");
+			if (inputStdYymm.length != 6){
+				inputStdYymm = null;
+			}
+		return inputStdYymm
+		}
+		
+		function getList(input) {
+			console.log("getList input : " + input);
+			var option = {
+							id        : "SelectList"
+						, type        : "post"
+						, url         : "/WRKBAT003M0SelectList"
+						, async       : false
+						, dataType    : "json"
+						, contentType : "application/json; charset=utf-8"
+						, data        : input
+			};
+			gf_Transaction(option, fn_callback);
+		}
+
+	</script>
+	<script>
+		$(document).ready(function () {
+			console.log("Document is ready.");
+			
+			$("#inputMonth").val(gv_month);			
+			$("#inputYear").val(gv_year);
+			
+			main();
+			//send버튼 누르면, 조건적용하여 검색
+			$("#send").click(main);
+			//엔터키누르면, 조건적용하여 검색
+			$("input").on("keyup", function (key) {
+				if (key.keyCode == 13) {
+					main();
+				}
+			});
+		});
+	
+		var grid;
+		var dataView;
+		var data;
+		var unqId = "rowNumber";
+		var xcpt_cols = [unqId, "regUsrid", "regDt"];
+		var check_cols = [unqId];
+		var columns = [
+			{ id: "batExeId",		name: "Execution ID",			field: "batExeId",		width: 100,	sortable: true, editor: Slick.Editors.Text, validator: createValidator, headerCssClass: "slick-header-columns", cssClass: "slick-column-center" },
+			{ id: "batProgId",		name: "Program ID",				field: "batProgId",		width: 100,	sortable: true, editor: Slick.Editors.Text, validator: createValidator, headerCssClass: "slick-header-columns", cssClass: "slick-column-center" },
+			{ id: "batProgNm",		name: "Program Name",			field: "batProgNm",		width: 400,	sortable: true, editor: Slick.Editors.Text, validator: createValidator, headerCssClass: "slick-header-columns", cssClass: "slick-column-left" },
+			{ id: "batExeRstCd",	name: "Result",					field: "batExeRstCd",	width: 100,	sortable: true, editor: Slick.Editors.Text, validator: createValidator, headerCssClass: "slick-header-columns", cssClass: "slick-column-center" },
+			{ id: "jobTime",		name: "Job Time(sec)",			field: "jobTime",		width: 100,	sortable: true, editor: Slick.Editors.Text, validator: createValidator, headerCssClass: "slick-header-columns", cssClass: "slick-column-right" },
+			{ id: "batExeErrCd",	name: "Error Code",				field: "batExeErrCd",	width: 100,	sortable: true, editor: Slick.Editors.Text, validator: createValidator, headerCssClass: "slick-header-columns", cssClass: "slick-column-center" },
+			{ id: "stdYymm",		name: "Standard Year/Month",	field: "stdYymm",		width: 150,	sortable: true, editor: Slick.Editors.Text, validator: createValidator, headerCssClass: "slick-header-columns", cssClass: "slick-column-center" },
+			{ id: "batStrDtm",		name: "Start Time",				field: "batStrDtm",		width: 150,	sortable: true, editor: Slick.Editors.Text, validator: createValidator, headerCssClass: "slick-header-columns", cssClass: "slick-column-center" },
+			{ id: "batEndDtm",		name: "End Time",				field: "batEndDtm",		width: 150,	sortable: true, editor: Slick.Editors.Text, validator: createValidator, headerCssClass: "slick-header-columns", cssClass: "slick-column-center" },
+			{ id: "batLoadStatCd",	name: "Run Status",				field: "batLoadStatCd",	width: 100,	sortable: true, editor: Slick.Editors.Text, validator: createValidator, headerCssClass: "slick-header-columns", cssClass: "slick-column-center" },
+			{ id: "mainEmpNo",		name: "Main User",				field: "mainEmpNo",		width: 100,	sortable: true, editor: Slick.Editors.Text, validator: createValidator, headerCssClass: "slick-header-columns", cssClass: "slick-column-center" },
+			{ id: "frstRegEmpNo",	name: "Executor",				field: "frstRegEmpNo",	width: 100,	sortable: true, editor: Slick.Editors.Text, headerCssClass: "slick-header-columns", cssClass: "slick-column-center" },
+			{ id: "frstRegDtm",		name: "Execution Date",			field: "frstRegDtm",	width: 150,	sortable: true, editor: Slick.Editors.Text, headerCssClass: "slick-header-columns", cssClass: "slick-column-center", hidden:true },
+		];
+	
+		var options = {
+				enableCellNavigation: true,
+				enableColumnReorder: false,
+				forceFitColumns: false,
+				multiColumnSort: true,
+				numberedMultiColumnSort: true,
+				tristateMultiColumnSort: true,
+				sortColNumberInSeparateSpan: true,
+				enableAutoSizeColumns: true,
+				editable: false, // grid도 편집가능.. grid 편집 기능 제거 필요..
+				enableAddRow: true,
+				asyncEditorLoading: false,
+				autoEdit: false,
+				autoEditNewRow: false,
+				rowHeight: 35,
+			};
+	
+		var newRowIds = 0;
+
+		var pluginOptions = {
+			clipboardCommandHandler: function (editCommand) {
+				undoRedoBuffer.queueAndExecuteCommand.call( undoRedoBuffer, editCommand);
+			},
+			readOnlyMode: false,
+			includeHeaderWhenCopying: false,
+			newRowCreator: function (count) {
+				for (var i = 0; i < count; i++) {
+					var item = { id: "newRow_" + newRowIds++, };
+					grid.getData().addItem(item);
+				}
+			},
+		};
+
+		function main() {
+			// 그리드 초기화 및 데이터 로드
+			console.log("Initializing SlickGrid...");
+			getList(
+						(input	=	JSON.stringify({ 
+									searchTxt : $("#inpSearchTxt").val()
+								,	stdYymm   : getStdYymm()
+								}))
+					);
+		}
+		
+		function getSearch() {
+			// 그리드 초기화 및 데이터 로드
+			console.log("Initializing SlickGrid...");
+
+			if ( $("#inputMonth").val() === "" && $("#inputYear").val() === "") {
+				alert("Please select a year, month!");
+			return;
+			} else if ($("#inputYear").val() === "") {
+				alert("Please select a year to continue!");
+			return;
+			} else if ($("#inputMonth").val() === "") {
+				alert("Please select a month to continue!");
+			return;
+			} 
+			
+			const element = document.getElementById("divMyGrid");
+			element.innerHTML = "";
+			
+			getList(
+						(input	=	JSON.stringify({ 
+									searchTxt : $("#inpSearchTxt").val()
+								,	stdYymm   : getStdYymm()
+								}))
+					);
+		}
+
+		/**
+		* Transaction callback 함수
+		**/
+		function fn_callback(result){
+			//console.log("fn_callback : " + result.id);
+			if( result.resultCd == "S" ){
+				let resultData = typeof result.data === "string" ? JSON.parse(result.data) : result.data;
+				switch (result.id){
+					case "SelectList" :
+						fn_setGrid(resultData);
+						break;
+				}
+			} else if( result.resultCd == "E") {
+			} else {
+				console.log("fn_callback result : ", result);
+			}
+		}
+
+		function fn_setGrid(data){
+			//dataView = new Slick.Data.DataView( { idField: unqId });
+			dataView = new Slick.Data.DataView();
+			grid     = new Slick.Grid("#divMyGrid", dataView, columns, options);
+
+			// Make the grid respond to DataView change events.
+			dataView.onRowCountChanged.subscribe(function (e, args) {
+				grid.updateRowCount();
+				grid.render();
+			});
+
+			dataView.onRowsChanged.subscribe(function (e, args) {
+				grid.invalidate();
+				grid.render();
+			});
+
+			// setItems의 두번째 argument를 통해 unique id에 해당하는 컬럼 지정가능
+			dataView.setItems(data, unqId);
+
+			// when "onBeforeSort" returns false, the "onSort" won't execute (for example a backend server error while calling backend query to sort)
+			grid.onBeforeSort.subscribe(function (e, args) {
+			return true;
+			});                   
+
+			// 정렬
+			grid.onSort.subscribe(function (e, args) {
+				var cols = args.sortCols;
+	
+				data.sort(function (dataRow1, dataRow2) {
+					for (var i = 0, l = cols.length; i < l; i++) {
+						var field  = cols[i].sortCol.field;
+						var sign   = cols[i].sortAsc ? 1 : -1;
+						var value1 = dataRow1[field],
+						value2 = dataRow2[field];
+						var result = (value1 == value2 ? 0 : value1 > value2 ? 1 : -1) * sign;
+						if (result != 0) {
+						return result;
+						}
+					}
+				return 0;
+				});
+				grid.render();
+			});
+
+			grid.setSelectionModel(new Slick.CellSelectionModel());
+			grid.registerPlugin(new Slick.AutoTooltips());
+
+			// set keyboard focus on the grid
+			//grid.getCanvasNode().focus();
+			grid.registerPlugin(new Slick.CellExternalCopyManager(pluginOptions));
+
+			grid.onAddNewRow.subscribe(function (e, args) {
+				var newItem = args.item;
+				var column = args.column;
+				dataView.beginUpdate();
+				dataView.setItems(data);
+				dataView.endUpdate();
+				grid.updateRowCount();
+				grid.render();
+			});
+
+			grid.onBeforeEditCell.subscribe(function (e, args) {
+				console.log("onBeforeEditCell");
+			});
+
+			grid.onCellChange.subscribe(function (e, args) {
+				dataView.beginUpdate();
+				dataView.setItems(data);
+				dataView.endUpdate();
+				grid.updateRowCount();
+				grid.render();
+			});
+
+			grid.onValidationError.subscribe(function (e, args) {
+				// handle validation errors originating from the CompositeEditor
+				if (args.validationResults) {
+					let errorMsg = args.validationResults.msg || "";
+					if (args.editor && args.editor instanceof Slick.CompositeEditor) {
+						if (args.validationResults.errors) {
+							errorMsg += "\n";
+							args.validationResults.errors.forEach(function (error, errorIndex) {
+								const columnName = error.editor.args.column.id;
+								errorMsg += `${columnName.toUpperCase()}: ${error.msg}`;
+							});
+						}
+						console.log(errorMsg);
+					}
+				} else {
+					alert(errorMessages);
+				}
+			});
+
+			//grid.setActiveCell(0, 0);
+			console.log("SlickGrid initialized.");
+		}
+
+		// Download Excel functionality
+		document.getElementById("downloadExcel").addEventListener("click", function () {
+			const currDate = getCurrentDateTime();
+			const fileName = "WRKBAT003_FM_" + currDate; // 원하는 파일 이름으로 변경 가능
+			const sheetName = "배치결과"; // 시트 이름
+			const gridColumns = columns; // SlickGrid의 컬럼 배열
+			const gridData = dataView.getItems(); // SlickGrid의 데이터 배열
+			exportToExcel(fileName, sheetName, gridColumns, gridData);
+		});
+		</script>
+	</th:block>
+</html>

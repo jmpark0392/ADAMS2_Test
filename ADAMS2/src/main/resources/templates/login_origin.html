@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	<head>
+		<meta charset="UTF-8" />
+		<title>파일업로드</title>
+		
+		<link rel="stylesheet" href="css/jquery-ui-1.13.3/jquery-ui.css" type="text/css" />
+		
+		<link rel="stylesheet" href="js/slickgrid/dist/styles/css/slick.grid.css" type="text/css" />
+		<link rel="stylesheet" href="js/slickgrid/dist/styles/css/slick-alpine-theme.css" type="text/css" />
+		<link rel="stylesheet" href="js/slickgrid/dist/styles/css/slick.grid.css" type="text/css" />
+		<link rel="stylesheet" href="js/slickgrid/dist/styles/css/slick-alpine-theme.css" type="text/css" />
+		
+		<!-- // tabler framework css files import -->
+		<link href="css/css-tabler/tabler.min.css?1692870487" rel="stylesheet" />
+		<link href="css/css-tabler/tabler-flags.min.css?1692870487" rel="stylesheet" />
+		<link href="css/css-tabler/tabler-payments.min.css?1692870487" rel="stylesheet" />
+		<link href="css/css-tabler/tabler-vendors.min.css?1692870487" rel="stylesheet" />
+		<link href="css/css-tabler/demo.min.css?1692870487" rel="stylesheet" />
+		
+		<!-- // custom css for this page -->
+		<link href="css/file-css.css" rel="stylesheet" />
+		<link href="css/common-css.css" rel="stylesheet" />
+		
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+		
+		<script src="js/jquery-3.7.1.min.js"></script>
+		<script src="js/jquery-ui.min.js"></script>
+
+		<script src="js/slickgrid/lib/jquery.event.drag-2.3.0.js"></script>
+		<script src="js/slickgrid/dist/browser/slick.core.js"></script>
+		<script src="js/slickgrid/dist/browser/slick.interactions.js"></script>
+		<script src="js/slickgrid/dist/browser/slick.grid.js"></script>
+		<script src="js/slickgrid/dist/browser/plugins/slick.autotooltips.js"></script>
+		<script src="js/slickgrid/dist/browser/plugins/slick.cellrangedecorator.js"></script>
+		<script src="js/slickgrid/dist/browser/plugins/slick.cellrangeselector.js"></script>
+		<script src="js/slickgrid/dist/browser/plugins/slick.cellexternalcopymanager.js"></script>
+		<script src="js/slickgrid/dist/browser/plugins/slick.cellselectionmodel.js"></script>
+		<script src="js/slickgrid/dist/browser/slick.editors.js"></script>
+		<script src="js/slickgrid/dist/browser/slick.formatters.js"></script>
+		<script src="js/slickgrid/dist/browser/slick.dataview.js"></script>
+		<script src="js/slickgrid/dist/browser/plugins/slick.checkboxselectcolumn.js"></script>
+		<script src="js/slickgrid/dist/browser/plugins/slick.rowselectionmodel.js"></script>
+		<script src="js/slickgrid/dist/browser/slick.compositeeditor.js"></script>
+		<script src="js/slickgrid/dist/browser/controls/slick.pager.js"></script>
+
+		<script src="js/js-tabler/demo-theme.min.js?1692870487"></script>
+		<script src="js/js-tabler/tabler.min.js?1692870487" defer></script>
+		<script src="js/libs-tabler/apexcharts/dist/apexcharts.min.js?1692870487" defer></script>
+		<script src="js/libs-tabler/jsvectormap/dist/js/jsvectormap.min.js?1692870487" defer></script>
+		<script src="js/libs-tabler/jsvectormap/dist/maps/world.js?1692870487" defer></script>
+		<script src="js/libs-tabler/jsvectormap/dist/maps/world-merc.js?1692870487" defer></script>
+		
+		<script src="js/utils.js" defer></script>
+		<script src="js/xlsx.full.min.js"></script>
+
+		<style>
+			@import url("https://rsms.me/inter/inter.css");
+			
+			:root {
+				--tblr-font-sans-serif: "Inter Var", -apple-system, BlinkMacSystemFont,
+					San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+			}
+			
+			body {
+				font-feature-settings: "cv03", "cv04", "cv11";
+			}
+		</style>
+	</head>
+	<header class="navbar navbar-expand-md d-print-none">
+		<div class="container-xl">
+			<div class="d-flex align-items-center justify-content-between w-100">
+				<!-- Left Side: Brand and Toggler -->
+				<div class="d-flex align-items-center">
+					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu" aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+					<h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
+						<!-- Here -->
+					</h1>
+				</div>
+
+				<!-- Right Side: Nav Items and Avatar/Login Button -->
+				<div class="navbar-nav d-flex align-items-center ms-auto">
+					<a href="?theme=dark" class="nav-link px-0 hide-theme-dark" data-bs-toggle="tooltip" data-bs-placement="bottom" aria-label="Enable dark mode" data-bs-original-title="Enable dark mode"> <!-- Dark mode icon --> <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+							<path stroke="none" d="M0 0h24H0z" fill="none"></path>
+							<path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z">
+							</path>
+						</svg>
+					</a> <a href="?theme=light" class="nav-link px-0 hide-theme-light" data-bs-toggle="tooltip" data-bs-placement="bottom" aria-label="Enable light mode" data-bs-original-title="Enable light mode"> <!-- Light mode icon --> <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+							<path stroke="none" d="M0 0h24H0z" fill="none"></path>
+							<path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0">
+							</path>
+							<path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7">
+							</path>
+						</svg>
+					</a>
+					<div class="nav-item dropdown">
+						<div class="dropdown-menu dropdown-menu-arrow dropdown-menu-end dropdown-menu-card">
+							<div class="card">
+								<!-- Notification content -->
+							</div>
+						</div>
+					</div>
+					<div style="justify-content: space-between;">
+						<a href="https://www.notion.so/" class="btn" style="padding: 4px 10px; color: rgb(169, 169, 169); font-size: 13px;"> <!-- SVG icon from http://tabler-icons.io --> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-link">
+								<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+								<path d="M9 15l6 -6" />
+								<path d="M11 6l.463 -.536a5 5 0 0 1 7.071 7.072l-.534 .464" />
+								<path d="M13 18l-.397 .534a5.068 5.068 0 0 1 -7.127 0a4.972 4.972 0 0 1 0 -7.071l.524 -.463" /></svg> Docs
+						</a> <a href="#" onClick="javascript:goMenuPage('/views/wrk/fil/WRKTEST999M0');" class="btn" style="padding: 4px 10px; color: rgb(169, 169, 169); font-size: 13px;"> <span class="avatar" style="background-image: url(https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=3570&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)"></span> Log in
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<body>
+		<div class="page">
+			
+			<div class="page-wrapper" id="page-wrapper">
+				<div class="container" id="container">
+					<h2>Login</h2>
+					<div class="ptag-container">
+						<span><a href="#"> Login</a></span>
+						<div class="form-container">
+							<div class="form-box">
+								<form id="loginForm" name="loginForm" method="post" action="/auth/adamsLogin" onsubmit="return false;">
+									<div class="row mt-2">
+										<div class="col">
+											<label for="inpUsrId" class="form-label">ID:</label> <input id="inpUsrId" name="inpUsrId" type="text" class="form-control" placeholder="Please enter your ID" required="required" />
+										</div>
+									</div>
+									<div class="row mt-2">
+										<div class="col">
+											<label for="inpUsrPassword" class="form-label">PassWord:</label> <input id="inpUsrPassword" name="inpUsrPassword" type="password" class="form-control" placeholder="Please enter your password" required="required" />
+										</div>
+									</div>
+									<div class="row mt-3 text-center">
+										<div class="col">
+											<button type="button" class="btn btn-primary" onclick="register()">New</button>
+											<button type="submit" class="btn btn-secondary" onclick="login()">Login</button>
+										</div>
+									</div>
+									<div class="row mt-2 text-center">
+										<div class="col">
+											<button type="button" class="btn btn-warning" onclick="resetPassword()">Reset Password</button>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<form id="form" name="form" method="post" action="/menuLink">
+					<input type="hidden" id="pageName" name="pageName" />
+				</form>
+			</div>
+		</div>
+		<script>
+      function register() {
+          $("#pageName").val("newReq");
+          $("#form").submit();
+      }
+
+      function login() {
+        $.ajax({
+          type: "post",
+          url: "/auth/adamsLogin",
+          async: true,
+          dataType: "json",
+          contentType: "application/json; charset=utf-8",
+          data: JSON.stringify({
+            usrId: $("#inpUsrId").val(),
+            usrPassword: $("#inpUsrPassword").val(),
+          }),
+
+          success: function (data) {
+            console.log("AJAX request successful. Data received:", data);
+			var sMsg = data.loginMsg;
+			
+			if ( sMsg != null && sMsg != undefined && sMsg != "" ) {
+				alert(sMsg);
+			}
+			
+            $("#pageName").val(data.redirectUrl);
+            $("#form").submit();
+          },
+          error: function (xhr, status, error) {
+            console.error("!!!! ERROR !!!!!", status, error);
+          },
+        });
+      }
+
+      function resetPassword() {
+          $("#pageName").val("pwReset");
+          $("#form").submit();
+      }
+    </script>
+	</body>
+</html>

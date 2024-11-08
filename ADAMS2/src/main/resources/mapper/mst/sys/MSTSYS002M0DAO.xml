@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rds.adams.web.mst.sys.dao.MSTSYS002M0DAO">
+    <select id="selectList" parameterType="com.rds.adams.web.mst.sys.dto.MSTSYS002M0P0DTO" resultType="com.rds.adams.web.mst.sys.dto.MSTSYS002M0R0DTO">
+        SELECT
+               CD_ID          /* 코드ID */
+             , CO_CD          /* 코드 */
+             , CO_CD_NM       /* 코드명 */
+             , CO_CD_DESC     /* 설명 */
+             , ETC_1_DESC     /* 기타1 */
+             , ETC_2_DESC     /* 기타2 */
+             , ETC_3_DESC     /* 기타3 */
+             , USE_YN         /* 사용여부 */
+             , REG_ID         /* 등록자 */
+             , REG_DT         /* 등록일 */
+          FROM TB_CO_CD_LST
+         WHERE 1=1
+         <if test='searchTxt != ""'>
+           AND (
+               CO_CD    LIKE CONCAT_WS('%', #{searchTxt}, '%')
+            OR CO_CD_NM LIKE CONCAT_WS('%', #{searchTxt}, '%')
+           )
+         </if>
+    </select>
+    <insert id="insertList" parameterType="com.rds.adams.web.mst.sys.dto.MSTSYS002M0P1DTO">
+        INSERT INTO [dbo].[TB_CO_CD_LST]
+           ([CD_ID]
+           ,[CO_CD]
+           ,[CO_CD_NM]
+           ,[CO_CD_DESC]
+           ,[USE_YN]
+           ,[ETC_1_DESC]
+           ,[ETC_2_DESC]
+           ,[ETC_3_DESC]
+           ,[REG_ID]
+           ,[REG_DT]
+           ,[UPD_ID]
+           ,[UPD_DT]
+           )
+        VALUES
+           ( #{cdId}      
+           , #{coCd}      
+           , #{coCdNm}
+           , #{coCdDesc}
+           , #{useYn}
+           , #{etc1Desc}
+           , #{etc2Desc}
+           , #{etc3Desc}
+           , 'admin'
+           , CONVERT(CHAR(10), getdate(), 23)
+           , 'admin'
+           , CONVERT(CHAR(10), getdate(), 23)
+           )
+    </insert>
+    <update id="updateList" parameterType="com.rds.adams.web.mst.sys.dto.MSTSYS002M0P1DTO">
+        UPDATE TB_CO_CD_LST
+           SET CO_CD      = #{coCd},
+               CO_CD_NM   = #{coCdNm},
+               CO_CD_DESC = #{coCdDesc},
+               USE_YN     = #{useYn},
+               ETC_1_DESC = #{etc1Desc},
+               ETC_2_DESC = #{etc2Desc},
+               ETC_3_DESC = #{etc3Desc},
+               UPD_ID     = 'admin',
+               UPD_DT     = CONVERT(CHAR(10), getdate(), 23)
+         WHERE CD_ID      = #{cdId}
+    </update>
+</mapper>

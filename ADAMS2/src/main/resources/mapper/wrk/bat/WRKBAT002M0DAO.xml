@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rds.adams.web.wrk.bat.dao.WRKBAT002M0DAO">
+    <select id="selectList" parameterType="com.rds.adams.web.wrk.bat.dto.WRKBAT002M0P0DTO" resultType="com.rds.adams.web.wrk.bat.dto.WRKBAT002M0R0DTO">
+	   SELECT
+			  A.BAT_PROG_ID                           AS batProgId    /* 배치프로그램ID */
+			, A.BAT_PROG_NM                           AS batProgNm    /* 배치프로그램명 */
+			, A.UP_PROG_ID                            AS upProgId     /*상위프로그램ID */
+			, A.LWST_PROG_YN                          AS lwstProgYn   /* 최하위프로그램여부 */
+			, A.EXE_PRD                               AS exePrd       /* 실행주기 */ 
+			, B.USR_NM                                AS mainEmpNo    /* 주담당자 */
+			, B.USR_NM                                AS subEmpNo     /* 부담당자 */ 
+			, A.ETC_DESC                              AS etcDesc      /* 비고 */ 
+			, A.USE_YN                                AS useYn        /* 사용여부 */
+			, B.USR_NM                                AS frstRegEmpNo /* 최초등록사원번호 */
+			, CONVERT(CHAR(10), A.FRST_REG_DTM, 23)   AS frstRegDtm   /* 최초등록일시 */
+		 FROM TB_BAT_MNG_LST A 
+		 LEFT OUTER JOIN TB_USR_MNG_LST B 
+		   ON A.FNL_UPD_EMP_NO = B.USR_ID
+		WHERE 1=1
+		<if test='csNo != "999"'>
+			AND A.CS_NO = #{csNo}
+		</if>
+         <if test='searchTxt != ""'>
+           AND (
+                	A.BAT_PROG_ID LIKE '%' + #{searchTxt} + '%'
+                OR	A.BAT_PROG_NM LIKE '%' + #{searchTxt} + '%'
+                )
+         </if>
+         <if test='exePrdList != null and exePrdList.length != 0'>
+           AND EXE_PRD IN
+           <foreach collection="exePrdList" item="exePrd" separator="," open="(" close=")">
+                  #{exePrd}
+           </foreach>
+         </if>
+    </select>
+</mapper>

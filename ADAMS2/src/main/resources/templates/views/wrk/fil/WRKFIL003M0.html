@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+<th:block layout:fragment="content">
+	<div class="page-wrapper" id="page-wrapper">
+		<div class="container" id="container">
+			<h2>[[${menuNm}]]</h2>
+			<div class="ptag-container">
+				<span>[[${navigator}]]</span>
+				<div class="form-container">
+					<div class="form-box">
+						<form id="divSearch" name="divSearch" method="post" action="/WRKFIL001M0SelectList" onsubmit="return false;">
+							<div class="row align-items-center">
+								<!-- Year Select -->
+								<div class="col-auto">
+									<label class="form-label"> Standard Year / Month :</label>
+									<select name="user[year]" class="form-select select-month-year p-1" id="inputYear">
+										<option selected value="">- Year -</option>
+										<!-- Year Options -->
+										<option value="2024">2024</option>
+									</select>
+								</div>
+								<!-- Month Select -->
+								<div class="col-auto">
+									<label class="form-label"> &nbsp; </label>
+									<select name="user[month]" class="form-select select-month-year p-1" id="inputMonth">
+										<option selected value="">- Month -</option>
+										<!-- Month Options -->
+										<option value="1">January</option>
+										<option value="2">February</option>
+										<option value="3">March</option>
+										<option value="4">April</option>
+										<option value="5">May</option>
+										<option value="6">June</option>
+										<option value="7">July</option>
+										<option value="8">August</option>
+										<option value="9">September</option>
+										<option value="10">October</option>
+										<option value="11">November</option>
+										<option value="12">December</option>
+									</select>
+								</div>
+								<!-- Options Select  -->
+								<div class="col-auto">
+									<label class="form-label">File Name : </label>
+									<select id="cmbUploadFileList" name="cmbUploadFileList" required class="form-select select-options p-1">
+										<option selected value="">- File -</option>
+										<!-- options here -->
+									</select>
+								</div>
+								<!-- Search Button -->
+								<div class="col-auto">
+									<button type="button" class="btn btn-primary search-button p-1" name="btnSearch" onclick="getSearchList()" data-test="create-button">Search</button>
+								</div>
+							</div>
+						</form>
+						<div class="row mt-3">
+							<div class="col d-flex align-items-center">
+							<!-- <form
+								method="post"
+								id="uploadFrm"
+								enctype="multipart/form-data"
+							  >
+								<input
+								  id="btnFileUpload"
+								  name="btnFileUpload"
+								  type="file"
+								  value="파일선택"
+								  accept=".xlsx, .xls"
+								  style="font-size: 13px"
+								/>
+							  </form> -->
+							<!-- choose file -->
+								<form method="post" id="uploadFrm">
+									<input id="btnFileUpload" name="btnFileUpload" type="file" value="File Upload" accept=".xlsx, .xls" class="form-control file-attach mb-0" style="padding: 5px" />
+								</form>
+							<!-- </div> -->
+							</div>
+							<div class="col ms-3">
+								<button name="btnSave" type="button" class="btn btn-secondary" style="padding: 4px 10px; color: white; font-size: 13px"
+										onclick="setSaveUploadFile()" data-test="edit-button">Upload</button>
+							</div>
+							<div class="col text-end align-items-center me-2">
+								<button name="btnExcelDown" type="button" class="btn btn-lime" style="padding: 4px 10px; color: white; font-size: 13px" id="downloadExcel"
+										onclick="getExcelList()" data-test="edit-button">Download</button>
+							</div>
+						</div>
+					</div>
+					
+					<!-- rest of content -->
+				</div>
+				<div style="padding-bottom: 10px"></div>
+				<div style="padding-top: 1em">
+					<form name="divData">
+					<!-- <p>►&nbsp;<label for="lblGrdTitle">Grid title: </label></p> -->
+						<div class="card card-md" align="center" id="divMyGrid">
+							<!-- <div id="center" style="position:fixed;top:50%;left:55%; transform: translate(-50%, -55%); display: block;"></div> -->
+							<table id="divMyGrid" style="width: 1284px; height: 500px"></table>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+		function getFileList(input) {
+			console.log("getFileList input : " + input);
+			var option = {
+						  id          : "SelectFileList"
+						, type        : "post"
+						, url         : "/WRKFIL003M0SelectFileList"
+						, async       : false
+						, dataType    : "json"
+						, contentType : "application/json; charset=utf-8"
+						, data        : input = JSON.stringify({ uploadFile: "", stdYymm: "" })
+			};
+	
+			gf_Transaction(option, fn_callback);
+		}
+		
+		function getList(stdYymm) {
+			//console.log("getList input : " + input);
+			var option = {
+						  id          : "SelectList"
+						, type        : "post"
+						, url         : "/WRKFIL003M0SelectList"
+						, async       : false
+						, dataType    : "json"
+						, contentType : "application/json; charset=utf-8"
+						, data        : input = JSON.stringify({
+															 uploadFile: $("#cmbUploadFileList").val(),
+															 //stdYymm : $("#inpStdYymm").val(),
+															 stdYymm   : stdYymm,
+														}),
+			};
+	
+			gf_Transaction(option, fn_callback);
+		}	
+	</script>
+	<script>
+		$(document).ready(function () {
+			console.log("Document is ready.");
+			
+			$("#inputYear").val(gv_year);
+			$("#inputMonth").val(gv_month);
+
+			$("input").on("keyup", function (key) {
+				if (key.keyCode == 13) {
+					getSearchList();
+				}
+			});
+			getFileList();
+		});
+		
+		// DropDown 리스트에 FILE_NM 값을 추가하는 함수
+		function populateDropdown(data) {
+			// if the data is empty, return an alert message
+			if (data.length === 0) {
+				alert("No data found");
+			return;
+			}
+
+			var dropdown = $("#cmbUploadFileList");
+			data.forEach(function (item) {
+				var option = $("<option></option>").attr("value", item.seqNo).text(item.opName);
+				dropdown.append(option);
+			});
+		}
+		
+		// 그리드 옵션
+		var options = {
+			enableCellNavigation: true,
+			enableColumnReorder: false,
+			forceFitColumns: false,
+			multiColumnSort: true,
+			numberedMultiColumnSort: true,
+			tristateMultiColumnSort: true,
+			sortColNumberInSeparateSpan: true,
+			enableAutoSizeColumns: true,
+			editable: false,
+			enableAddRow: true,
+			asyncEditorLoading: false,
+			autoEdit: false,
+			autoEditNewRow: false,
+			rowHeight: 35,
+		};
+
+		let grid;
+
+		function getSearchList() {
+			console.log("Sending AJAX request...");
+
+			const element = document.getElementById("divMyGrid");
+			element.innerHTML = "";
+
+			if ( $("#inputMonth").val() === "" && $("#inputYear").val() === "" && $("#cmbUploadFileList").val() === "" ) {
+				alert("Please select a standard year / month and a file.");
+				// swal("Year, Month Selection!", "Please select a standard year / month and a file");
+
+			return false;
+			} else if ( $("#inputYear").val() === "" ) {
+				alert("Please select a year.");
+			return false;
+			} else if ($("#inputMonth").val() === "") {
+				alert("Please select a month.");
+			return false;
+			} else if ($("#cmbUploadFileList").val() === "") {
+				alert("Please select a file.");
+			return false;
+			}
+			
+			// these will be used to get the month and year from the user
+			const month = document.getElementById("inputMonth").value;
+			console.log("month"+month);
+			const year = document.getElementById("inputYear").value;
+			console.log("year"+year);
+			const stdYymm = year + month.padStart(2, "0");
+		
+			console.log("printing out the added date: ", stdYymm);
+			
+			getList(stdYymm);
+		}
+		
+				/**
+		 * Transaction callback 함수
+		 **/
+		function fn_callback(result){
+			// hideSpinner();
+			console.log("fn_callback : " + result);
+			if( result.resultCd == "S" ){
+				let resultData = typeof result.data === "string" ? JSON.parse(result.data) : result.data;
+				switch (result.id){
+					case "SelectFileList" :
+						console.log("selectFileList");
+						populateDropdown(resultData);
+						break;
+					case "SelectList" :
+						console.log("selectList grid"+result);
+						fn_setGrid(resultData.data, resultData.grdHead);
+						break;
+					case "SaveUplFileList" :
+						console.log("SaveUplFileList grid");
+						// hideSpinner();
+						//console.log("fn_callback result received:", result);
+						if ( result.data.resultCode == "200" ) {
+
+							// if(result.data.resultCode == "300") {
+							// 	alert("Your file uplaod has failed !");
+							// 	await hideSpinner();
+							// } 
+						
+							alert("Your file has been uploaded successfully.");
+
+							var agent = navigator.userAgent.toLowerCase();
+							//파일초기화
+							if (( navigator.appName == "Netscape" && navigator.userAgent.search("Trident") != -1) || agent.indexOf("msie") != -1 ) {
+								$("#btnFileUpload").replaceWith($("#btnFileUpload").clone(true));
+							} else {
+								$("#btnFileUpload").val("");
+							}
+							getSearchList();
+						} else {
+							alert( "File upload Fail Error : " + resultData.resultMessage );
+						}
+						break;
+				}	  
+			} else if( result.resultCd == "E") {
+			} else {
+				console.log("fn_callback result : ", result);
+			}
+		}
+
+				
+		function fn_setGrid(data, head){
+			console.log("data:"+data);
+			var grdData = data;
+			var grdHead = head;
+
+			if (grdData && grdData.length > 0) {
+				// 컬럼 생성
+				var newRowIds = 0;
+				var pluginOptions = {
+					clipboardCommandHandler: function (editCommand) {
+						undoRedoBuffer.queueAndExecuteCommand.call(undoRedoBuffer, editCommand);
+					},
+					readOnlyMode: false,
+					includeHeaderWhenCopying: false,
+					newRowCreator: function (count) {
+						for (var i = 0; i < count; i++) {
+							var item = { id: "newRow_" + newRowIds++ };
+							grid.getData().addItem(item);
+						}
+					},
+				};
+
+				console.log("SlickGrid initialized.");
+			} else {
+				alert("No data, please select another option.");
+				console.log("No data returned from the server.");
+			}
+			
+			var columns = [];
+			var vWidth = 0;
+			
+			if (grdHead.length > 0 && grdHead.length <= 12) {
+				vWidth = 1286 / grdHead.length;
+			} else {
+				vWidth = 100;
+			}
+
+			for (var i = 0; i < grdHead.length; i++) {
+				var sCd = grdHead[i].CD;
+				var sNm = grdHead[i].NM;
+
+				columns.push({ id: sCd, name: sNm, field: sCd, sortable: true, editor: Slick.Editors.Text, width:vWidth, headerCssClass: "slick-header-columns", cssClass: "slick-column-left" });
+			}
+				
+
+			grid = new Slick.Grid("#divMyGrid", grdData, columns, options);
+
+			// when "onBeforeSort" returns false, the "onSort" won't execute (for example a backend server error while calling backend query to sort)
+			grid.onBeforeSort.subscribe(function (e, args) {
+			return true;
+			});	
+			
+			// 정렬
+			grid.onSort.subscribe(function (e, args) {
+				var cols = args.sortCols;
+	
+				grdData.sort(function (dataRow1, dataRow2) {
+					for (var i = 0, l = cols.length; i < l; i++) {
+						var field = cols[i].sortCol.field;
+						var sign = cols[i].sortAsc ? 1 : -1;
+						var value1 = dataRow1[field],
+						value2 = dataRow2[field];
+						var result = (value1 == value2 ? 0 : value1 > value2 ? 1 : -1) * sign;
+						if (result != 0) {
+						return result;
+						}
+					}
+				return 0;
+				});
+				grid.invalidate();
+				grid.render();
+			});
+
+			grid.setSelectionModel(new Slick.CellSelectionModel());
+			grid.registerPlugin(new Slick.AutoTooltips());
+
+			// set keyboard focus on the grid
+			//grid.getCanvasNode().focus();
+
+			grid.registerPlugin(new Slick.CellExternalCopyManager(pluginOptions));
+
+			grid.onAddNewRow.subscribe(function (e, args) {
+				var item = args.item;
+				var column = args.column;
+				grid.invalidateRow(grdData.length);
+				grdData.push(item);
+				grid.updateRowCount();
+				grid.render();
+			});
+		}
+
+			
+		function getExcelList() {
+			let excelData = grid.getData();
+			console.log("excelData", excelData);
+			
+			let columns = grid.getColumns();
+
+			// we filter out unwanted columns 
+			const filteredColumns = columns.filter(col => !["FNL_UPD_DTM", "FRST_REG_DTM", "FNL_UPD_EMP_NO", "FRST_REG_EMP_NO"].includes(col.field));
+
+			// we filter out unwanted data
+			const filteredData = excelData.map(row => {
+				const newRow = {};
+				filteredColumns.forEach(col => {
+					newRow[col.field] = row[col.field];
+				});
+				return newRow;
+			});
+
+			let workbook = XLSX.utils.book_new();
+			let worksheet = XLSX.utils.json_to_sheet(filteredData, { header: filteredColumns.map(col => col.field) });
+
+			XLSX.utils.book_append_sheet(workbook, worksheet, "File Upload");
+
+			// we generate Excel file
+			let excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+
+			let blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+			const year = document.getElementById("inputYear").value;
+			const month = document.getElementById("inputMonth").value;
+			if (!year || !month) {
+				alert("Please select the standard year / month to download.");
+				return;
+			}
+			const currDate = year + month.padStart(2, "0");
+			const selectedFile = $("#cmbUploadFileList").val();
+			if (!selectedFile) {
+				alert("Please select the file to download.");
+				return;
+			}
+			const fileName = `WRKFIL003_FM_${currDate}_${selectedFile}.xlsx`;
+
+			// we create a download link and trigger the download
+			let downloadLink = document.createElement('a');
+			downloadLink.href = URL.createObjectURL(blob);
+			downloadLink.download = fileName;
+			document.body.appendChild(downloadLink);
+			downloadLink.click();
+			document.body.removeChild(downloadLink);
+		}
+	
+		// let spinnerModal;
+		// let spinner;
+
+		// function showSpinner() {
+
+		// 	if (!spinnerModal) {
+		// 		const modalHtml = `
+		// 				<div class="modal fade" id="spinnerModal" tabindex="-1" aria-hidden="true">
+		// 					<div class="modal-dialog modal-dialog-centered" role="document">
+		// 						<div class="modal-content" style="background: transparent; border: none;">
+		// 							<div class="modal-body text-center">
+		// 								<div id="spinnerContainer"></div>
+		// 							</div>
+		// 						</div>
+		// 					</div>
+		// 				</div>
+		// 		`;
+		// 		document.body.insertAdjacentHTML('beforeend', modalHtml);
+		// 		spinnerModal = new bootstrap.Modal(document.getElementById("spinnerModal"), {
+		// 			backdrop: 'static',
+		// 			keyboard: false
+		// 		});
+		// 	} 
+
+		// 	// createSpinnerModal(); // Ensure the modal is created
+		// 	const spinnerContainer = document.getElementById('spinnerContainer');
+		// 	spinner = new Spinner().spin(spinnerContainer);
+
+		// 	// i should add the spinner animation ddiv to the modal
+		// 	spinnerModal.show(); // Show the modal
+		// }	
+
+		// we hide the spinner by removing the modal and stopping the spinner
+		// function hideSpinner() {
+		// 	const spinnerContainer = document.getElementById('spinnerContainer');
+		// 	return new Promise((resolve) => {
+		// 		if (spinnerModal) {
+
+		// 			let spinnerModalElement = document.getElementById('spinnerModal');
+		// 			spinnerModalElement.addEventListener('hidden.bs.modal', function handler() {
+		// 				spinnerModalElement.removeEventListener('hidden.bs.modal', handler);
+
+		// 				// we remove the spinner modal from the DOM
+		// 				spinnerModalElement.parentNode.removeChild(spinnerModalElement);
+
+		// 				// set the spinner modal adn spinner values  to null
+		// 				spinnerModal = null;
+		// 				spinner = null;
+
+		// 				resolve();
+		// 			});
+
+		// 			if(spinner) {
+		// 				spinner.stop();
+		// 			}
+
+		// 			$(spinnerContainer).fadeOut(200, function() {
+		// 				spinnerModal.hide(); // Hide the modal
+		// 			});
+					
+		// 		} else {
+		// 			resolve();
+		// 		}
+		// 	});
+		// }
+
+		async function setSaveUploadFile() {
+
+			console.log("Sending AJAX request...");
+			
+			if ( $("#inputMonth").val() === "" && $("#inputYear").val() === "" && $("#cmbUploadFileList").val() === "" ) {
+				alert("Please select a standard year / month and a file.");
+				return false;
+			} else if ( $("#inputYear").val() === "" ) {
+				alert("Please select a year.");
+				return false;
+			} else if ($("#inputMonth").val() === "") {
+				alert("Please select a month.");
+				return false;
+			} else if ($("#cmbUploadFileList").val() === "") {
+				alert("Please select a file.");
+				return false;
+			} else if ($("#btnFileUpload").val() === "") {
+				alert("Please select a file to upload and get result data.");
+				return false;
+			}
+	
+			//let form = $('#uploadFrm')[0];
+			//let frmData = new FormData(form);
+			
+			if(confirm("Do you want to upload this file?") == false) {
+				return false;
+			}
+			
+			var formData = new FormData();
+			var inputFile = $("input[name='btnFileUpload']");
+			var files = inputFile[0].files;
+			console.log("File 0 : " + files[0]);
+		
+			var month = document.getElementById("inputMonth").value;
+			var year = document.getElementById("inputYear").value;
+			var stdYymm = year + month.padStart(2, "0");
+	
+			for (var i = 0; i < files.length; i++) {
+				formData.append("uploadFile", files[i]);
+			}
+			
+			formData.append("uploadFileVal", $("#cmbUploadFileList").val());
+			formData.append("inpStdYymm", stdYymm);
+	
+			var result = {}
+
+			let fileUploadValue = $("#btnFileUpload").val(); 
+			console.log("fileUploadValue : " + fileUploadValue);
+
+			// we create a spinner 
+			await showSpinner();
+
+			try {
+				$.ajax({
+					type        : "POST",
+					url         : "/WRKFIL003M0SaveUploadFile",
+					enctype     : 'multipart/form-data',
+					//file: files,
+					data        : formData,
+					processData : false,
+					contentType : false,
+					cache       : false,
+					success     :  async function(data) {
+										result.resultCd = "S";
+										result.id       = "SaveUplFileList";
+										result.data     = data;
+
+											await hideSpinner(); 
+
+										// spinner.stop(); // we stop the spinner once you finished loading data
+										if(data.resultCode == "200" || data.resultCode == "300") {
+											fn_callback(result);
+										} 			
+								}, 
+					error   	: 	async function (e) {
+										await hideSpinner();
+										console.log(e);
+										alert("File upload failed");
+
+								},
+				});
+			} catch (error) {
+				console.log("Error : " + error);
+			}
+		}
+		function clearSlickGridData() {
+			var grid = new Slick.Grid("#divMyGrid", [{}], [{}], [{}]);
+		}
+		</script>
+	</th:block>
+</html>

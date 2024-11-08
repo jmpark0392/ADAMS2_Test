@@ -1,0 +1,79 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="headerFragment">
+	<header class="navbar navbar-expand-md bg-primary d-none d-lg-flex d-print-none sticky-top">
+		<div class="container-xl">
+			<div class="navbar-nav align-items-center flex-row order-md-last">
+				<span style="padding-left:30px;">
+				<a href="#!" class="link-light" style="text-decoration: none;" onClick="goMenuPage('views/user/myPage')">
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-user-square-rounded"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 13a3 3 0 1 0 0 -6a3 3 0 0 0 0 6z" /><path d="M12 3c7.2 0 9 1.8 9 9s-1.8 9 -9 9s-9 -1.8 -9 -9s1.8 -9 9 -9z" /><path d="M6 20.05v-.05a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v.05" /></svg>
+					Mypage
+				</a>
+				</span>
+				<span style="padding-left:30px;">
+				<a href="https://url.kr/4mv5th" class="link-light" style="text-decoration: none;" target="_blank">
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-report-search"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h5.697" /><path d="M18 12v-5a2 2 0 0 0 -2 -2h-2" /><path d="M8 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z" /><path d="M8 11h4" /><path d="M8 15h3" /><path d="M16.5 17.5m-2.5 0a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0 -5 0" /><path d="M18.5 19.5l2.5 2.5" /></svg>
+					Manual
+				</a>
+				</span>
+				<span style="padding-left:30px;">
+				<a href="#" class="link-light" style="text-decoration: none;" id="logoutButton">
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-logout"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" /><path d="M9 12h12l-3 -3" /><path d="M18 15l3 -3" /></svg>
+					Logout
+				</a>
+				</span>
+			</div>
+			<!-- 작은 화면에서 아이콘 우측 정렬을 위한 공간 확보용 -->
+			<div class="collapse navbar-collapse" id="navbar-menu">
+				<span class="link-light">Welcome!</span>&nbsp;&nbsp;
+				<span class="link-light">You must be</span>&nbsp;&nbsp;
+				<span class="badge rounded-pill badge-outline text-white"><b>[[${loginDTO.usrNm}]]</b></span>&nbsp;&nbsp;
+				<span class="link-light">works at</span>&nbsp;&nbsp;
+				<span class="badge rounded-pill badge-outline text-white"><b>[[${loginDTO.compNm}]]</b></span>&nbsp;&nbsp;
+				<th:block th:if="${loginDTO.csNo != '999'}">
+					<th:block th:if="${loginDTO.srvcNm == '' || loginDTO.srvcNm == null }">
+						<span class="link-light"><b>Unfortunately, however, you have not selected any service option yet.</b></span>
+					</th:block>
+					<th:block th:unless="${loginDTO.srvcNm == '' || loginDTO.srvcNm == null }">
+					<span class="link-light">currently subscribing to</span>&nbsp;&nbsp;
+						<span class="badge rounded-pill badge-outline text-white"><b>[[${loginDTO.srvcNm}]]</b></span>
+					</th:block>
+				</th:block>
+			</div>
+		</div>
+	</header>
+	<script>
+		$(document).ready(function () {
+			$('#logoutButton').click(function(e){
+				e.preventDefault(); // 링크 기본 동작 방지
+				console.log("Pushed logoutButten.");
+				$.ajax({
+					type: "GET",
+					url: "/auth/adamsLogout",
+					async: true,
+					dataType: "json",
+					contentType: "application/json; charset=utf-8",
+					success: function (response, textStatus, xhr) {
+						if(xhr.status == 200) {
+							console.log("Success Logout. Go to Login page.");
+							$.get("/TokenRefresh", function(data) {
+		                        var newCsrfToken = data;  // 새로운 CSRF 토큰
+
+		                        // 기존 메타 태그 및 hidden input에서 CSRF 토큰을 업데이트
+		                        $("meta[name='_csrf_token']").attr("content", newCsrfToken);
+		                        
+		                        // /login 페이지로 이동
+		                        $("input[name='CSRF_TOKEN']").val(newCsrfToken);  // th:name="CSRF_TOKEN"태크의 csrf 토큰 값을 업데이트
+		                        $("#pageName").val("login");  // 이동할 페이지 설정
+							    $("#form").submit();  // 폼 전송
+		                    });
+						}
+					},
+					error: function(xhr, textStatus, errorThrown) {
+						console.error('Request failed: ' + textStatus);
+					}
+				});
+			});
+		});
+	</script>
+</th:block>
+</html>

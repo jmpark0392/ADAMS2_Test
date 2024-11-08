@@ -1,0 +1,71 @@
+.form-box {
+  border: 1px solid #e3e2e2;
+  padding: 18px;
+  border-radius: 5px;
+  margin-top: 20px;
+  align-items: center;
+  width: 100%;
+}
+
+h2 {
+  padding: 20px 0;
+  text-align: left;
+  font-size: 25px;
+}
+.ptag-container {
+  margin-top: -10px;
+  /* margin-bottom: 20px; */
+}
+.ptag-container p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+.filter-bar {
+  display: flex;
+  justify-content: space-between;
+  /* margin-bottom: 300px; */
+}
+/* .filter-bar input, */
+.filter-bar select {
+  margin-right: 10px;
+}
+.form-container {
+  /* padding-top: 20px; */
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1px;
+}
+.form-label {
+  /* font-family:sans-serif; */
+  font-size: 13px;
+  /* font-weight: bold; */
+}
+
+.form-container 
+/* .form-container input, */
+.form-container select {
+  font-size: 13px;
+  padding: 3.1px;
+  padding-right: 80px;
+  border-radius: 6.5px;
+  box-shadow: 0 1px 10px rgba(169, 169, 255, 0.5);
+  /* display: flex; */
+  margin-right: 10px;
+  /* margin-bottom: 4px; */
+}
+
+table {
+  /* to make the table scrollable */
+  overflow-y: scroll;
+  height: 100%;
+  display: block;
+  padding: 5px;
+}
+.table-grid {
+  margin-top: 20px;
+  /* width: 1300px; */
+  height: 1000px;
+  width: 100%;
+}

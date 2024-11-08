@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rds.adams.web.biz.jnl.dao.BIZJNL003M0DAO">
+    <select id="selectList" parameterType="com.rds.adams.web.biz.jnl.dto.BIZJNL003M0P0DTO" resultType="com.rds.adams.web.biz.jnl.dto.BIZJNL003M0R0DTO">
+             SELECT
+                    ROW_NUMBER() OVER (ORDER BY (SELECT 1)) AS rowNumber     /* 행번호 */
+                  , A.JRNL_NO                               AS jrnlNo        /* 분개번호 */
+                  , A.ATIT_CD                               AS atitCd        /* 계정과목코드 */
+                  , B.ATIT_ENG_NM                           AS atitNm        /* 계정과목명 */
+                  , A.DR_CR_DV_CD                           AS drCrDvCd      /* 차대구분 */
+                  , A.JRNL_AMT                              AS jrnlAmt       /* 분개금액 */
+                  , C.USR_NM                                AS frstRegEmpNo  /* 최초등록사원번호 */
+                  , CONVERT(CHAR(10), A.FRST_REG_DTM, 23)   AS frstRegDtm    /* 최초등록일시 */
+               FROM TB_JNL_RST_LST AS A
+              INNER JOIN TB_ATIT_MNG_LST AS B
+                ON A.ATIT_CD = B.ATIT_CD
+               AND A.CS_NO   = B.CS_NO
+              LEFT OUTER JOIN TB_USR_MNG_LST C 
+                ON A.FNL_UPD_EMP_NO = C.USR_ID
+            WHERE 1=1
+            <if test= 'csNo != "999"'>
+                AND A.CS_NO        = #{csNo}
+            </if>
+            <if test='searchTxt != "" and searchTxt != null'>
+                AND (
+                        ATIT_CD LIKE '%' + #{searchTxt} + '%'
+                    OR  ATIT_NM LIKE '%' + #{searchTxt} + '%'
+                    )
+            </if>
+                AND A.STD_YYMM LIKE '%' + #{stdYymm} + '%'
+                ORDER BY A.JRNL_NO, A.DR_CR_DV_CD DESC
+    </select>
+    <delete id="deleteListBf" parameterType="com.rds.adams.web.biz.jnl.dto.BIZJNL003M0P1DTO">
+        DELETE FROM TB_JNL_RST_LST
+         WHERE STD_YYMM = #{stdYymm}
+           AND CS_NO    = #{csNo}
+    </delete>
+    <insert id="insertList" parameterType="com.rds.adams.web.biz.jnl.dto.BIZJNL003M0P1DTO">
+     INSERT INTO TB_JNL_RST_LST
+            SELECT 
+                   AAA.CS_NO         AS CS_NO
+                 , #{stdYymm}        AS STD_YYMM
+                 , AAA.JRNL_NO       AS JRNL_NO
+                 , AAA.AC_SUBJ_CD    AS ATIT_CD
+                 , AAA.DR_CR_DV_CD   AS DR_CR_DV_CD
+                 , AAA.AMT           AS JRNL_AMT
+                 , #{usrId}          AS FRST_REG_EMP_NO
+                 , GETDATE()         AS FRST_REG_DTM
+                 , #{usrId}          AS FNL_UPD_EMP_NO
+                 , GETDATE()         AS FNL_UPD_DTM
+              FROM (
+                     SELECT
+                            AA.CS_NO 
+		                  , #{stdYymm} +'-'+ INSC_DV_CD +'-'+ VALU_METD_CD +'-'+ LVL_1_CD + LVL_2_CD + LVL_3_CD + '-'
+		                  + FORMAT ( row_number() over ( PARTITION BY LVL_1_CD ,LVL_2_CD ,LVL_3_CD ORDER BY LVL_1_CD, LVL_2_CD, LVL_3_CD), '00000' )      AS JRNL_NO                            
+                          , AA.INSC_DV_CD
+                          , AA.VALU_METD_CD
+                          , AA.LVL_1_CD
+                          , AA.LVL_2_CD
+                          , AA.LVL_3_CD
+                          , AA.DR_AC_SUBJ_CD  AS AC_SUBJ_CD
+                          , BB.AMT
+                          , 'DR'              AS DR_CR_DV_CD
+                       FROM TB_JNL_RUL_MNG_LST AA
+                      INNER JOIN (
+									SELECT BAS_AMT AMT			 , INSU_PL_CHNG_DV_CD, '001' AS DV FROM TB_INSU_PL_TTL_LST WHERE STD_YYMM = #{stdYymm} AND CS_NO = #{csNo} UNION ALL 
+									SELECT OCI_AMT    			 , INSU_PL_CHNG_DV_CD, '002' AS DV FROM TB_INSU_PL_TTL_LST WHERE STD_YYMM = #{stdYymm} AND CS_NO = #{csNo} UNION ALL
+									SELECT NEW_CONT_AMT		     , INSU_PL_CHNG_DV_CD, '003' AS DV FROM TB_INSU_PL_TTL_LST WHERE STD_YYMM = #{stdYymm} AND CS_NO = #{csNo} UNION ALL 
+									SELECT INT_EFFT_AMT    		 , INSU_PL_CHNG_DV_CD, '004' AS DV FROM TB_INSU_PL_TTL_LST WHERE STD_YYMM = #{stdYymm} AND CS_NO = #{csNo} UNION ALL
+									SELECT ESTM_PRM 		     , INSU_PL_CHNG_DV_CD, '005' AS DV FROM TB_INSU_PL_TTL_LST WHERE STD_YYMM = #{stdYymm} AND CS_NO = #{csNo} UNION ALL 
+									SELECT ESTM_FEE    			 , INSU_PL_CHNG_DV_CD, '006' AS DV FROM TB_INSU_PL_TTL_LST WHERE STD_YYMM = #{stdYymm} AND CS_NO = #{csNo} UNION ALL
+									SELECT ESTM_NEW_CONT_CCLS_AMT, INSU_PL_CHNG_DV_CD, '007' AS DV FROM TB_INSU_PL_TTL_LST WHERE STD_YYMM = #{stdYymm} AND CS_NO = #{csNo} UNION ALL 
+									SELECT ESTM_FEE_RFND_AMT     , INSU_PL_CHNG_DV_CD, '008' AS DV FROM TB_INSU_PL_TTL_LST WHERE STD_YYMM = #{stdYymm} AND CS_NO = #{csNo} UNION ALL
+									SELECT ESTM_CONT_MTN_AMT 	 , INSU_PL_CHNG_DV_CD, '009' AS DV FROM TB_INSU_PL_TTL_LST WHERE STD_YYMM = #{stdYymm} AND CS_NO = #{csNo} UNION ALL 
+									SELECT ESTM_IVSG_EXP_AMT     , INSU_PL_CHNG_DV_CD, '010' AS DV FROM TB_INSU_PL_TTL_LST WHERE STD_YYMM = #{stdYymm} AND CS_NO = #{csNo} UNION ALL
+									SELECT ATS_ASSM_UPD_AMT 	 , INSU_PL_CHNG_DV_CD, '011' AS DV FROM TB_INSU_PL_TTL_LST WHERE STD_YYMM = #{stdYymm} AND CS_NO = #{csNo} UNION ALL 
+									SELECT EXRT_EFFT_AMT    	 , INSU_PL_CHNG_DV_CD, '012' AS DV FROM TB_INSU_PL_TTL_LST WHERE STD_YYMM = #{stdYymm} AND CS_NO = #{csNo} UNION ALL
+									SELECT ENTM_AMT    			 , INSU_PL_CHNG_DV_CD, '013' AS DV FROM TB_INSU_PL_TTL_LST WHERE STD_YYMM = #{stdYymm} AND CS_NO = #{csNo}
+						) BB
+						ON AA.LVL_2_CD  = ( CASE WHEN BB.INSU_PL_CHNG_DV_CD = 'BEL' THEN '001'
+												 WHEN BB.INSU_PL_CHNG_DV_CD = 'RA'  THEN '002'
+												 WHEN BB.INSU_PL_CHNG_DV_CD = 'CSM' THEN '003'
+												 ELSE '-' END
+										  )
+					   AND AA.LVL_3_CD  = BB.DV
+					 WHERE AA.CS_NO = #{csNo}  
+                 UNION ALL
+                 SELECT 
+                        AA.CS_NO
+                      , #{stdYymm} +'-'+ INSC_DV_CD +'-'+ VALU_METD_CD +'-'+ LVL_1_CD + LVL_2_CD + LVL_3_CD + '-'
+                      + FORMAT ( row_number() over ( PARTITION BY LVL_1_CD ,LVL_2_CD ,LVL_3_CD ORDER BY LVL_1_CD, LVL_2_CD, LVL_3_CD), '00000' )      AS JRNL_NO  
+                      , AA.INSC_DV_CD
+                      , AA.VALU_METD_CD
+                      , AA.LVL_1_CD
+                      , AA.LVL_2_CD
+                      , AA.LVL_3_CD
+                      , AA.CR_AC_SUBJ_CD
+                      , BB.AMT
+                      , 'CR' DR_CR_DV_CD
+                   FROM TB_JNL_RUL_MNG_LST AA
+                   INNER JOIN (
+								SELECT BAS_AMT AMT			 , INSU_PL_CHNG_DV_CD, '001' AS DV FROM TB_INSU_PL_TTL_LST WHERE STD_YYMM = #{stdYymm} AND CS_NO = #{csNo} UNION ALL 
+								SELECT OCI_AMT    			 , INSU_PL_CHNG_DV_CD, '002' AS DV FROM TB_INSU_PL_TTL_LST WHERE STD_YYMM = #{stdYymm} AND CS_NO = #{csNo} UNION ALL
+								SELECT NEW_CONT_AMT		     , INSU_PL_CHNG_DV_CD, '003' AS DV FROM TB_INSU_PL_TTL_LST WHERE STD_YYMM = #{stdYymm} AND CS_NO = #{csNo} UNION ALL 
+								SELECT INT_EFFT_AMT    		 , INSU_PL_CHNG_DV_CD, '004' AS DV FROM TB_INSU_PL_TTL_LST WHERE STD_YYMM = #{stdYymm} AND CS_NO = #{csNo} UNION ALL
+								SELECT ESTM_PRM 		     , INSU_PL_CHNG_DV_CD, '005' AS DV FROM TB_INSU_PL_TTL_LST WHERE STD_YYMM = #{stdYymm} AND CS_NO = #{csNo} UNION ALL 
+								SELECT ESTM_FEE    			 , INSU_PL_CHNG_DV_CD, '006' AS DV FROM TB_INSU_PL_TTL_LST WHERE STD_YYMM = #{stdYymm} AND CS_NO = #{csNo} UNION ALL
+								SELECT ESTM_NEW_CONT_CCLS_AMT, INSU_PL_CHNG_DV_CD, '007' AS DV FROM TB_INSU_PL_TTL_LST WHERE STD_YYMM = #{stdYymm} AND CS_NO = #{csNo} UNION ALL 
+								SELECT ESTM_FEE_RFND_AMT     , INSU_PL_CHNG_DV_CD, '008' AS DV FROM TB_INSU_PL_TTL_LST WHERE STD_YYMM = #{stdYymm} AND CS_NO = #{csNo} UNION ALL
+								SELECT ESTM_CONT_MTN_AMT 	 , INSU_PL_CHNG_DV_CD, '009' AS DV FROM TB_INSU_PL_TTL_LST WHERE STD_YYMM = #{stdYymm} AND CS_NO = #{csNo} UNION ALL 
+								SELECT ESTM_IVSG_EXP_AMT     , INSU_PL_CHNG_DV_CD, '010' AS DV FROM TB_INSU_PL_TTL_LST WHERE STD_YYMM = #{stdYymm} AND CS_NO = #{csNo} UNION ALL
+								SELECT ATS_ASSM_UPD_AMT 	 , INSU_PL_CHNG_DV_CD, '011' AS DV FROM TB_INSU_PL_TTL_LST WHERE STD_YYMM = #{stdYymm} AND CS_NO = #{csNo} UNION ALL 
+								SELECT EXRT_EFFT_AMT    	 , INSU_PL_CHNG_DV_CD, '012' AS DV FROM TB_INSU_PL_TTL_LST WHERE STD_YYMM = #{stdYymm} AND CS_NO = #{csNo} UNION ALL
+								SELECT ENTM_AMT    			 , INSU_PL_CHNG_DV_CD, '013' AS DV FROM TB_INSU_PL_TTL_LST WHERE STD_YYMM = #{stdYymm} AND CS_NO = #{csNo}
+					) BB
+					ON AA.LVL_2_CD  = ( CASE WHEN BB.INSU_PL_CHNG_DV_CD = 'BEL' THEN '001'
+											 WHEN BB.INSU_PL_CHNG_DV_CD = 'RA'  THEN '002'
+											 WHEN BB.INSU_PL_CHNG_DV_CD = 'CSM' THEN '003'
+											 ELSE '-' END
+									  )
+				   AND AA.LVL_3_CD  = BB.DV  
+				 WHERE AA.CS_NO = #{csNo}                         
+			) AAA
+			WHERE AAA.AMT != 0
+			ORDER BY AAA.JRNL_NO, AAA.DR_CR_DV_CD DESC
+	</insert>
+</mapper>

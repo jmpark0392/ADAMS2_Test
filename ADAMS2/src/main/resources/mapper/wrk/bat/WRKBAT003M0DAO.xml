@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rds.adams.web.wrk.bat.dao.WRKBAT003M0DAO">
+    <select id="selectList" parameterType="com.rds.adams.web.wrk.bat.dto.WRKBAT003M0P0DTO" resultType="com.rds.adams.web.wrk.bat.dto.WRKBAT003M0R0DTO">
+		SELECT
+		       ROW_NUMBER() OVER(ORDER BY (SELECT 1)) AS rowNumber      /* 행번호 */
+		     , A.BAT_EXE_ID                           AS batExeId       /* 배치실행ID */
+		     , A.BAT_PROG_ID                          AS batProgId      /* 배치프로그램ID */
+		     , B.BAT_PROG_NM                          AS batProgNm      /* 배치프로그램명 */
+		     , A.BAT_EXE_RST_CD                       AS batExeRstCd    /* 배치실행결과코드 */
+		     , A.BAT_EXE_ERR_CD                       AS batExeErrCd    /* 배치실행에러코드 */
+		     , A.STD_YYMM                             AS stdYymm        /* 기준년월 */
+		     , CONVERT(CHAR(19), A.BAT_STR_DTM, 20)   AS batStrDtm      /* 배치시작일시 */
+		     , CONVERT(CHAR(19), A.BAT_END_DTM, 20)   AS batEndDtm      /* 배치종료일시 */
+		     , A.BAT_LOAD_STAT_CD                     AS batLoadStatCd  /* 배치상태코드 */
+		     , C.USR_NM                               AS mainEmpNo      /* 주담당자 */
+		     , C.USR_NM                               AS frstRegEmpNo   /* 최초등록사원번호 */
+		     , CONVERT(CHAR(19), A.FRST_REG_DTM, 20)  AS frstRegDtm     /* 최초등록일시 */
+		     , FLOOR((DATEDIFF_BIG(MICROSECOND, A.BAT_STR_DTM, A.BAT_END_DTM) / 1000000.0) * 100000) / 100000 AS jobTime  /* JOB 실행시간 */
+		  FROM TB_BAT_RST_LST AS A
+		 INNER JOIN TB_BAT_MNG_LST AS B
+		    ON A.BAT_PROG_ID = B.BAT_PROG_ID
+		   AND A.CS_NO       = B.CS_NO
+		 LEFT OUTER JOIN TB_USR_MNG_LST C 
+			ON A.FNL_UPD_EMP_NO = C.USR_ID
+         WHERE 1=1
+         <if test=' csNo != "999"'>
+           AND A.CS_NO = #{csNo}
+         </if>
+         <if test='searchTxt != ""'>
+           AND (
+                A.BAT_PROG_ID LIKE '%' + #{searchTxt} + '%'
+                )
+         </if>
+           AND A.STD_YYMM = #{stdYymm}
+           ORDER BY CAST( A.BAT_EXE_ID AS numeric(5,0) ) DESC
+    </select>
+</mapper>

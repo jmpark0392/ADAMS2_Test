@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+<th:block layout:fragment="content">
+	<script src="js/js-tabler/demo-theme.min.js?1692870487"></script>
+	<div class="page-wrapper" id="page-wrapper">
+		<div class="container" id="container">
+			<h2>[[${menuNm}]]</h2>
+			<div class="ptag-container">
+				<span>[[${navigator}]]</span>
+				<div class="form-container">
+					<div class="form-box">
+						<div class="mb-3">
+							<span>
+								You can change some of your company information, such as location, phone number or website.
+							</span>
+						</div>
+						<form id="companyInfoDetailsForm" name="companyInfoDetailsForm" method="POST" action="/ADMUSR001M0SelectCompList" autocomplete="off" onsubmit="return false;">
+							<div class="card-body">
+								<div class="row">
+									<div class="col-md-4">
+										<div class="form-floating mb-2">
+											<input type="text" class="form-control" id="companyName" name="companyName" maxLength="50" value="" autocomplete="off" required placeholder="company name" disabled>
+											<label for="companyName">company name</label>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-floating mb-2">
+											<input type="text" class="form-control" id="companyDivision" name="companyDivision" maxLength="50" value="" autocomplete="off" required placeholder="type of company identification" disabled>
+											<label for="companyDivision">type of company identification</label>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-floating mb-2">
+											<input type="text" class="form-control" id="companyNo" name="companyNo" maxLength="30" value="" autocomplete="off" required placeholder="company identification number" disabled>
+											<label for="companyNo">company identification number</label>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4">
+										<div class="form-floating mb-2">
+											<input type="text" class="form-control" id="countryName" name="countryName" value="" autocomplete="off" required placeholder="country" disabled>
+											<label for="countryName">country</label>
+										</div>
+									</div>
+									<div class="col-md-8">
+										<div class="form-floating mb-2">
+											<input type="text" class="form-control" id="basicAddress" name="basicAddress" maxLength="100" value="" autocomplete="off" required placeholder="company address 1 (State, City, Building, Road etc.)">
+											<label for="basicAddress">company address 1 (State, City, Building, Road etc.)</label>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4">
+										<div class="form-floating mb-2">
+											<input type="text" class="form-control" id="postalCode" name="postalCode" maxLength="10" value="" autocomplete="off" required placeholder="postal code">
+											<label for="postalCode">postal code</label>
+										</div>
+									</div>
+									<div class="col-md-8">
+										<div class="form-floating mb-2">
+											<input type="text" class="form-control" id="detailedAddress" name="detailedAddress" maxLength="100" value="" autocomplete="off" required placeholder="company address 2">
+											<label for="detailedAddress">company address 2</label>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4">
+										<div class="form-floating mb-2">
+											<input type="text" class="form-control" id="representativeName" name="representativeName" maxLength="50" value="" autocomplete="off" required placeholder="representative person name (President, CEO etc.)">
+											<label for="representativeName">representative person name (President, CEO etc.)</label>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-floating mb-2">
+											<input type="text" class="form-control" id="companyHomepage" name="companyHomepage" maxLength="30" value="" autocomplete="off" required placeholder="company homepage">
+											<label for="companyHomepage">company homepage</label>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-floating mb-2">
+											<input type="text" class="form-control" id="representativePhone" name="representativePhone" maxLength="30" value="" autocomplete="off" required placeholder="representative phone number">
+											<label for="representativePhone">representative phone number</label>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4">
+										<div class="form-floating mb-2">
+											<input type="text" class="form-control" id="firstRegDatetime" name="firstRegDatetime" maxLength="30" value="" autocomplete="off" required placeholder="registration request date" disabled>
+											<label for="firstRegDatetime">registration request date</label>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-floating mb-2">
+											<input type="text" class="form-control text-red" id="useEndDatetime" name="useEndDatetime" maxLength="50" value="" autocomplete="off" required placeholder="subscription end date" disabled>
+											<label for="useEndDatetime">subscription end date</label>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-floating mb-2">
+											<input type="text" class="form-control" id="lastUpdateDatetime" name="lastUpdateDatetime" maxLength="50" value="" autocomplete="off" required placeholder="last update date" disabled>
+											<label for="lastUpdateDatetime">last update date</label>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-4">
+										<div class="form-footer">
+											<button id="resetButton" class="btn btn-secondary w-100" onclick="main()">
+												Reset
+											</button>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-footer">
+											<button id="saveButton" class="btn btn-primary w-100" onclick="saveCompanyInfo()">
+												update
+											</button>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-footer">
+											<button id="unsubscribeButton" class="btn btn-warning w-100" onclick="updateServiceCode()">
+												Request to unsubscribe
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="js/utils.js"></script>
+	<script>
+		// 페이지 스크롤 삭제
+		//document.body.style.overflow = 'hidden';
+
+		// 페이지 로드 시 옵션을 초기화
+		window.onload = function () {
+			
+		};
+
+		$(document).ready(function () {
+			console.log("Document is ready.");
+			//화면 접속시 바로 조회
+			main();
+		});
+		
+		var csNo;
+		var statDvCd;
+
+		function checkData(data) {
+			return parentCheckData(data, check_cols);
+		}
+
+		function getCsList(input) {
+			console.log("getCsList input : " + input);
+			
+			var SelectCompany = {
+				id: "SelectCompList"
+				, type: "POST"
+				, url: "/ADMUSR001M0SelectCompList"
+				, async: false
+				, dataType: "json"
+				, contentType: "application/json; charset=utf-8"
+				, data: input
+			};
+			gf_Transaction(SelectCompany, fn_callback);
+		}
+		
+		function fn_updateCs(input) {
+			console.log("updateCs input : " + input);
+			var option = {
+					   id          : "updateList"
+				     , type        : "post"
+					 , url         : "/ADMUSR001M0UpdateServiceCode"
+					 , async       : true
+					 , dataType    : "text"
+					 , contentType : "application/json; charset=utf-8"
+					 , data        : input
+		             };
+		
+			gf_Transaction(option, fn_callback);
+		}
+		
+		function main() {
+			getCsList(
+				(input = JSON.stringify({
+				}))
+			);
+		}
+
+		// AJAX 응답을 처리할 콜백 함수
+		function fn_callback(result) {
+					
+			switch (result.id) {
+				case "SelectCompList":
+							
+					if (result && result.data && result.data.length > 0) {
+						// response에서 값 추출
+						var compNm = result.data[0].compNm;
+						var compNoDvCd = result.data[0].compNoDvCd;
+						var compNo = result.data[0].compNo;
+						var countryNmEng = result.data[0].countryNmEng;
+						var addrs = result.data[0].addrs;
+						var dtlsAddrs = result.data[0].dtlsAddrs;
+						var postNo = result.data[0].postNo;
+						var reperNm = result.data[0].reperNm;
+						var repPhNo = result.data[0].repPhNo;
+						var useEndDtm = result.data[0].useEndDtm;
+						var frstRegDtm = result.data[0].frstRegDtm;
+						var compHmpgUrl = result.data[0].compHmpgUrl;
+						var fnlUpdDtm = result.data[0].fnlUpdDtm;
+							
+						csNo = result.data[0].csNo;
+						statDvCd = result.data[0].statDvCd;
+								
+						if(statDvCd != 0){
+
+							$("#resetButton")
+				              .removeClass("btn btn-primary w-100")
+				              .addClass("btn btn-light w-0")
+				              .text("")
+				              .removeAttr("onclick");
+									
+				            $("#saveButton")
+				              .removeClass("btn btn-primary w-100")
+				              .addClass("btn btn-light w-0")
+				              .text("")
+				              .removeAttr("onclick");
+						            
+				            $("#unsubscribeButton")
+				              .text("To withdraw the unsubscribe request");
+
+						} else {
+									
+				            $("#resetButton")
+				              .removeClass("btn btn-light w-0")
+				              .addClass("btn btn-primary w-100")
+				              .text("Reset")
+				              .attr("onclick","main()");
+									
+				            $("#saveButton")
+				              .removeClass("btn btn-light w-0")
+				              .addClass("btn btn-primary w-100")
+				              .text("Update")
+				              .attr("onclick","saveCompanyInfo()");
+						            
+				            $("#unsubscribeButton")
+				              .text("Request to unsubscribe");									
+							
+						}
+
+						// 폼 요소에 값 설정
+						document.getElementById("companyName").value = compNm;
+						document.getElementById("companyNo").value = compNo;
+						document.getElementById("countryName").value = countryNmEng;
+						document.getElementById("basicAddress").value = addrs;
+						document.getElementById("detailedAddress").value = dtlsAddrs;
+						document.getElementById("postalCode").value = postNo;
+						document.getElementById("representativeName").value = reperNm;
+						document.getElementById("representativePhone").value = repPhNo;
+						document.getElementById("useEndDatetime").value = useEndDtm;
+						document.getElementById("firstRegDatetime").value = frstRegDtm;
+						document.getElementById("companyHomepage").value = compHmpgUrl;
+						document.getElementById("lastUpdateDatetime").value = fnlUpdDtm;
+
+						if (compNoDvCd == 1) {
+							document.getElementById("companyDivision").value = "DUNS Number";
+						} else if (compNoDvCd == 2) {
+							document.getElementById("companyDivision").value = "Corporation Number";
+						} else if (compNoDvCd == 3) {
+							document.getElementById("companyDivision").value = "Business Registration Number";
+						};
+
+					} else {
+						console.log("No data found.");
+					}
+				break;
+
+				case "insertList":
+					main();
+				break;
+
+				case "updateList":
+					main();
+				break;
+			}
+		} 
+
+		function saveCompanyInfo() {
+			// 입력 필드에서 값 수집
+			const compNm = document.getElementById("companyName").value.trim();
+			var compNoDvCd = "";
+			const compNo = document.getElementById("companyNo").value.trim();
+			const countryNmEng = document.getElementById("countryName").value.trim();
+			const addrs = document.getElementById("basicAddress").value.trim();
+			const dtlsAddrs = document.getElementById("detailedAddress").value.trim();
+			const postNo = document.getElementById("postalCode").value.trim();
+			const reperNm = document.getElementById("representativeName").value.trim();
+			const repPhNo = document.getElementById("representativePhone").value.trim();
+			const useEndDtm = document.getElementById("useEndDatetime").value.trim();
+			const frstRegDtm = document.getElementById("firstRegDatetime").value.trim();
+			const compHmpgUrl = document.getElementById("companyHomepage").value.trim();
+			
+			if (document.getElementById("companyDivision").value.trim() == "DUNS Number") {
+				compNoDvCd = 1;
+			} else if (document.getElementById("companyDivision").value.trim() == "Corporation Number") {
+				compNoDvCd = 2;
+			} else if (document.getElementById("companyDivision").value.trim() == "Business Registration Number") {
+				compNoDvCd = 3;
+			};
+
+			
+			//필수 항목 체크
+
+    	if ( isNull(postNo) == "" ) {
+            alert("Enter your company postal code.");
+            $("#postalCode").focus();
+    		return;
+    	}
+    	
+    	if ( isNull(addrs) == "" ) {
+            alert("Enter your company address 1.");
+            $("#basicAddress").focus();
+    		return;
+    	}
+    	
+    	if ( isNull(dtlsAddrs) == "" ) {
+            alert("Enter your company address 2.");
+            $("#detailedAddress").focus();
+    		return;
+    	}
+
+    	if ( isNull(reperNm) == "" ) {
+            alert("Enter your company representative person name. (President, CEO etc.)");
+            $("#representativeName").focus();
+    		return;
+    	}
+
+    	if ( isNull(compHmpgUrl) == "" ) {
+            alert("Enter your company homepage URL.");
+            $("#companyHomepage").focus();
+    		return;
+    	}
+
+    	if ( isNull(repPhNo) == "" ) {
+            alert("Enter your company representative phone number.");
+            $("#representativePhone").focus();
+    		return;
+    	}
+
+			// 유효성 검사를 통과한 경우에만 데이터 전송
+			const companyData = {
+					compNm,
+					compNoDvCd,
+					compNo,
+					countryNmEng,
+					addrs,
+					dtlsAddrs,
+					postNo,
+					reperNm,
+					repPhNo,
+					useEndDtm,
+					frstRegDtm,
+					compHmpgUrl
+			};
+
+			// AJAX 요청을 통해 데이터 전송
+			$.ajax({
+				type: "POST",
+				url: "/ADMUSR001M0UpdateCompList", // API 엔드포인트 주소
+				contentType: "application/json; charset=utf-8",
+				data: JSON.stringify(companyData), // JSON 문자열로 변환
+				dataType: "json",
+				success: function (data) {
+					console.log("Response data: ", data);
+					// 성공 응답 처리
+					if (data.resultCode === "200") {
+						alert("Company information has been saved successfully!");
+						// 추가 작업 필요 시 여기에 작성
+					} else {
+						alert("Failed to save company information: " + data.message);
+					}
+				},
+				error: function (xhr, status, error) {
+					// 오류 처리
+
+					console.error("Error occurred: ", status, error);
+					alert("An error occurred while saving the data.");
+				}
+			});
+		}
+		
+		function updateServiceCode(){
+			var cfm_notice = "";
+			var alt_notice = "";
+			if (statDvCd == 0) {
+				cfm_notice = "Your unsubscribe request will be applied shortly, and the status of all users will be changed to 'inactive' simultaneously. Shall we proceed?";
+				alt_notice = "Your unsubscribe request has been sent successfully. We will check and approve it in a moment.";
+			} else {
+				cfm_notice = "Your withdraw request will be applied immediately. Shall we proceed?";
+				alt_notice = "Your request has been applied successfully. You can use iFrame2.0 as before.";
+			}
+			var res_cfm = confirm(cfm_notice);
+			if (res_cfm) {
+				var input = JSON.stringify({
+				});
+				fn_updateCs(input);
+				alert(alt_notice);
+	    	} else {
+	        	return false;
+	        }
+		}
+
+	</script>
+</th:block>
+</html>

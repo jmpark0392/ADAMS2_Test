@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rds.adams.web.wrk.fil.dao.WRKFIL003M0DAO">
+    <select id="selectTableInfoList" parameterType="com.rds.adams.web.wrk.fil.dto.WRKFIL003M0P0DTO" resultType="com.rds.adams.web.wrk.fil.dto.WRKFIL003M0R0DTO">
+        SELECT DISTINCT
+               A.TBL_ID       AS tblId      /* 테이블ID */
+             , A.CLMN_ID      AS clmnId     /* 컬럼ID */
+             , A.ITM_NM       AS itmNm      /* 칼럼명 */
+             , A.ORD_SEQ      AS ordSeq     /* 정렬순서 */
+             , A.PK_YN        AS pkYn       /* PK여부 */
+             , A.DATA_TP_CD   AS dataTpCd   /* 데이터타입ID */
+             , A.ITM_DSC      AS itmDsc     /* 항목설명 */
+             , A.VLVL_VRF_YN  AS vlvlVrfYn  /* 유효값검증여부 */
+             , A.VLVL_CD      AS vlvlCd     /* 유효값코드 */
+             , A.SEL_BAS_YN   AS selBasYn   /* 조회기준여부 */
+             , B.DB_ID        AS dbId       /* 데이터베이스ID */
+             , B.UI_SEL_YN    AS uiSelYn    /* 화면조회여부 */
+          FROM RDSDB.dbo.TB_UPL_ITM_LST A
+         INNER JOIN RDSDB.dbo.TB_UPL_FILE_LST B
+                 ON A.TBL_ID = B.TBL_ID
+                AND A.CS_NO  = B.CS_NO
+            <if test='uploadFile != ""'>
+                AND B.SEQ_NO = #{uploadFile}
+            </if>
+         WHERE 1=1
+	     <if test= 'csNo != "999"'>
+	       AND A.CS_NO       = #{csNo}
+	     </if>
+         ORDER BY A.ORD_SEQ
+    </select>
+    
+    <select id="selectFileList" parameterType="com.rds.adams.web.wrk.fil.dto.WRKFIL003M0P0DTO" resultType="com.rds.adams.web.wrk.fil.dto.WRKFIL003M0R1DTO">
+        SELECT DISTINCT
+               A.SEQ_NO
+             , A.FILE_NM
+             , A.DB_ID
+             , A.TBL_ID
+             , CONCAT(A.TBL_ID, '(', A.FILE_DSC, ')')  AS opName
+          FROM RDSDB.dbo.TB_UPL_FILE_LST A
+         WHERE 1=1
+	     <if test= 'csNo != "999"'>
+	       AND A.CS_NO = #{csNo}
+	     </if>
+           AND USE_YN = 'Y'
+           AND EXISTS (
+                        SELECT 1
+                          FROM RDSDB.dbo.TB_UPL_ITM_LST Z
+                         WHERE 1=1
+                           AND A.TBL_ID = Z.TBL_ID
+                      )
+         ORDER BY A.SEQ_NO
+    </select>
+    
+    <select id="selectList" parameterType="java.util.Map" resultType="java.util.HashMap">
+        ${sQuery}
+    </select>
+    
+    <insert id="insertDataList" >
+        ${sQuery}
+        <foreach collection="listMap" index="index" item="item" open="" close="" separator=",">
+            ${sAddQuery}
+        </foreach>
+    </insert>
+    
+    <delete id="deleteList">
+        ${dQuery}
+    </delete>
+    
+    <select id="selectDbObjCnt" resultType="java.lang.Integer">
+        SELECT 
+               COUNT(1) AS CNT
+          FROM [${sDbId}].SYS.OBJECTS AS O
+         WHERE 1=1
+           AND O.TYPE = 'U'
+           AND O.NAME = '${sTblNm}'
+    </select>
+    
+    <select id="selectTblCnt" resultType="java.lang.Integer">
+        ${sQuery}
+    </select>
+    
+    <insert id="insertUplHist" parameterType="com.rds.adams.web.wrk.fil.dto.WRKFIL003M0P1DTO" >
+		<selectKey keyProperty="seqNo" resultType="String" order="BEFORE">
+            SELECT TOP (1)
+                    CAST( (ISNULL( MAX( CAST( SEQ_NO AS numeric(5,0) )), 0) + 1) AS VARCHAR(10) )  AS seqNo
+              FROM [RDSDB].[dbo].[TB_UPL_HIST]
+             WHERE 1=1
+               AND CS_NO = #{csNo}
+        </selectKey>
+        INSERT INTO RDSDB.dbo.TB_UPL_HIST
+               (
+                 [CS_NO]
+               , [SEQ_NO]
+               , [DB_ID]
+               , [TBL_ID]
+               , [FILE_NM]
+               , [LOAD_STR_DTM]
+               , [LOAD_END_DTM]
+               , [LOAD_CNT]
+               , [LOAD_SUCC_YN]
+               , [STD_YYMM]
+               , [UUID]
+               , [FNL_UPD_EMP_NO]
+               , [FNL_UPD_DTM]
+               , [FRST_REG_EMP_NO]
+               , [FRST_REG_DTM]
+               )
+        VALUES
+               (
+                 #{csNo}
+               , #{seqNo}
+               , #{dbId}
+               , #{tblId}
+               , #{fileNm}
+               , GETDATE()
+               , NULL
+               , NULL
+               , NULL
+               , NULL
+               , NULL
+               , #{usrId}
+               , GETDATE()
+               , #{usrId}
+               , GETDATE()
+               )
+    </insert>
+    <update id="updateUplHist"  parameterType="com.rds.adams.web.wrk.fil.dto.WRKFIL003M0P1DTO" >
+        UPDATE RDSDB.dbo.TB_UPL_HIST
+           SET FILE_NM        = #{fileNm}
+             , LOAD_END_DTM   = GETDATE()
+             , LOAD_CNT       = #{loadCnt}
+             , LOAD_SUCC_YN   = #{loadSuccYn}
+             , STD_YYMM       = #{stdYymm}
+             , UUID           = #{uuid}
+             , FNL_UPD_EMP_NO = #{usrId}
+             , FNL_UPD_DTM    = GETDATE()
+         WHERE 1=1
+           AND SEQ_NO = #{seqNo}
+           AND CS_NO  = #{csNo}
+    </update>
+</mapper>

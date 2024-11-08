@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+	<th:block layout:fragment="content">
+		<script src="js/js-tabler/demo-theme.min.js?1692870487"></script>
+		<link href="css/common-css.css" rel="stylesheet" />
+		<div class="page-wrapper" id="page-wrapper">
+			<!-- Main Container -->
+			<div class="container" id="container">
+				<h2>[[${menuNm}]]</h2>
+				<div class="ptag-container">
+					<span>[[${navigator}]]</span>
+					<div class="row row-cards">
+						<!-- Basic Plan Card -->
+						<div class="col-sm-12 col-lg-4">
+							<a class="card card-link card-link-pop h-100">
+								<div class="card-header">
+									<div class="w-100 text-center">
+										<span class="fs-2" id="basicSrvcName"></span>
+									</div>
+								</div>
+								<div class="card-body text-center">
+									<span class="fs-1 fw-bold" id="basicSrvc"></span>&nbsp;<span>/ month</span>&nbsp;&nbsp;&nbsp;
+									<span class="fs-1 fw-bold" id="basicSrvcUser"></span>&nbsp;<span>included</span>
+									<br><br><br>
+									<ul class="list-unstyled lh-lg">
+										<li>
+											<!-- Check Icon -->
+											<svg xmlns="http://www.w3.org/2000/svg" class="icon me-1 text-success" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+												<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+												<path d="M5 12l5 5l10 -10" />
+											</svg>
+											Custom Table Creation
+										</li>
+										<li>
+											<!-- Check Icon -->
+											<svg xmlns="http://www.w3.org/2000/svg" class="icon me-1 text-success" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+												<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+												<path d="M5 12l5 5l10 -10" />
+											</svg>
+											File to DB Migration
+										</li>
+										<li>
+										<!-- Check Icon -->
+											<svg xmlns="http://www.w3.org/2000/svg" class="icon me-1 text-success" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+												<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+												<path d="M5 12l5 5l10 -10" />
+											</svg>
+											Batch Job Running
+										</li>
+										<li>
+											<!-- Check Icon -->
+											<svg xmlns="http://www.w3.org/2000/svg" class="icon me-1 text-success" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+												<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+												<path d="M5 12l5 5l10 -10" />
+											</svg>
+											Liabilities Calculation
+										</li>
+										<li>
+											<!-- Check Icon -->
+											<svg xmlns="http://www.w3.org/2000/svg" class="icon me-1 text-success" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+												<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+												<path d="M5 12l5 5l10 -10" />
+											</svg>
+											User Management
+										</li>
+										<li>
+										<!-- Check Icon -->
+											<svg xmlns="http://www.w3.org/2000/svg" class="icon me-1 text-success" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+												<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+												<path d="M5 12l5 5l10 -10" />
+											</svg>
+											Cost & Usage Monitoring
+										</li>
+									</ul>
+								</div>
+								<div class="card-footer card-footer-transparent">
+									<button class="btn btn-primary w-100" id="basicSubscriptionButton" onclick="useBasicSubscription()"></button>
+								</div>
+							</a>
+						</div>
+						<div class="col-sm-12 col-lg-4">
+							<a class="card card-link card-link-pop h-100">
+								<div class="card-header">
+									<div class="w-100 text-center">
+										<span class="fs-2" id="premiumSrvcName"></span>
+									</div>
+								</div>
+								<div class="card-body text-center">
+									<span class="fs-1 fw-bold" id="premiumSrvc"></span>&nbsp;<span>/ month</span>&nbsp;&nbsp;&nbsp;
+									<span class="fs-1 fw-bold" id="premiumSrvcUser"></span>&nbsp;<span>included</span>
+									<br><br><br>
+									<ul class="list-unstyled lh-lg">
+										<li>
+											Basic Service
+										</li>
+										<li>
+											<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-copy-plus">
+												<path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+												<path stroke="none" d="M0 0h24v24H0z" />
+												<path d="M7 9.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
+												<path d="M4.012 16.737a2 2 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
+												<path d="M11 14h6" />
+												<path d="M14 11v6" />	
+											</svg>
+										</li>
+										<li>
+											<!-- Check Icon -->
+											<svg xmlns="http://www.w3.org/2000/svg" class="icon me-1 text-success" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+												<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+												<path d="M5 12l5 5l10 -10" />
+											</svg>
+											Account Journaling
+										</li>
+										<li>
+											<!-- Check Icon -->
+											<svg xmlns="http://www.w3.org/2000/svg" class="icon me-1 text-success" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+												<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+												<path d="M5 12l5 5l10 -10" />
+											</svg>
+											Balance Sheet Creation
+										</li>
+										<li>
+											<!-- Check Icon -->
+											<svg xmlns="http://www.w3.org/2000/svg" class="icon me-1 text-success" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+												<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+												<path d="M5 12l5 5l10 -10" />
+											</svg>
+											Profit and Loss Creation
+										</li>
+										<li>
+											<!-- Check Icon -->
+											<svg xmlns="http://www.w3.org/2000/svg" class="icon me-1 text-success" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+												<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+												<path d="M5 12l5 5l10 -10" />
+											</svg>
+											Audit Trailing
+										</li>
+									</ul>
+								</div>
+								<div class="card-footer card-footer-transparent">
+									<button class="btn btn-primary w-100" id="premiumSubscriptionButton" onclick="usePremiumSubscription()"></button>
+								</div>
+							</a>
+						</div>
+						<div class="col-sm-12 col-lg-4">
+							<a class="card card-link card-link-pop h-100">
+								<div class="card-header">
+									<div class="w-100 text-center">
+										<span class="fs-2">Additional Cost & Options</span>
+									</div>
+								</div>
+								<div class="card-body text-center">
+									<div class="text-start">
+										&emsp;&emsp;<span class="fs-1 fw-bold" id="premiumSrvc">$ 0.00045</span>&nbsp;<span> / kb of uploaded file size</span>
+										<br>
+										&emsp;&emsp;<span class="fs-1 fw-bold" id="premiumSrvcUser">$ 0.53</span>&nbsp;<span>/ second of job running time</span>
+									</div>
+									<br><br>
+									<form id="optionForm">
+										<div class="text-center mt-5 mb-2">
+											<span class="fs-3">Option for adding users</span>
+										</div>
+										<div>
+											<select id="optionSelect" class="form-select">
+												<option value="">select the number of users</option>
+											</select>
+										</div>
+									</form>
+								</div>
+								<div class="text-center mb-5">
+									<span>Option currently in use :&nbsp;</span>
+									<span id="selectedOption" class="fw-bold"></span>
+								</div>
+								<div class="card-footer card-footer-transparent">
+									<button type="button" class="btn btn-secondary w-100" onclick="addOption()">Add</button>
+								</div>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			
+			var lv_optDtlsDesc = "";
+			var lv_optDtlsData;
+			
+			function mergeSrvcOptList(id, input) {
+				console.log("mergeSrvcOptList input : " + input);
+				var option = {
+							   id          : id
+						     , type        : "POST"
+							 , url         : "/ADMSRV001M0MergeServiceOption"
+							 , async       : true
+							 , dataType    : "json"
+							 , contentType : "application/json; charset=utf-8"
+							 , data        : input
+				             };
+				
+				gf_Transaction(option, fn_callback );
+			}
+		
+			function saveOptDtlsList(input) {
+				console.log("saveOptDtlsList input : " + input);
+				var option = {
+							   id          : "UpdateOptionDetails"
+						     , type        : "POST"
+							 , url         : "/ADMSRV001M0UpdateOptionDetails"
+							 , async       : true
+							 , dataType    : "json"
+							 , contentType : "application/json; charset=utf-8"
+							 , data        : input
+				             };
+				
+				gf_Transaction(option, fn_callback );
+			}
+		
+			function selectAllOpt(input) {
+				console.log("selectAllOpt input : " + input);
+				var option = {
+							   id          : "SelectAllOptions"
+						     , type        : "POST"
+							 , url         : "/ADMSRV001M0SelectAllOptions"
+							 , async       : true
+							 , dataType    : "json"
+							 , contentType : "application/json; charset=utf-8"
+							 , data        : input
+				             };
+				
+				gf_Transaction(option, fn_callback );
+			}
+		
+			function getUsrSubScrpInfo(input) {
+				console.log("getUsrSubScrpInfo input : " + input);
+				var option = {
+							   id          : "getUsrSubScrpInfo"
+						     , type        : "POST"
+							 , url         : "/getUserSubscriptionInfo"
+							 , async       : true
+							 , dataType    : "json"
+							 , contentType : "application/json; charset=utf-8"
+							 , data        : input
+				             };
+				
+				gf_Transaction(option, fn_callback );
+			}
+		
+			function getSrvcUprcInfo(input) {
+				console.log("getUsrSubScrpInfo input : " + input);
+				var option = {
+							   id          : "SelectSrvcUprcInfo"
+						     , type        : "POST"
+							 , url         : "/ADMSRV001M0SelectSrvcUprcInfo"
+							 , async       : true
+							 , dataType    : "json"
+							 , contentType : "application/json; charset=utf-8"
+							 , data        : input
+				             };
+				
+				gf_Transaction(option, fn_callback );
+			}
+			
+			/**
+			 * Transaction callback 함수
+			**/
+			function fn_callback(result) {
+				console.log("fn_callback : " + result);
+				if ( result.resultCd == "S" ) {
+					
+					switch (result.id) {
+						case "MergeServiceOptionBasic":
+							console.log("Response data:", result);
+							if (result.data.resultCode == "200") {
+								console.log("Basic Subscription activation successful:", result.data);
+								// will update the ui accordingly
+								$("#basicSubscriptionButton")
+									.removeClass("btn btn-primary w-100")
+									.addClass("btn btn-success w-100")
+									.text("Current Plan")
+									.removeAttr("onclick");
+									//.prop("disabled", true);
+								$("#premiumSubscriptionButton")
+									.removeClass("btn btn-success w-100")
+									.addClass("btn btn-primary w-100")
+									.text("Upgrade Now!")
+									.attr("onclick","usePremiumSubscription()");
+								//.prop("disabled", false);
+								alert("Your company is currently subscribing to Basic Plan, and it will be redirected to the login page.");
+								window.location.href="/";
+							} else {
+								alert("Failed to activate the Basic Subscription service. error : " + result.data.resultMessage);
+							}
+							
+						break;
+						case "MergeServiceOptionPremium":
+							console.log("Response data:", result);
+							if (result.data.resultCode == "200") {
+								console.log("Premium Subscription activation successful:", result.data);
+								// will update the ui to show the ui accordingly
+								$("#premiumSubscriptionButton")
+									.removeClass("btn btn-primary w-100")
+									.addClass("btn btn-success w-100")
+									.text("Current Plan")
+									.removeAttr("onclick");
+									//.prop("disabled", true);
+								$("#basicSubscriptionButton")
+									.removeClass("btn btn-success w-100")
+									.addClass("btn btn-primary w-100")
+									.text("Seriously?")
+									.attr("onclick","useBasicSubscription()");
+									//.prop("disabled", false);
+							  	alert("Your company is currently subscribing to Premium Plan, and it will be redirected to the login page.");
+							  	window.location.href="/";
+							} else {
+							  alert("Failed to activate the Premium Subscription service. error : " + result.data.resultMessage);
+							}
+						break;
+						case "UpdateOptionDetails":
+							console.log("Respopnse data from the option addition: ", result.data);
+							if (result.data.resultCode == "200") {
+								console.log("Option addition successful:", result.data);
+								$("#selectedOption").text(lv_optDtlsDesc);
+								alert("Your option has been updated successfully, and you can add users from now on.");
+							} else {
+								alert("Failed to add option. error : " + result.data.resultMessage);
+							}
+						break;
+						case "SelectAllOptions":
+							console.log("Options fetched successfully:", result.data);
+							
+							var $optionSelect = $("#optionSelect");
+							
+							$optionSelect.empty();
+							$optionSelect.append('<option value="">select the number of users</option>');
+					
+							// if there is data, we populate the select element
+							if (result.data.length > 0) {
+								lv_optDtlsData = result.data;
+								$.each(result.data, function (index, option) {
+									let optCd       = option.optCd;
+									let optDtlsDesc = option.optDtlsDesc;
+									let optDtlsCd   = option.optDtlsCd;
+									
+									var value = optCd + "|" + optDtlsCd + "|" + optDtlsDesc;
+									
+									console.log("Console logging the value: ", value); 
+									
+									$optionSelect.append(
+										'<option value="' + value + '">' + optDtlsDesc + "</option>"
+								  	);
+								});
+								
+								console.log("Options added to select element: ", result.data);
+								
+								// Now fetch user subscription info and compare
+								getUsrSubScrpInfo(JSON.stringify({  }));
+							  } else {
+								$optionSelect.append('<option value="">No options available</option>');
+							  }
+						break;
+						case "getUsrSubScrpInfo":
+							console.log("User subscription info:", result.data);
+							
+							if (result.data && result.data.length > 0) {
+								var subscription = result.data[0];
+								
+								updateSubscriptionButtons(subscription.srvcCd);
+								
+								var matchingOption = lv_optDtlsData.find(option => option.optDtlsCd === subscription.optDtlsCd);
+								
+								if (matchingOption) {
+									var optionValue = matchingOption.optCd + "|" + matchingOption.optDtlsCd + "|" + matchingOption.optDtlsDesc;
+									$("#optionSelect").val(optionValue);
+									$("#selectedOption").text(matchingOption.optDtlsDesc);
+								} else {
+									$("#optionSelect").val("");
+									$("#selectedOption").text("None");
+								}
+							} else {
+								updateSubscriptionButtons(null);
+								$("#selectedOption").text("None");
+							}
+						break;
+						case "SelectSrvcUprcInfo":
+							console.log(" Service Price info:", result.data);
+							
+							if (result.data.data && result.data.data.length > 0) {
+								
+								for( var i=0; i<result.data.data.length; i++ ) {
+									if( result.data.data[i].srvcCd == "01" ){
+										console.log(" Service Name/Price : " + result.data.data[i].srvcNm + " / " + result.data.data[i].srvcUprc );
+										// TO-DO : Basic 가격 Label 변경. 
+										let basicSrvc = $("#basicSrvc");
+										let basicSrvcName = $("#basicSrvcName");
+										let basicSrvcUser = $("#basicSrvcUser");
+										basicSrvc.text("$ " + result.data.data[i].srvcUprc) 
+										basicSrvcName.text(result.data.data[i].srvcNm);
+										basicSrvcUser.text(result.data.data[i].basicsUsrCnt + " Users");
+									}
+									if( result.data.data[i].srvcCd == "02" ){
+										console.log(" Service Name/Price : " + result.data.data[i].srvcNm + " / " + result.data.data[i].srvcUprc );
+										// TO-DO : Premium 가격 Label 변경. 
+										let premiumSrvc = $("#premiumSrvc");
+										let premiumSrvcName = $("#premiumSrvcName");
+										let premiumSrvcUser = $("#premiumSrvcUser");
+										premiumSrvc.text("$ " +  result.data.data[i].srvcUprc);
+										premiumSrvcName.text(result.data.data[i].srvcNm);
+										premiumSrvcUser.text(result.data.data[i].basicsUsrCnt + " Users");
+									}
+								}
+								
+								selectAllOpt(JSON.stringify({  }));
+							} else {
+								updateSubscriptionButtons(null);
+							}
+						break;
+					}
+					
+				} else if( result.resultCd == "E" ) {
+					switch (result.id) {
+						case "MergeServiceOptionBasic":
+							console.error("Error activating Premium Subscription:",result.xhr.responseText || result.status, result.error);
+							alert("Failed to activate Basic Subscription.");
+						break;
+						case "MergeServiceOptionPremium":
+							console.error( "Error activating Premium Subscription:", result.xhr.responseText || result.status, result.error);
+							alert("Failed to activate Premium Subscription.");
+						break;
+						case "UpdateOptionDetails":
+							console.error("Error adding option:", result.status, result.error);
+							alert("Failed to add option.");
+						break;
+						case "UpdateOptionDetails":
+							console.error("Error fetching options:", result.status, result.error);
+							$("#optionSelect").html('<option value="">Error loading options</option>');
+						break;
+						case "getUsrSubScrpInfo":
+							$optionSelect.append('<option value="">No options available</option>');
+						break;
+					}
+					
+				} else {
+					console.log("fn_callback result : ", result);
+				}
+				
+			}
+			
+			// Function to handle "Use" button click for Basic Subscription
+			function useBasicSubscription() {
+				var res_cfm = confirm("Basic Plan will be applied immediately, and, once your service option is changed, you need to log in anew. Shall we proceed?");
+				
+				if (res_cfm) {
+					mergeSrvcOptList( "MergeServiceOptionBasic", JSON.stringify({ srvcCd: "01" }) );
+				} else {
+					return false;
+				}
+			}
+		
+			// Function to handle "Use" button click for Premium Subscription
+			function usePremiumSubscription() {
+				var res_cfm = confirm("Premium Plan will be applied immediately, and, once your service option is changed, you need to log in anew. Shall we proceed?");
+		
+				if (res_cfm) {
+					mergeSrvcOptList( "MergeServiceOptionPremium", JSON.stringify({ srvcCd: "02" }) );
+				} else {
+					return false;
+				}
+			}
+		
+			// Function to handle "Add" button click in Option Addition
+			function addOption() {
+				var res_cfm = confirm("The selected option will be applied immediately. Shall we proceed?");
+				
+				if (res_cfm) {
+					var optCd       = "";
+					let optDtlsCd   = "";
+					let optDtlsDesc = "";
+					let valuOfSlctedVal;
+					
+					var selectedValue = $("#optionSelect").val();
+					
+					/*//추가인원을 0으로 할수있게 주석처리
+					if (selectedValue === "") {
+						alert("Please select an option to add.");
+						return;
+					}
+					*/
+
+					if (selectedValue != "") {
+					// get the optDtlsCd from the selectedValue
+						valuOfSlctedVal = selectedValue.split("|")
+			
+						console.log("Console logging the valuOfSlctedVale: ", valuOfSlctedVal);  
+			
+						optCd       = valuOfSlctedVal[0];
+						optDtlsCd   = valuOfSlctedVal[1];
+						optDtlsDesc = valuOfSlctedVal[2] + " | " + valuOfSlctedVal[3];
+			
+						console.log("Console logging the optCd: "      , optCd);
+						console.log("Console logging the optDtlsCd: "  , optDtlsCd);
+						console.log("Console logging the optDtlsDesc: ", optDtlsDesc);
+
+					}
+					
+					lv_optDtlsDesc = optDtlsDesc;
+					
+					saveOptDtlsList( JSON.stringify({ optCd: optCd, optDtlsCd: optDtlsCd }) );
+			
+				} else {
+					return false;
+				}
+			}
+			
+			// function to fetcht the options and compare with the user subscription info
+			function fetchOptionsAndCompare() {
+				
+				selectAllOpt(JSON.stringify({  }));
+				
+			}
+			
+			// function to fetcht the options and compare with the user subscription info
+			function main() {
+				
+				getSrvcUprcInfo(JSON.stringify({  }));
+				
+			}
+		
+			// button update function based on the service code 
+			function updateSubscriptionButtons(srvcCd) {
+			  $("#basicSubscriptionButton, #premiumSubscriptionButton").removeClass("btn-success").addClass("btn-primary w-100");
+			  
+			  if (srvcCd === "01") {
+				$("#basicSubscriptionButton")
+				  .removeClass("btn-primary").addClass("btn-success")
+				  .text("Current Plan")
+				  .removeAttr("onclick");
+				$("#premiumSubscriptionButton")
+				  .text("Upgrade Now!")
+				  .attr("onclick", "usePremiumSubscription()");
+			  } else if (srvcCd === "02") {
+				$("#premiumSubscriptionButton")
+				  .removeClass("btn-primary").addClass("btn-success")
+				  .text("Current Plan")
+				  .removeAttr("onclick");
+				$("#basicSubscriptionButton")
+				  .text("Seriously?")
+				  .attr("onclick", "useBasicSubscription()");
+			  } else {
+				$("#basicSubscriptionButton")
+				  .text("Good Plan!")
+				  .attr("onclick", "useBasicSubscription()");
+				$("#premiumSubscriptionButton")
+				  .text("Better Plan!")
+				  .attr("onclick", "usePremiumSubscription()");
+			  }
+			}
+		
+			// Call this function when the page loads
+			$(document).ready(function () {
+				main();
+			});
+	
+		</script>
+		<script src="js/utils.js"></script>
+	</th:block>
+</html>

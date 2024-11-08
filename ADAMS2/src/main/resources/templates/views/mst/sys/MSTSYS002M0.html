@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html
+  lang="ko"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layout}"
+>
+  <th:block layout:fragment="content">
+    <!-- <form name="form" method="post" action="/MSTSYS001M0SelectList" onsubmit="return false;">
+        * 조회조건<br/>
+        검색 : <input type="text" id="inpSearchTxt" name="inpSearchTxt" value=""><br/>
+        <input type="button" id="inpSend" value="send" onclick="main()"/>
+        <p>&nbsp;</p>
+    </form> -->
+<!-- 
+    <button form="new-form" onclick="renewOptions(true);openDetails('create');" data-test="create-button" onsubmit="return false;">
+        신규
+    </button>
+    <button form="new-form" onclick="renewOptions(true);openDetails('edit');" data-test="edit-button" onsubmit="return false;">
+        수정
+    </button>
+    <button id="downloadExcel">다운로드(엑셀)</button>
+    <table align="center">
+        <div id="divMyGrid" style="width:1200px;height:500px;"></div>
+    </table> -->
+
+
+    <!-- 코드상세용 버튼 추가 -->
+    <!-- <button id="addRowB">행추가</button>
+    <button id="saveB">저장</button>
+    <button id="downloadExcelB">다운로드(엑셀)</button>
+    <table align="center">
+        <div id="divMyGridB" style="width:1200px;height:500px;"></div>
+    </table> --> 
+ >
+ <script src="js/js-tabler/demo-theme.min.js?1692870487"></script>
+    <div class="page-wrapper" id="page-wrapper">
+      <div class="container" id="container">
+        <h2>Account Code</h2>
+        <div class="ptag-container">
+          <span><a href="#"> Settlement ></a></span>
+          <span><a href="#"> Account Code</a></span>
+          <div class="form-container">
+            <div class="form-box">
+              <form
+                id="filter-form"
+                name="form"
+                method="post"
+                action="/MSTSYS001M0SelectList"
+                onsubmit="return false;"
+              >
+                <div class="row">
+                  <div class="col">
+                    <input
+                      id="inpSearchTxt"
+                      name="inpSearchTxt"
+                      type="text"
+                      class="form-input-temp"
+                      placeholder="Input Name"
+                    />
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      style="padding: 4px 10px; color: white; font-size: 13px"
+                      onclick="main()"
+                    >
+                      Search
+                    </button>
+                  </div>
+                  <div class="col text-end">
+                    <button
+                      form="new-form"
+                      type="button"
+                      class="btn btn-primary"
+                      style="padding: 4px 10px; color: white; font-size: 13px"
+                      onclick="renewOptions(true);openDetails('create');{(ev) => {if (ev.detail === 0) {ev.preventDefault();}}}"
+                      data-test="create-button"
+                      onsubmit="return false;"
+                    >
+                      Create
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-lime"
+                      style="padding: 4px 10px; color: white; font-size: 13px"
+                      id="downloadExcel"
+                    >
+                      Download
+                    </button>
+                    <button
+                      form="new-form"
+                      type="button"
+                      class="btn btn-secondary"
+                      style="padding: 4px 10px; color: white; font-size: 13px"
+                      onclick="renewOptions(true);openDetails('edit');{(ev) => {if (ev.detail === 0) {ev.preventDefault();}}}"
+                      data-test="edit-button"
+                      onsubmit="return false;"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      id="addRowB"
+                      form="new-form"
+                      type="button"
+                      class="btn btn-primary"
+                      style="padding: 4px 10px; color: white; font-size: 13px"
+                      data-test="edit-button"
+                      onsubmit="return false;"
+                    >
+                    Add Row 
+                    </button>
+                    <button
+                      id="saveB"
+                      form="new-form"
+                      type="button"
+                      class="btn btn-lime"
+                      style="padding: 4px 10px; color: white; font-size: 13px"
+                      data-test="edit-button"
+                      onsubmit="return false;"
+                    >
+                      Save Row
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div style="padding-top: 2em"></div>
+          <div id="divMyGrid">
+            <table align="center" class="table"></table>
+          </div>
+        </div>
+        <div class="popupDataForm">
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#exampleModal"
+            style="display: none"
+          >
+            Launch modal with form
+          </button>
+          <div
+            class="modal fade"
+            id="exampleModal"
+            tabindex="-1"
+            style="display: none"
+          >
+            <div class="modal-dialog modal-small" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">New report</h5>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <div class="row">
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <a
+                    href="#"
+                    class="btn btn-link link-secondary"
+                    data-bs-dismiss="modal"
+                    >Cancel</a
+                  >
+                  <a
+                    href="#"
+                    class="btn btn-primary ms-auto"
+                    data-bs-dismiss="modal"
+                    style="padding: 4px 10px; color: white; font-size: 13px"
+                    >Save changes</a
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="js/utils.js"></script>
+    <script>
+        function checkData(data){
+            return parentCheckData(data, check_cols);
+        }
+        
+        function getFile(input){
+            return parentGetFile(input, '/MSTSYS002M0SelectList');
+        }
+        
+        function insertFile(addedRow) { 
+            parentInsertFile(addedRow, '/MSTSYS002M0InsertList')
+        }
+        
+        function updateFile(updatedRow) {
+            parentUpdateFile(updatedRow, '/MSTSYS002M0UpdateList')
+        }
+        
+        function strLenValidator(value, args) {
+            return nStrLengthValidator(value, args, len = 5);
+        }
+        
+        function parentGetFileB(input, url){
+            console.log("Sending AJAX request...");
+            var result_data;
+            $.ajax({
+                type: 'post',
+                url: url,
+                async: false,
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                data: input,
+                success: function(data) {
+                    console.log("AJAX request successful. Data received:", data);
+                    result_data = data;
+                    if (data && data.length > 0) {
+                        console.log("The number of Data :", data.length);
+                    } else {
+                        console.log("No data returned from the server.");
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("!!!! ERROR !!!!!", status, error);
+                    result_data = 'fail'
+                    }
+            });
+            return result_data;
+        }
+
+        function getFileB(input) {
+            return parentGetFileB(input, '/MSTSYS002M1SelectList');
+        }
+
+        function insertFileB(addedRow) {
+            parentInsertFile(addedRow, '/MSTSYS002M1InsertList');
+        }
+
+        function updateFileB(updatedRow) {
+            parentUpdateFile(updatedRow, '/MSTSYS002M1UpdateList');
+        }
+        
+        // B Grid 초기화 및 데이터 로드 함수
+        function initializeBGrid(dataB) {
+            dataViewB = new Slick.Data.DataView();
+            gridB = new Slick.Grid("#divMyGridB", dataViewB, columnsB, {...options, editable: true});
+            
+            dataViewB.onRowCountChanged.subscribe(function (e, args) {
+                gridB.updateRowCount();
+                gridB.render();
+            });
+            
+            dataViewB.onRowsChanged.subscribe(function (e, args) {
+                gridB.invalidate();
+                gridB.render();
+            });
+            
+            dataViewB.setItems(dataB, 'vlvlCd');
+            
+            gridB.setSelectionModel(new Slick.CellSelectionModel());
+            gridB.registerPlugin(new Slick.AutoTooltips());
+            gridB.getCanvasNode().focus();
+            gridB.registerPlugin(new Slick.CellExternalCopyManager(pluginOptions));
+        }
+    </script>
+    <script>
+        $(document).ready(function() {
+            console.log("Document is ready.");
+            //화면 접속시 바로 조회
+            main();
+            //send버튼 누르면, 조건적용하여 검색
+            $("#send").click(main);
+            //엔터키누르면, 조건적용하여 검색
+            $("input").on("keyup", function(key) {
+                if (key.keyCode == 13) {
+                    main();
+                }
+            });
+        });
+
+        var grid, gridB;
+        var dataView, dataViewB;
+        var data, dataB;
+        var unqId = "cdId";
+        var xcpt_cols = ["regId", "regDt"];
+        var check_cols = [unqId];
+        var columns = [
+            {id: unqId, name: "코드ID", field: unqId, sortable: true, editor: Slick.Editors.Text, validator: (value, args) => complexValidator(value, args, [createValidator, noWhitespaceValidator, strLenValidator])},
+            {id: "coCd", name: "코드", field: "coCd", sortable: true, editor: Slick.Editors.Text, validator: (value, args) => complexValidator(value, args, [createValidator, noWhitespaceValidator])},
+            {id: "coCdNm", name: "코드명", field: "coCdNm", sortable: true, editor: Slick.Editors.Text, validator: (value, args) => complexValidator(value, args, [createValidator, noWhitespaceValidator])},
+            {id: "coCdDesc", name: "설명", field: "coCdDesc", sortable: true, editor: Slick.Editors.Text, validator: createValidator},
+            {id: "etc1Desc", name: "기타1내용", field: "etc1Desc", sortable: true, editor: Slick.Editors.Text  },
+            {id: "etc2Desc", name: "기타2내용", field: "etc2Desc", sortable: true, editor: Slick.Editors.Text  },
+            {id: "etc3Desc", name: "기타3내용", field: "etc3Desc", sortable: true, editor: Slick.Editors.Text  },
+            {id: "useYn", name: "사용여부", field: "useYn", sortable: true, editor: function(args) {
+                    return new ComboBoxEditor(args, [
+                        { key: 'Y', value: 'Y' },
+                        { key: 'N', value: 'N' }
+                    ]);
+                }},
+            {id: "regId", name: "등록자", field: "regId", sortable: true, editor: Slick.Editors.Text},
+            {id: "regDt", name: "등록일", field: "regDt", sortable: true, editor: Slick.Editors.Text}
+        ];
+
+        var columnsB = [
+            {id: "cdId", name: "코드ID", field: "cdId", sortable: true, editor: Slick.Editors.Text},
+            {id: "vlvlCd", name: "코드유효값", field: "vlvlCd", sortable: true, editor: Slick.Editors.Text},
+            {id: "vlvlNm", name: "코드유효값명", field: "vlvlNm", sortable: true, editor: Slick.Editors.Text},
+            {id: "vlvlDesc", name: "설명", field: "vlvlDesc", sortable: true, editor: Slick.Editors.Text},
+            {id: "etc1Desc", name: "기타1", field: "etc1Desc", sortable: true, editor: Slick.Editors.Text},
+            {id: "etc2Desc", name: "기타2", field: "etc2Desc", sortable: true, editor: Slick.Editors.Text},
+            {id: "etc3Desc", name: "기타3", field: "etc3Desc", sortable: true, editor: Slick.Editors.Text},
+            {id: "useYn", name: "사용여부", field: "useYn", sortable: true, editor: Slick.Editors.Text},
+            {id: "regId", name: "등록자", field: "regId", sortable: true, editor: Slick.Editors.Text},
+            {id: "regDt", name: "등록일", field: "regDt", sortable: true, editor: Slick.Editors.Text}
+        ];
+
+        var options = {
+            enableCellNavigation: true,
+            enableColumnReorder: false,
+            forceFitColumns: true,
+            multiColumnSort: true,
+            numberedMultiColumnSort: true,
+            tristateMultiColumnSort: true,
+            sortColNumberInSeparateSpan: true,
+            enableAutoSizeColumns: true,
+            editable: false,
+            enableAddRow: true,
+            asyncEditorLoading: false,
+            autoEdit: false,
+            autoEditNewRow: false
+        };
+
+        var newRowIds = 0;
+
+        var pluginOptions = {
+            clipboardCommandHandler: function(editCommand){ undoRedoBuffer.queueAndExecuteCommand.call(undoRedoBuffer,editCommand); },
+            readOnlyMode : false,
+            includeHeaderWhenCopying : false,
+            newRowCreator: function(count) {
+                for (var i = 0; i < count; i++) {
+                    var item = {
+                        id: "newRow_" + newRowIds++
+                    }
+                grid.getData().addItem(item);
+                }
+            }
+        };
+        var selectedCdId = null;
+        
+        function main(){
+            console.log("Initializing SlickGrid...");
+            data = getFile(input=JSON.stringify({searchTxt: $("#inpSearchTxt").val()}));
+            
+            dataView = new Slick.Data.DataView();
+            grid = new Slick.Grid("#divMyGrid", dataView, columns, options);
+            
+            dataView.onRowCountChanged.subscribe(function (e, args) {
+              grid.updateRowCount();
+              grid.render();
+            });
+            
+            dataView.onRowsChanged.subscribe(function (e, args) {
+              grid.invalidate();
+              grid.render();
+            });
+            
+            dataView.setItems(data, unqId);
+            
+            grid.onBeforeSort.subscribe(function (e, args) {
+              return true;
+            });
+            
+            grid.onSort.subscribe(function (e, args) {
+                var cols = args.sortCols;
+                data.sort(function (dataRow1, dataRow2) {
+                    for (var i = 0, l = cols.length; i < l; i++) {
+                        var field = cols[i].sortCol.field;
+                        var sign = cols[i].sortAsc ? 1 : -1;
+                        var value1 = dataRow1[field], value2 = dataRow2[field];
+                        var result = (value1 == value2 ? 0 : (value1 > value2 ? 1 : -1)) * sign;
+                        if (result != 0) {
+                            return result;
+                        }
+                    }
+                    return 0;
+                });
+                grid.render();
+            });
+            
+            grid.setSelectionModel(new Slick.CellSelectionModel());
+            grid.registerPlugin(new Slick.AutoTooltips());
+            
+            grid.getCanvasNode().focus();
+            grid.registerPlugin(new Slick.CellExternalCopyManager(pluginOptions));
+            
+            grid.onAddNewRow.subscribe(function (e, args) {
+              var newItem = args.item;
+              var column = args.column;
+              dataView.beginUpdate();
+              dataView.setItems(data);
+              dataView.endUpdate();
+              grid.updateRowCount();
+              grid.render();
+            });
+            
+            grid.onBeforeEditCell.subscribe(function (e, args) {
+              console.log("onBeforeEditCell");
+            });
+            
+            grid.onCellChange.subscribe(function (e, args) {
+              dataView.beginUpdate();
+              dataView.setItems(data);
+              dataView.endUpdate();
+              grid.updateRowCount();
+              grid.render();
+            });
+            
+            grid.onValidationError.subscribe(function (e, args) {
+              if (args.validationResults) {
+                let errorMsg = args.validationResults.msg || '';
+                if (args.editor && (args.editor instanceof Slick.CompositeEditor)) {
+                  if (args.validationResults.errors) {
+                    errorMsg += '\n';
+                    args.validationResults.errors.forEach(function (error, errorIndex) {
+                      const columnName = error.editor.args.column.id;
+                      errorMsg += `${columnName.toUpperCase()}: ${error.msg}`;
+                    });
+                  }
+                  console.log(errorMsg);
+                }
+              } else {
+                alert(errorMessages);
+              }
+            });
+            
+            // A Grid의 더블 클릭 이벤트에 B Grid 데이터 로드
+            grid.onDblClick.subscribe(function(e, args) {
+                const item = dataView.getItem(args.row);
+                if (item && item[unqId]) {
+                    selectedCdId = item[unqId]; // 선택된 코드ID 값 저장
+                    loadDetailGrid(item[unqId]);
+                }
+            });
+            
+            grid.setActiveCell(0, 0);
+            console.log("SlickGrid initialized.");
+        };
+        
+        var originalDataB = [];
+        // B Grid 데이터 로드 함수
+        function loadDetailGrid(cdId) {
+            console.log(`Loading details for cdId: ${cdId}`);
+            dataB = getFileB(JSON.stringify({ cdIdTxt: cdId }));
+            originalDataB = JSON.parse(JSON.stringify(dataB));
+            console.log("originalDataB: ", originalDataB);
+            initializeBGrid(dataB);
+        }
+        
+        // Download Excel functionality
+        document.getElementById('downloadExcel').addEventListener('click', function() {
+            const currDate = getCurrentDateTime();
+            const fileName = 'MSTSYS002_CA_' + currDate; // 원하는 파일 이름으로 변경 가능
+            const sheetName = '코드목록'; // 시트 이름
+            const gridColumns = columns; // SlickGrid의 컬럼 배열
+            const gridData = dataView.getItems(); // SlickGrid의 데이터 배열
+            exportToExcel(fileName, sheetName, gridColumns, gridData);
+        });
+        
+        // B Grid에 행 추가
+        document.getElementById('addRowB').addEventListener('click', function() {
+            if (selectedCdId) {
+                const newItem = {
+                    cdId: selectedCdId,
+                    vlvlCd: '',
+                    vlvlNm: '',
+                    vlvlDesc: '',
+                    etc1Desc: '',
+                    etc2Desc: '',
+                    etc3Desc: '',
+                    useYn: 'Y',
+                    regId: 'admin',
+                    regDt: new Date().toISOString().split('T')[0]
+                };
+                dataViewB.addItem(newItem);
+            } else {
+                alert('A Grid에서 행을 선택하세요.');
+            }
+        });
+        
+        // B Grid 데이터 저장 (디버깅대상)
+        document.getElementById('saveB').addEventListener('click', function() {
+            const items = dataViewB.getItems();
+            const newItems = [];
+            const updatedItems = [];
+            
+            items.forEach(item => {
+                if (!originalDataB) {
+                    // originalDataB가 null인 경우 새로운 항목으로 처리
+                    newItems.push(item);
+                } else {
+                    const originalItem = originalDataB.find(origItem => origItem.vlvlCd === item.vlvlCd);
+                
+                    if (!originalItem) {
+                        // originalItem이 없으면 새로 추가된 항목
+                        newItems.push(item);
+                    } else {
+                        // originalItem이 존재하면 변경 여부 확인
+                        let isChanged = false;
+                        for (const key in item) {
+                            if (item[key] !== originalItem[key]) {
+                                isChanged = true;
+                                break;
+                            }
+                        }
+                        if (isChanged) {
+                            updatedItems.push(item);
+                        }
+                    }
+                }
+            });
+            
+            // 변경된 데이터가 없는 경우
+            if (newItems.length === 0 && updatedItems.length === 0) {
+                alert('변경된 부분이 없습니다.');
+                return;
+            }
+            
+            // insert 작업 수행
+            if (newItems.length > 0) {
+                insertFileB(newItems);
+            }
+            
+            // update 작업 수행
+            if (updatedItems.length > 0) {
+                updateFileB(updatedItems);
+            }
+            
+            alert('데이터가 저장되었습니다.');
+        });
+        // B Grid 엑셀 다운로드
+        document.getElementById('downloadExcelB').addEventListener('click', function() {
+            const currDate = getCurrentDateTime();
+            const fileName = 'MSTSYS002_DETAIL_' + selectedCdId + '_' + currDate;
+            const sheetName = '코드목록 상세';
+            const gridColumns = columnsB;
+            const gridData = dataViewB.getItems();
+            exportToExcel(fileName, sheetName, gridColumns, gridData);
+        });
+
+        // 신규버튼 누르면 동작하는 함수
+        function openDetails(modalType) {
+            grid.render();
+            
+            let originalData = null; 
+            
+            if (grid.getEditorLock().isActive() && !grid.getEditorLock().commitCurrentEdit()) {
+              return;
+            }
+            
+            if (modalType === "create"){
+                this.grid.setActiveCell(grid.getDataLength(), 0);
+            }
+            var activeCell = this.grid.getActiveCell();
+            var activeRow = activeCell && activeCell.row || 0;
+            
+            if (!options.enableCellNavigation) {
+              throw new Error('Composite Editor requires the flag "enableCellNavigation" to be set to True in your Grid Options.');
+            } else if (!activeCell && modalType === "edit") {
+              throw new Error('No records selected for edit operation');
+            } else {
+              var dataContext = grid.getDataItem(activeRow);
+              var isWithMassUpdate = (modalType === "mass-update" || modalType === "mass-selection");
+              lastActiveRowNumber = activeRow;
+              
+              if (modalType === "edit") {
+                originalData = JSON.parse(JSON.stringify(dataContext));
+                console.log("originalData: ", originalData);
+              }
+              
+              var rowIndex = modalType === "create" ? data.length : activeRow;
+              focusOnFirstCellWithEditor(columns, rowIndex, isWithMassUpdate);
+    
+              if (modalType === "edit" && !dataContext) {
+                alert("Current row is not editable");
+                return;
+              } else if (modalType === "mass-selection") {
+                var selectedRowsIndexes = grid.getSelectedRows();
+                if (selectedRowsIndexes.length < 1) {
+                  alert("You must select some rows before trying to apply new value(s)");
+                  return;
+                }
+              }
+          
+              var modalColumns;
+              
+              var selColumns = []
+              for (let index = 0; index < columns.length; index++) {
+                 const element = columns[index];
+                 if (xcpt_cols.includes(element['id'])) {
+                     continue;
+                     } 
+                 else {
+                     selColumns.push(element);
+                     }
+                 }
+    
+              if (isWithMassUpdate) {
+                modalColumns = selColumns.filter(function (col) { return col && col.massUpdate && col.editor });
+              } else {
+                modalColumns = selColumns.filter(function (col) { return col && col.editor });
+              }
+    
+              let headerTitle = "";
+              switch (modalType) {
+                case "create":
+                  headerTitle = "파일 추가";
+                  break;
+                case "edit":
+                  headerTitle = `Editing ${dataContext.title}`;
+                  break;
+                case "mass-update":
+                  headerTitle = "Mass Update (all rows)";
+                  break;
+                case "mass-selection":
+                  headerTitle = "Update on Current Selection";
+                  break;
+              }
+    
+              const modalElm = document.createElement('div');
+              modalElm.className = 'modal slick-composite-editor-modal';
+    
+              const modalHeaderElm = document.createElement('div');
+              modalHeaderElm.className = 'modal-header';
+              modalHeaderElm.innerHTML = `<h5>${headerTitle}</h5>
+                <button type="button" class="close" data-action="close" aria-label="Close">
+                  <span aria-hidden="true">×</span>
+                </button>`;
+              modalElm.appendChild(modalHeaderElm);
+          
+              const modalBodyElm = document.createElement('div');
+              modalBodyElm.className = 'modal-body';
+              modalBodyElm.id = "modalForm"
+          
+              for (const column of modalColumns) {
+                if (column.editor) {
+                  const detailLabelElm = document.createElement('div');
+                  detailLabelElm.className = `item-details-label editor-${column.id}`;
+                  detailLabelElm.textContent = column.name;
+          
+                  const detailContainerElm = document.createElement('div');
+                  detailContainerElm.className = 'item-details-editor-container';
+                  detailContainerElm.dataset.editorid = column.id;
+                  detailContainerElm.style.height = column.id === 'desc' ? 'inherit' : '20px';
+                  
+                  const detailValidationElm = document.createElement('div');
+                  detailValidationElm.className = `item-details-validation editor-${column.id}`;
+                                                                                        
+                  modalBodyElm.appendChild(detailLabelElm);
+                  modalBodyElm.appendChild(detailContainerElm);
+                  modalBodyElm.appendChild(detailValidationElm);
+                }
+              }
+              modalElm.appendChild(modalBodyElm);
+
+              let saveActionType = (modalType === "create" || modalType === "edit") ? "save" : modalType;
+              let saveButtonText = (modalType === "create" || modalType === "edit")
+                ? "Save"
+                : (modalType === "mass-update")
+                  ? "Apply Mass Update"
+                  : "Apply Update to Current Selection";
+              
+              const modalFooterElm = document.createElement('div');
+              modalFooterElm.className = 'modal-footer';
+          
+              const saveBtnElm = document.createElement('button');
+              saveBtnElm.className = 'slick-btn slick-btn-primary';
+              saveBtnElm.dataset.action = saveActionType;
+              saveBtnElm.textContent = saveButtonText;
+              saveBtnElm.setAttribute("data-target", "#modalForm");
+              saveBtnElm.type = 'submit';
+          
+              const cancelBtnElm = document.createElement('button');
+              cancelBtnElm.className = 'slick-btn slick-btn-default';
+              cancelBtnElm.dataset.action = 'cancel';
+              cancelBtnElm.textContent = 'Cancel';
+              
+              modalFooterElm.appendChild(saveBtnElm);
+              modalFooterElm.appendChild(cancelBtnElm);
+              modalElm.appendChild(modalFooterElm);
+              
+              document.body.appendChild(modalElm);
+              
+              modalElm.addEventListener('focusout', function (e) {
+                validateCompositeEditors(e.target);
+              });
+              
+              modalElm.addEventListener('keydown', (function (e) {
+                if (e.which == Slick.keyCode.ESCAPE) {
+                  grid.getEditController().cancelCurrentEdit();
+                  grid.setActiveRow(lastActiveRowNumber, suppressScrollIntoView = true);
+                  e.stopPropagation();
+                  e.preventDefault();
+                } else if (e.which === Slick.keyCode.TAB) {
+                  validateCompositeEditors(e.target);
+                }
+              }));
+              
+              $('.modal').draggable();
+              
+              grid.onClick.subscribe(function(e, args) {
+                  renewOptions(false);
+              });
+              
+              if (modalElm.querySelector("[data-action=save]")) {
+                modalElm.querySelector("[data-action=save]").addEventListener('click', function (e, args) {
+                  const formData = {};
+                  modalColumns.forEach(column => {
+                    const container = modalBodyElm.querySelector(`[data-editorid="${column.id}"]`);
+                    if (container) {
+                      const input = container.querySelector('input, select');
+                      if (input) {
+                        formData[column.id] = removeSpaces(input.value);
+                      }
+                    }
+                  });
+                  console.log('Form Data:', formData);
+                  if(modalType === "create"){
+                    if(checkData(formData)){
+                        insertFile(formData);
+                        dataView.insertItem(grid.getDataLength() + 1, formData);
+                    } else {
+                        console.log("Data Error.")
+                    }
+                  } else if(modalType === "edit"){
+                      var isChanged = false;
+                      const orgData = originalData;
+                      for (var key in formData) {
+                          if (formData[key] !== orgData[key]) {
+                              isChanged = true;
+                              break;
+                          }
+                      }
+                      if (checkData(formData) && isChanged) {
+                          const _formData = {...formData}
+                          _formData[unqId] = orgData[unqId]
+                          updateFile(_formData);
+                      } else if (!checkData(formData) && isChanged) {
+                          console.log("Data Error.")
+                      } else if (checkData(formData) && !isChanged){
+                          console.log("No changes detected, update request not sent.");
+                      } else {
+                          console.log("No changes detected and Data Error.");
+                      }
+                  }
+                  
+                  grid.getEditController().commitCurrentEdit();
+                  grid.render();
+                  renewOptions(false);
+                });
+              }
+              
+              if (modalElm.querySelector("[data-action=mass-update]")) {
+                modalElm.querySelector("[data-action=mass-update]").addEventListener('click', function () {
+                  var validationResults = validateCompositeEditors();
+                  var isFormValid = validationResults.valid;
+          
+                  if (isFormValid && lastCompositeEditor && lastCompositeEditor.formValues) {
+                    for (const itemProp in lastCompositeEditor.formValues) {
+                      if (lastCompositeEditor.formValues.hasOwnProperty(itemProp)) {
+                        data.forEach(function (item) {
+                          if (item.hasOwnProperty(itemProp) && lastCompositeEditor.formValues.hasOwnProperty(itemProp)) {
+                            item[itemProp] = lastCompositeEditor.formValues[itemProp];
+                          }
+                        });
+                      }
+                    }
+                    grid.setData(data, true);
+                    grid.invalidate();
+                    grid.getEditController().cancelCurrentEdit();
+                    grid.setActiveCell(0, 0, false);
+                  }
+                });
+              }
+    
+              const closeBtns = modalElm.querySelectorAll("[data-action=cancel],[data-action=close]");
+              closeBtns.forEach(btn => {
+                btn.addEventListener('click', function () {
+                  if (originalData) {
+                    dataView.updateItem(originalData[unqId], originalData);
+                  }
+                  renewOptions(false);
+                  grid.getEditController().cancelCurrentEdit();
+                  grid.render();
+                })
+              });
+    
+              var containers = modalColumns.map(function (c) {
+                return modalElm.querySelector(`[data-editorid=${c.id}]`);
+              });
+              
+              var compositeEditor = new Slick.CompositeEditor(
+                modalColumns,
+                containers,
+                {
+                  destroy: function () {
+                    modalElm.remove();
+                  },
+                  modalType: modalType,
+                }
+              );
+              
+              console.log("grid Active Column: ", grid.columns[grid.activeCell]);
+              console.log(grid.isCellPotentiallyEditable(grid.activeRow, grid.activeCell));
+              grid.editActiveCell(compositeEditor);
+            }
+        }
+    </script>
+</body>
+</html>

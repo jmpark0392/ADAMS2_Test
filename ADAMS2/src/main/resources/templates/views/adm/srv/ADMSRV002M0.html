@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+<th:block layout:fragment="content">
+	<script src="js/js-tabler/demo-theme.min.js?1692870487"></script>
+	<div class="page-wrapper" id="page-wrapper">
+		<div class="container" id="container">
+			<h2>[[${menuNm}]]</h2>
+			<div class="ptag-container">
+				<span>[[${navigator}]]</span>
+				<div class="form-container">
+					<div class="form-box">
+						<form id="filter-form" name="form" method="post" action="/WRKFIL001M0SelectList" onsubmit="return false;">
+							<div class="row align-items-center">
+								<!-- Input and Search Button on the far left -->
+								<div class="col-md-4 mb-2 mb-md-0" style="margin-left: 8px">
+									<div class="mb-3">
+										<label class="form-label">Select year and month :</label>
+										<div class="row">
+											<div class="col-auto">
+												<select name="user[year]" class="form-select select-month-year p-1">
+													<option value="">Year</option>
+													<option value="2024">2024</option>
+												</select>
+											</div>
+											<div class="col-auto">
+												<select name="user[month]" class="form-select select-month-year p-1">
+													<option value="">Month</option>
+													<option value="1">January</option>
+													<option value="2">February</option>
+													<option value="3">March</option>
+													<option value="4">April</option>
+													<option value="5">May</option>
+													<option value="6">June</option>
+													<option value="7">July</option>
+													<option value="8">August</option>
+													<option value="9">September</option>
+													<option value="10">October</option>
+													<option value="11">November</option>
+													<option value="12">December</option>
+												</select>
+											</div>
+											<div class="col-auto">
+												<button type="button" class="btn btn-primary .search-button-file p-1" id="searchButton">Search</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="row row-cards">
+					<div class="col-sm-6 col-xl-3">
+						<a class="card card-link card-link-pop d-flex flex-column h-100">
+               				<div class="ribbon ribbon-top bg-primary">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-device-imac-cog"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 17h-8a1 1 0 0 1 -1 -1v-12a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v8" /><path d="M3 13h13" /><path d="M8 21h4" /><path d="M10 17l-.5 4" /><path d="M19.001 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M19.001 15.5v1.5" /><path d="M19.001 21v1.5" /><path d="M22.032 17.25l-1.299 .75" /><path d="M17.27 20l-1.3 .75" /><path d="M15.97 17.25l1.3 .75" /><path d="M20.733 20l1.3 .75" /></svg>
+							</div>
+							<div class="text-center">
+								<p class="fs-4 mt-3 mb-3">Cost of subscription up to now&emsp;</p>
+								<p class="mb-2"><span class="fs-1">&nbsp;</span><span id="serviceCost" class="text-primary fs-3 mb-2"></span>&nbsp;<span class="fs-3">USD</span></p>
+								<p class="fs-3 mb-3"><span id="serviceChange"></span>&nbsp;<span id="selectedOption"></span></p>
+							</div>
+						</a>
+					</div>
+					<div class="col-sm-6 col-xl-3">
+						<a class="card card-link card-link-pop d-flex flex-column h-100">
+			                <div class="ribbon ribbon-top bg-success">
+			                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chart-histogram"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 3v18h18" /><path d="M20 18v3" /><path d="M16 16v5" /><path d="M12 13v8" /><path d="M8 16v5" /><path d="M3 11c6 0 5 -5 9 -5s3 5 9 5" /></svg>
+			                </div>
+							<div class="text-center">
+								<p class="fs-4 mt-3 mb-3">Cost of storage up to now</p>
+								<p class="mb-2"><span class="fs-1">&nbsp;</span><span id="storageCost" class="text-success fs-3 mb-2"></span>&nbsp;<span class="fs-3">USD</span></p>
+								<p id="storageUsage" class="fs-3 mb-3"></p>
+							</div>
+						</a>
+					</div>
+					<div class="col-sm-6 col-xl-3">
+						<a class="card card-link card-link-pop d-flex flex-column h-100">
+			                <div class="ribbon ribbon-top bg-warning">
+			                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-google-analytics"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 9m0 1.105a1.105 1.105 0 0 1 1.105 -1.105h1.79a1.105 1.105 0 0 1 1.105 1.105v9.79a1.105 1.105 0 0 1 -1.105 1.105h-1.79a1.105 1.105 0 0 1 -1.105 -1.105z" /><path d="M17 3m0 1.105a1.105 1.105 0 0 1 1.105 -1.105h1.79a1.105 1.105 0 0 1 1.105 1.105v15.79a1.105 1.105 0 0 1 -1.105 1.105h-1.79a1.105 1.105 0 0 1 -1.105 -1.105z" /><path d="M5 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /></svg>
+							</div>
+							<div class="text-center">
+								<p class="fs-4 mt-3 mb-3">Cost of job run up to now</p>
+								<p class="mb-2"><span class="fs-1">&nbsp;</span><span id="jobrunCost" class="text-warning fs-3 mb-2"></span>&nbsp;<span class="fs-3">USD</span></p>
+								<p id="jobrunUsage" class="fs-3 mb-3"></p>
+							</div>
+						</a>
+					</div>
+					<div class="col-sm-6 col-xl-3">
+						<a class="card card-link card-link-pop d-flex flex-column h-100">
+               				<div class="ribbon ribbon-top bg-cyan">
+                 				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-list-details"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M13 5h8" /><path d="M13 9h5" /><path d="M13 15h8" /><path d="M13 19h5" /><path d="M3 4m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" /><path d="M3 14m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" /></svg>
+							</div>
+							<div class="text-center">
+								<p class="text-black fs-4 fw-bold mt-3 mb-3">TOTAL COST up to now</p>
+								<p class="mb-2"><span id="totalUsage" class="text-cyan fs-1 fw-bold mb-2"></span>&nbsp;<span class="fs-3">USD</span></p>
+								<p class="mb-3"><span id="estimatedUsage" class="fs-3 mb-2"></span>&nbsp;<span class="fs-3">USD (estimate of this month)</span></p>
+							</div>
+						</a>
+					</div>
+					<div class="col-12 mb-3">
+						<div class="card">
+							<div class="card-header">
+								<ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
+									<li class="nav-item">
+										<a href="#tabs-profile" class="nav-link active" data-bs-toggle="tab">
+										<span class="text-secondary">
+											<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-businessplan"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M16 6m-5 0a5 3 0 1 0 10 0a5 3 0 1 0 -10 0" /><path d="M11 6v4c0 1.657 2.239 3 5 3s5 -1.343 5 -3v-4" /><path d="M11 10v4c0 1.657 2.239 3 5 3s5 -1.343 5 -3v-4" /><path d="M11 14v4c0 1.657 2.239 3 5 3s5 -1.343 5 -3v-4" /><path d="M7 9h-2.5a1.5 1.5 0 0 0 0 3h1a1.5 1.5 0 0 1 0 3h-2.5" /><path d="M5 15v1m0 -8v1" /></svg>
+												Usage Information
+										</span>
+										</a>
+									</li>
+									<li class="nav-item">
+										<a href="#tabs-password" class="nav-link" data-bs-toggle="tab">
+										<span class="text-secondary">
+											<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-server-cog"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" /><path d="M12 20h-6a3 3 0 0 1 -3 -3v-2a3 3 0 0 1 3 -3h10.5" /><path d="M18 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M18 14.5v1.5" /><path d="M18 20v1.5" /><path d="M21.032 16.25l-1.299 .75" /><path d="M16.27 19l-1.3 .75" /><path d="M14.97 16.25l1.3 .75" /><path d="M19.733 19l1.3 .75" /><path d="M7 8v.01" /><path d="M7 16v.01" /></svg>
+												Service History
+										</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+							<div class="card-body">
+								<div class="tab-content">
+									<div class="tab-pane active show" id="tabs-profile">
+										<div class="container my-5">
+											<div class="chartcontainer" style="height: 400px">
+												<canvas id="usageChart" width="300" height="120"></canvas>
+											</div>	
+										</div>
+									</div>
+									<div class="tab-pane" id="tabs-password">
+										<div class="container my-5">
+											<div class="chartcontainer"  style="height: 400px">
+												<canvas id="serviceHist" width="300" height="120"></canvas>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+	    let usageChart;
+		let serviceHistChart;
+	    //  we have to wait for the DOM to load
+	    document.addEventListener("DOMContentLoaded", function () {
+	      const ctx = document.getElementById("usageChart").getContext("2d");
+		  const ctx2 = document.getElementById("serviceHist").getContext("2d");
+	
+	      // const usageChart = new Chart(ctx, config);
+	      usageChart = new Chart(ctx,{
+	        data: {
+	          labels: [],
+	          datasets: [],
+	        },
+	        options: {
+	          responsive: true,
+			  maintainAspectRatio: false,
+	          interaction: {
+	            mode: "index",
+	            intersect: false,
+	          },
+	          stacked: false,
+	          plugins: {
+	            title: {
+	              display: true,
+	              text: "Usage Chart",
+	              font: {
+	                size: 20,
+	                textAlign: "flex-start",
+	              },
+	              color: "rgba(0, 0, 0, 1)",
+	            },
+	            tooltip: {
+	              enabled: true,
+	              mode: "index",
+	              intersect: false,
+	            },
+	            legend: {
+	              position: "top",
+	            },
+	          },
+	          scales: {
+
+	        	  y: {
+		              type: "linear",
+		              display: true,
+		              position: "left",
+		              title: {
+		                display: true,
+		                text: "TOTAL COST (USD)",
+		                font: {
+		                  size: 12,
+		                },
+		                color: "rgba(23, 162, 184, 1)",
+		              },
+		              ticks: {
+		                beginAtZero: false,
+		                color: "rgba(23, 162, 184, 1)",
+		              },
+		              grid: {display: true},
+	              },
+	            
+	              y1: {
+		              type: "linear",
+		              display: true,
+		              position: "right",
+		              title: {
+		                display: true,
+		                text: "STORAGE (KB)",
+		                font: {
+		                  size: 12,
+		                },
+		                color: "rgba(47, 179, 68, 1)",
+		                // align: "start", // we align the title to the start of the axis
+		              },
+		              ticks: {
+		                beginAtZero: false,
+		                color: "rgba(47, 179, 68, 1)",
+		              },
+		              grid: {display: false},
+	              },
+
+	              y2: {
+		              type: "linear",
+		              display: true,
+		              position: "right",
+		              title: {
+		                display: true,
+		                text: "RUN TIME (Second)",
+		                font: {
+		                  size: 12,
+		                },
+		                color: "rgba(247, 103, 7, 1)",
+		                // align: "start", // we align the title to the start of the axis
+		              },
+		              ticks: {
+		                beginAtZero: false,
+		                color: "rgba(247, 103, 7, 1)",
+		              },
+		              grid: {display: false},
+		          },
+
+	          },
+	        },
+	      });
+
+		  serviceHistChart = new Chart(ctx2,{
+	        data: {
+	          labels: [],
+	          datasets: [],
+	        },
+	        options: {
+	          responsive: true,
+			  maintainAspectRatio: false,
+	          interaction: {
+	            mode: "index",
+	            intersect: false,
+	          },
+	          stacked: false,
+	          plugins: {
+	            title: {
+	              display: true,
+	              text: "Service History",
+	              font: {
+	                size: 18,
+	                textAlign: "flex-start",
+	              },
+	            },
+	            tooltip: {
+	              enabled: true,
+	              mode: "index",
+	              intersect: false,
+	            },
+	            legend: {
+	              position: "top",
+	            },
+	          },
+	          scales: {
+	            // Primary y-axis for Sales (Bar Charts)
+	            y: {
+	              type: "linear",
+	              display: true,
+	              position: "left",
+	              title: {
+	                display: true,
+	                text: "Service",
+	                font: {
+	                  size: 14,
+	                },
+	                // align: "start", // we align the title to the start of the axis
+	              },
+	              ticks: {
+	                beginAtZero: true,
+	                min: 0,
+	                max: 150,
+	              },
+	            }
+	          },
+	        },
+	      });
+
+	
+	      // Function to update the chart with new data
+	      function updateChart(data) {
+	        // Extract the month label from the ymd data;
+	        const labels = data.map((item) => item.ymd);
+	
+	        // column chart data
+	        const bsrvcVal = data.map((item) => item.bsrvcVal || 0);
+	        const psrvcVal = data.map((item) => item.psrvcVal || 0);
+	
+	        // line chart data
+	        const totalCost = data.map((item) => item.srvcCostSum || null);
+
+	        const expectedCost = data.map((item) => item.srvcCostExpSum || null);
+	        
+	        const fileSize = data.map((item) => item.fileSize || null);
+	        
+	        const jobTime = data.map((item) => item.jobTime || null);
+	        
+	        // Method to filter total cost from the first date of the month until today
+
+	        
+	        const filterTotalCostUntilToday = (data) => {
+	          const today = new Date();
+	          const firstDateOfMonth = new Date(
+	            today.getFullYear(),
+	            today.getMonth(),
+	            1
+	          );
+	
+	          return data
+	            .filter((item) => {
+	              const itemDate = new Date(item.ymd);
+	              return itemDate >= firstDateOfMonth && itemDate <= today;
+	            })
+	            .map((item) => item.srvcCost);
+	        };
+	
+	        const filteredTotalCost = filterTotalCostUntilToday(data);
+	
+
+
+//			const randomData = Array.from({ length: 30 }, () => Math.floor(Math.random() * 100));
+
+	        // Update the chart data
+	        usageChart.data.labels = labels;
+			serviceHistChart.data.labels = labels;
+	        usageChart.data.datasets = [
+	          {
+	            type: "line",
+	            label: "Cost up to now",
+	            data: totalCost,
+	            fill: false,
+	            borderColor: "rgba(23, 162, 184, 1)",
+	            yAxisID: "y",
+	            spanGaps: true,
+	            borderWidth: 4,
+	            order: 0,
+	          },
+	          {
+	            type: "line",
+	            label: "Estimated Cost",
+	            data: expectedCost,
+	            fill: false,
+	            borderColor: "rgba(102, 115, 130, 1)",
+	            yAxisID: "y",
+	            spanGaps: true,
+	            borderWidth: 4,
+	            order: 1,
+	          },
+	          {
+	            type: "bar",
+	            label: "Storage",
+	            data: fileSize,
+	            backgroundColor: "rgba(47, 179, 68, 0.3)",
+	            borderColor: "rgba(47, 179, 68, 1)",
+	            yAxisID: "y1",
+	            borderWidth: 1,
+	            barThickness: "flex",
+	            barPercentage: 0.8,
+	            maxBarThickness: 50,
+	            order: 2,
+	          },
+	          {
+	            type: "bar",
+	            label: "Run Time",
+	            data: jobTime,
+	            backgroundColor: "rgba(247, 103, 7, 0.3)",
+	            borderColor: "rgba(247, 103, 7, 1)",
+	            yAxisID: "y2",
+	            borderWidth: 1,
+	            barThickness: "flex",
+	            barPercentage: 0.8,
+	            maxBarThickness: 50,
+	            order: 3,
+	          },
+	        ];
+			serviceHistChart.data.datasets = [
+	          {
+	            type: "bar",
+	            label: "Basic Service",
+				data: bsrvcVal,
+				backgroundColor: "rgba(54, 162, 235, 0.2)",
+				borderColor: "rgba(54, 162, 235, 1)",
+				yAxisID: "y",
+				borderWidth: 1,
+				barThickness: "flex",
+				maxBarThickness: 50,
+	          },
+	          {
+	            type: "bar",
+	            label: "Premium Service",
+				data: psrvcVal,
+				backgroundColor: "rgba(255, 99, 132, 0.2)",
+				borderColor: "rgba(255, 99, 132, 1)",
+				yAxisID: "y",
+				borderWidth: 1,
+				barThickness: "flex",
+				maxBarThickness: 50,
+	          }
+			];
+
+	        // Update the chart
+	        usageChart.update();
+			serviceHistChart.update();
+	      }
+	
+	      function getCurrMonthAndYear() {
+	        let currentDate = new Date();
+	        return {
+	          month: (currentDate.getMonth() + 1).toString().padStart(2, '0'),
+	          year: currentDate.getFullYear().toString()
+	        }
+	      }
+	
+	      // search function to make a fetch call to the server
+	      function searchFunction( ) {
+	
+	        let month = $('select[name="user[month]"]').val();
+	        let year = $('select[name="user[year]"]').val();
+	
+	        // Validate that both month and year are selected
+	        if (!month || !year) {
+	          alert("Please select both year and month.");
+	          return;
+	        }
+	
+	        // Send an AJAX POST request to the endpoint
+	        $.ajax({
+	          type: "POST",
+	          url: "/ADMSRV002M0GetUserDataAndCost",
+	          data: {
+	            month: month,
+	            year: year,
+	          },
+	          dataType: "json",
+	          success: function (data) {
+	            console.log("Data received:", data);
+	            // we handle the data here
+	            // update the chart wwth the data
+	            updateChart(data);
+	            if (data && data.length > 0) {
+
+		          let storageUsage = data[0].maxFileSizeSum;
+	              let storageCostUsage = data[0].maxFileCostSum;
+
+	              let jobrunUsage = data[0].maxJobTimeSum;
+	              let jobrunCostUsage = data[0].maxJobCostSum;
+	              
+	              let totalCostUsage = data[0].maxSrvcCostSum;
+	              let estimatedTotalCostUsage = data[0].maxSrvcCostExpSum;
+
+		          let serviceCost = data[0].maxSrvcOptCostSum;
+	              
+//	              console.log("totalCostUsage", totalCostUsage);
+//	              console.log("estimatedUsage", estimatedUsage);
+	              // Display the currently selected option data
+	              
+	              if (serviceCost > 0) {
+		                $("#serviceCost").text(serviceCost.toLocaleString());
+		              } else {
+		                // No positive values found
+		                $("#serviceCost").text("0");
+		              }	              
+	            
+	              if (storageUsage > 0) {
+		                $("#storageCost").text(storageCostUsage.toLocaleString());
+		                $("#storageUsage").text(storageUsage.toLocaleString() + " kilobytes");
+		              } else {
+		                // No positive values found
+		                $("#storageCost").text("0");
+		                $("#storageUsage").text("0 kilobyte");
+		              }
+
+	              if (jobrunUsage > 0) {
+		                $("#jobrunCost").text(jobrunCostUsage.toLocaleString());
+		                $("#jobrunUsage").text(jobrunUsage.toLocaleString() + " seconds");
+		              } else {
+		                // No positive values found
+		                $("#jobrunCost").text("0");
+		                $("#jobrunUsage").text("0 second");
+		              }
+	            
+	              if (totalCostUsage > 0) {
+		                $("#totalUsage").text(totalCostUsage.toLocaleString());
+		              } else {
+		                // No positive values found
+		                $("#totalUsage").text("0");
+		              }
+	            
+	              if (estimatedTotalCostUsage > 0) {
+		                $("#estimatedUsage").text(estimatedTotalCostUsage.toLocaleString());
+		              } else {
+		                // No positive values found
+		                $("#estimatedUsage").text("0");
+		              }
+	            
+	            } else if (data && data.length === 0) {
+	              // No subscription info found
+	              $("#serviceCost").text("0");
+	              $("#storageUsage").text("0 kilobyte");
+	              $("#storageCost").text("0");
+	              $("#jobrunCost").text("0");
+	              $("#jobrunUsage").text("0 second");
+	              $("#totalUsage").text("0");
+	              $("#estimatedUsage").text("0");
+	            }
+	          },
+	          error: function (xhr, status, error) {
+	            console.error("Error fetching data:", status, error);
+	          },
+	        });
+	      }
+	
+	      // seafch button event listener
+	      const searchButton = document.getElementById("searchButton");
+	      searchButton.addEventListener("click", searchFunction);
+	
+	      // Function to fetch the subscription list
+	      function fetchSubscriptionList() {
+	        $.ajax({
+	          type: "POST",
+	          url: "/selectSubscriptionList",
+	          async: true,
+	          dataType: "json",
+	          success: function (data) {
+	            // $("#userNumber").text(data[0].optDtlsCd + " users");
+	            // $("#userNumber").css("font-weight", "bold");
+	            console.log("Subscription list fetched successfully:", data);
+	            // update the ui based on the user subscription
+	            if (data[0].srvcCd === "01") {
+	              $("#serviceChange").text("Basic Service");
+//	              serviceChange.style.fontWeight = "bold";
+	            } else {
+	              $("#serviceChange").text("Premium Service");
+//	              serviceChange.style.fontWeight = "bold";
+	            }
+	          },
+	          error: function (xhr, status, error) {
+	            console.error(
+	              "Error fetching subscription list:",
+	              status,
+	              error
+	            );
+	          },
+	        });
+	      }
+	
+	      // Function to fetch and display the user's current subscription info
+	      function getUserSubscriptionInfo() {
+	        $.ajax({
+	          type: "POST",
+	          url: "/getUserSubscriptionInfo",
+	          async: true,
+	          dataType: "json",
+	          success: function (data) {
+	            console.log("User subscription info:", data);
+	            // update the ui based on the user subscription
+	            if (data && data.length > 0) {
+	              var subscription = data[0]; // Assuming we hvae only one subscrition
+	              // Display the currently selected option data
+	              if (subscription.optDtlsCd > 0) {
+	                $("#selectedOption").text("+ " + subscription.optDtlsNm + " Users");
+	              } else if (subscription.optDtlsCd === 0 || subscription.optDtlsCd === null) {
+	                $("#selectedOption").text("");
+	              }
+	            } else {
+	              // No subscription info found
+	            	$("#selectedOption").text("");
+	            }
+	          },
+	          error: function (xhr, status, error) {
+	            console.error(
+	              "Error fetching user subscription info:",
+	              status,
+	              error
+	            );
+	          },
+	        });
+	      }
+	
+	      $(document).ready(function () {
+	        const currMonthAndYear = getCurrMonthAndYear();
+	      	
+	        $('select[name="user[month]"]').val(getCurrMonthAndYear().month);
+	        $('select[name="user[year]"]').val(getCurrMonthAndYear().year);
+		
+	        fetchSubscriptionList();
+	        // we fetch the user subcrioption info
+	        getUserSubscriptionInfo();
+	        searchFunction();
+	        
+	      });
+	    });
+	</script>
+	<script src="js/utils.js"></script>
+</th:block>
+</html>

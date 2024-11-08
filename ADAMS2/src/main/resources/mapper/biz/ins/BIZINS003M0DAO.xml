@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rds.adams.web.biz.ins.dao.BIZINS003M0DAO">
+    <select id="selectList" parameterType="com.rds.adams.web.biz.ins.dto.BIZINS003M0P0DTO" resultType="com.rds.adams.web.biz.ins.dto.BIZINS003M0R0DTO">
+		SELECT
+			   ROW_NUMBER() OVER(ORDER BY (SELECT 1)) AS rowNumber           /* 행번호 */
+			 , A.STD_YYMM                             AS stdYymm             /* 기준년월 */
+			 , A.INSC_DV_CD                           AS inscDvCd            /* 보험계약구분코드 */
+			 , A.VALU_METD_CD                         AS valuMetdCd          /* 평가방법구분코드 */
+			 , A.PTF_CD                               AS ptfCd               /* 포트폴리오 */
+			 , A.BAS_AMT                              AS basAmt              /* 기초금액 */
+			 , A.OCI_AMT                              AS ociAmt              /* OCI금액 */
+			 , A.NEW_CONT_AMT                         AS newContAmt          /* 신계약금액 */
+			 , A.INT_EFFT_AMT                         AS intEfftAmt          /* 이자효과금액 */
+			 , A.ESTM_PRM                             AS estmPrm             /* 예상보험료 */
+			 , A.ESTM_FEE                             AS estmFee             /* 예상수수료 */
+			 , A.ESTM_NEW_CONT_CCLS_AMT               AS estmNewContCclsAmt  /* 예상신계약체결금액 */
+			 , A.ESTM_FEE_RFND_AMT                    AS estmFeeRfndAmt      /* 예상수수료환입금액 */
+			 , A.ESTM_CONT_MTN_AMT                    AS estmContMtnAmt      /* 예상계약유지금액 */
+			 , A.ESTM_IVSG_EXP_AMT                    AS estmIvsgExpAmt      /* 예상손해조사금액 */
+			 , A.ATS_ASSM_UPD_AMT                     AS atsAssmUpdAmt       /* 계리적가정변경금액 */
+			 , A.EXRT_EFFT_AMT                        AS exrtEfftAmt         /* 환율효과금액 */
+			 , A.BAS_AMT + A.OCI_AMT + A.NEW_CONT_AMT - A.INT_EFFT_AMT
+			 + A.ESTM_PRM + A.ESTM_FEE + A.ESTM_NEW_CONT_CCLS_AMT 
+			 + A.ESTM_FEE_RFND_AMT + A.ESTM_CONT_MTN_AMT + A.ESTM_IVSG_EXP_AMT 
+			 + A.ATS_ASSM_UPD_AMT + A.EXRT_EFFT_AMT   AS entmAmt             /* 기말금액 */
+			 , B.USR_NM                               AS frstRegEmpNo        /* 최초등록사원번호 */
+			 , CONVERT(CHAR(10), A.FRST_REG_DTM, 23)  AS frstRegDtm          /* 최초등록일시 */
+		  FROM TB_INSU_PL_TTL_LST A
+          LEFT OUTER JOIN TB_USR_MNG_LST B 
+            ON A.FNL_UPD_EMP_NO = B.USR_ID		  
+		 WHERE 1=1
+           AND INSU_PL_CHNG_DV_CD = 'CSM'
+ 		<if test= 'csNo != "999"'>
+			AND A.CS_NO        = #{csNo}
+		</if>
+			AND A.STD_YYMM LIKE '%' + #{stdYymm} + '%'
+	</select>
+    <delete id="deleteListBf" parameterType="com.rds.adams.web.biz.ins.dto.BIZINS003M0P1DTO">
+        DELETE FROM TB_INSU_PL_TTL_LST
+        WHERE 1=1 
+          AND STD_YYMM           = #{stdYymm}
+          AND INSU_PL_CHNG_DV_CD = 'CSM'
+          AND CS_NO              = #{csNo}
+    </delete>
+    <insert id="insertList" parameterType="com.rds.adams.web.biz.ins.dto.BIZINS003M0P1DTO">
+		INSERT INTO [dbo].[TB_INSU_PL_TTL_LST] (
+			  [CS_NO]
+			, [STD_YYMM]
+			, [INSC_DV_CD]
+			, [VALU_METD_CD]
+			, [INSU_PL_CHNG_DV_CD]
+			, [PTF_CD]
+			, [BAS_AMT]
+			, [OCI_AMT]
+			, [NEW_CONT_AMT]
+			, [INT_EFFT_AMT]
+			, [ESTM_PRM]
+			, [ESTM_FEE]
+			, [ESTM_NEW_CONT_CCLS_AMT]
+			, [ESTM_FEE_RFND_AMT]
+			, [ESTM_CONT_MTN_AMT]
+			, [ESTM_IVSG_EXP_AMT]
+			, [ATS_ASSM_UPD_AMT]
+			, [EXRT_EFFT_AMT]
+			, [ENTM_AMT]
+			, [FRST_REG_EMP_NO]
+		    , [FRST_REG_DTM]
+			, [FNL_UPD_EMP_NO]
+			, [FNL_UPD_DTM]
+		)
+		SELECT 
+		       #{csNo}                  AS CS_NO
+		     , STD_YYMM                 AS STD_YYMM
+		     , 'O'                      AS INSC_DV_CD 
+		     , 'GMM'                    AS VALU_METD_CD
+		     , 'CSM'                    AS INSU_PL_CHNG_DV_CD
+		     , PORTFOLIO                AS PTF_CD
+		     , SUM(BASE)                AS BAS_AMT
+		     , SUM(OCI)                 AS OCI_AMT
+		     , SUM(ACQ_EXP_PREM_RLTED)
+		     + SUM(ACQ_EXP_PREM_NRLTED) AS NEW_CONT_AMT
+		     , SUM(INT_EFFT)            AS INT_EFFT_AMT 
+		     , SUM(PREM_GENERAL)
+		     + SUM(PREM_OTHER)          AS ESTM_PRM
+		     , SUM(EXP_GENERAL)
+		     + SUM(EXP_TAX)
+		     + SUM(EXP_ASSET_POL_LOAN)
+		     + SUM(EXP_ASSET_REAL_EST)
+		     + SUM(EXP_ASSET_OTHER)     AS ESTM_FEE
+		     , SUM(ESTM_NEW_CONT_CCLS)  AS ESTM_NEW_CONT_CCLS_AMT
+		     , SUM(INV_CMPNT_SURNDR)
+		     + SUM(INV_CMPNT_MAT_BNFT)
+		     + SUM(INV_CMPNT_OTHER)     AS ESTM_FEE_RFND_AMT
+		     , SUM(CLAIM_ACCIDENT_DEATH)
+		     + SUM(CLAIM_ACCIDENT_DIAGNOSIS_SURGERY)
+		     + SUM(CLAIM_ACCIDENT_HOPSITALIZATION)
+		     + SUM(CLAIM_ACCIDENT_OTHER)
+		     + SUM(CLAIM_DISEASE_DEATH)
+		     + SUM(CLAIM_DISEASE_DIAGNOSIS_SURGERY)
+		     + SUM(CLAIM_DISEASE_HOPSITALIZATION)
+		     + SUM(CLAIM_DISEASE_OTHER)
+		     + SUM(CLAIM_MEDICAL)
+		     + SUM(CLAIM_DISABILITY)
+		     + SUM(CLAIM_INDEMNITY)
+		     + SUM(CLAIM_OTHER)         AS ESTM_CONT_MTN_AMT
+		     , SUM(IVSG_EXP)            AS ESTM_IVSG_EXP_AMT
+		     , SUM(ATS_ASSM)            AS ATS_ASSM_UPD_AMT
+		     , SUM(EXRT_EFFT)           AS EXRT_EFFT_AMT
+		     , 0                        AS ENTM_AMT
+		     , #{usrId}                  AS FRST_REG_EMP_NO
+		     , GETDATE()                 AS FRST_REG_DTM
+		     , #{usrId}                  AS FNL_UPD_EMP_NO
+		     , GETDATE()                 AS FNL_UPD_DTM
+		  FROM TB_R3S_OUTPUT_CSM_RST_LST 
+		 WHERE 1=1 
+		   AND STD_YYMM = #{stdYymm}
+		 <if test = 'csNo != "999"'>
+		   AND CS_NO    = #{csNo}
+		 </if>
+		  GROUP BY STD_YYMM, PORTFOLIO   
+    </insert>    
+</mapper>

@@ -1,0 +1,214 @@
+a.nav-link {
+  font-weight: bold;
+  /* text-decoration: underline; */
+  /* color: #ffdc5c; */
+  color: #fffcfc;
+}
+
+.nav-item a:hover,
+.nav-item a:focus {
+  background-color: #f8f5ed;
+  color: black;
+  /* text-decoration: underline; */
+  font-weight: 600;
+}
+
+a.nav-link.active {
+  font-weight: bold;
+  color: black;
+  background-color: #f8f5ed;
+}
+.slick-header-columns {
+  /* flex-grow: 1 if we want to align sort icons to the right */
+  --alpine-header-name-flex-grow: 1;
+  font-family: "Inter Var", -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+  font-size: 13px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.slick-column-left {
+  font-family: "Inter Var", -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+  font-size: 13px;
+  text-align: left;
+  padding-left: 8px;
+}
+
+.slick-column-center {
+  font-family: "Inter Var", -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+  font-size: 13px;
+  text-align: center;
+}
+
+.slick-column-right {
+  font-family: "Inter Var", -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+  font-size: 13px;
+  text-align: right;
+  padding-right: 8px;
+}
+
+.slick-cell.copied {
+  background: blue;
+  background: rgba(0, 0, 255, 0.2);
+  transition: 0.5s background;
+}
+.slick-cell {
+  height: 35px; /* 셀 높이 설정 */
+  line-height: 30px; /* 셀 높이와 동일하게 설정 */
+  /* 필요에 따라 아래 속성을 추가 */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+/** override slick-cell to make it look like Excel sheet */
+.slick-container {
+  --alpine-header-column-height: 20px;
+  --alpine-header-font-weight: 500;
+  --alpine-cell-border-width: 0 1px 1px 0;
+  --alpine-cell-border-color: #d4d4d4;
+}
+
+.slick-cell-checkboxsel {
+	background: #f0f0f0;
+	border-right-color: silver;
+	border-right-style: solid;
+	text-align: center;
+}
+
+#divMyGrid {
+  background: white;
+  outline: 0;
+  height: 500px;
+  width: 100%;
+  overflow-y: scroll;
+}
+
+#divMyGridBackup {
+  background: white;
+  outline: 0;
+  /* height: 200px; */
+  width: 100%;
+  /* height: 00px; */
+  height: 500px;
+  overflow-y: scroll;
+}
+
+.item-details-label {
+  margin-left: 10px;
+  margin-top: 15px;
+  display: block;
+  font-weight: bold;
+}
+
+.item-details-editor-container {
+  border: 1px solid silver;
+  background: white;
+  display: block;
+  margin: 4px 10px;
+  margin-top: 4px;
+  padding: 0;
+  padding-left: 4px;
+  padding-right: 0px;
+  line-height: 20px;
+}
+
+.item-details-editor-container textarea {
+  height: inherit;
+}
+
+.invalid {
+  color: red;
+}
+
+.item-details-editor-container.invalid {
+  border: 1px solid red;
+}
+
+.item-details-validation {
+  color: red;
+  font-style: italic;
+  margin-left: 12px;
+}
+
+/* this is the css for the suncription page */
+.row-cards {
+  margin-top: 5px;
+  /* this is used for the centering the 1st subscription page */
+  justify-content: center;
+}
+
+/* new styling for Smaller and Centered Cards */
+.subscription-card {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s;
+}
+
+.subscription-card:hover {
+  transform: translateY(-5px);
+}
+
+/* .subscription-card:hover {
+  transform: translateY(-5px);
+  transition: transform 0.3s;
+} */
+
+/* Styling for each subscription card */
+.subscription-card {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.subscription-card .text-uppercase {
+  font-size: 0.8rem;
+}
+
+.subscription-card .display-5 {
+  font-size: 1.5rem;
+}
+
+.subscription-card .fw-bold {
+  font-weight: 700;
+}
+
+.subscription-card .icon {
+  width: 20px;
+  height: 20px;
+}
+
+.form-select {
+  width: 100%;
+  padding: 10px;
+  font-size: 13px;
+}
+.form-control{
+  font-size: 13px;
+}
+
+.list-unstyled li {
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+.flex-container {
+  display: flex;
+  align-items: flex-start;
+  padding: 4px;
+}
+
+@media (max-width: 992px) {
+  .subscription-card {
+    width: 300px;
+  }
+}
+
+@media (max-width: 576px) {
+  .subscription-card .display-5 {
+    width: 100%;
+    margin: 10px 0;
+  }
+  .subscription-card .text-uppercase {
+    font-size: 0.7rem;
+  }
+}

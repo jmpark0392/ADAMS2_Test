@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="sidebarFragment">
+	<script src="js/js-tabler/demo-theme.min.js?1692870487"></script>
+
+	<!-- Sidebar 영역 -->
+	<aside class="navbar navbar-vertical navbar-expand-lg navbar-transparent" style="overflow: hidden;">
+		
+		<!-- Sidebar 내부 전체 -->
+		<div class="container-fluid" style="background-color: #0054a6;">
+
+			<!-- 상단 시스템명 iFrame2.0 -->
+			<div class="text-center mt-2 mb-2">
+				<div class="navbar-brand" style="font-style: italic; font-size: 1.7em; font-family: Times New Roman; color: white;">i</div>&nbsp;<div class="navbar-brand" style="font-size: 1.7em; color: white;">Frame 2.0</div>
+			</div>
+
+			<!-- 전체 메뉴 영역 -->
+			<div class="menu" id="menu-accordion">
+
+				<!-- 메뉴 그룹별 영역 (반복) / 상위 메뉴 + 하위 메뉴 -->
+				<div th:each="menu:${menuList}" class="menu-item">
+
+					<!-- 상위(레벨1) 메뉴 -->
+					<div class="menu-header" id="heading">
+
+						<!-- 상위(레벨1) 메뉴 마우스오버 효과를 위해 Button 사용 -->	
+						<a th:href="'#'+ ${menu.menuId}" class="btn btn-ghost-light btn-square w-100" id="mainmenu1" data-bs-toggle="collapse" style="margin-top:5px; padding-left:20px;">
+							<!-- 상위(레벨1) 메뉴 아이콘 -->
+							<th:block th:replace="fragments/icon :: ${menu.menuId}"></th:block>
+
+							<!-- 상위(레벨1) 메뉴명 -->
+							<div th:text="${menu.menuNm}" class="w-100" style="text-align:left"></div>
+						</a>
+					</div>
+
+					<!-- Sidebar 메뉴인 경우 -->
+					<th:block th:if="${menuId != ''}">
+						<!-- 하위(레벨2) 메뉴 / 상위 메뉴 클릭시 숨겨지는 영역 -->
+						<div th:if="${menu.adamsMenuDTOList.size ge 0}" th:id="${menu.menuId}" th:class="${menu.menuId.toString().substring(0, 4) == menuId.toString().substring(0, 4) ? 'menu-collapse collapse show' : 'menu-collapse collapse'}" data-bs-parent="#menu-accordion">
+
+							<!-- 메뉴 링크 (반복)-->
+							<a th:each="subMenu:${menu.adamsMenuDTOList}" href="#" th:class="${subMenu.menuId.toString() == menuId.toString() ? 'btn btn-light btn-square w-100 rounded-start-pill' : 'btn btn-ghost-light btn-square w-100 rounded-start-pill'}" style="margin-top:5px; margin-left:15px;" th:id="${subMenu.menuId}" th:onclick="goMenuPage([[${subMenu.pgmUrl}]]);">
+	
+								<!-- 하위(레벨2) 메뉴명 -->
+								<div th:text="'- ' + ${subMenu.menuNm}" class="w-100" style="text-align:left; padding-left:5px;"></div>
+							</a>
+						</div>
+					</th:block>
+
+					<!-- Sidebar 메뉴가 아닌 경우 / Mypage -->
+					<th:block th:if="${menuId == ''}">
+						<!-- 하위(레벨2) 메뉴 / 상위 메뉴 클릭시 숨겨지는 영역 -->
+						<div th:if="${menu.adamsMenuDTOList.size ge 0}" th:id="${menu.menuId}" class="menu-collapse collapse" data-bs-parent="#menu-accordion">
+
+							<!-- 메뉴 링크 (반복)-->
+							<a th:each="subMenu:${menu.adamsMenuDTOList}" href="#" class="btn btn-ghost-light btn-square w-100 rounded-start-pill" style="margin-top:5px; margin-left:15px;" th:id="${subMenu.menuId}" th:onclick="goMenuPage([[${subMenu.pgmUrl}]]);">
+
+								<!-- 하위(레벨2) 메뉴명 -->
+								<div th:text="'- ' + ${subMenu.menuNm}" class="w-100" style="text-align:left; padding-left:5px;"></div>
+							</a>
+						</div>
+					</th:block>
+
+				</div>
+			</div>	
+		</div>
+	</aside>
+</th:block>
+</html>

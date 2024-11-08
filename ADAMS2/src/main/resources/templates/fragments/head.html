@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="headFragment">
+	<head>
+		<meta charset="UTF-8">
+		
+		<!-- CSRF Token -->
+		<meta name="_csrf_token" th:content="${csrfToken}">
+		<meta name="_csrf_parameter" th:content="${csrfParameterName}">
+		<meta name="_csrf_header" th:content="${csrfHeaderName}">
+		
+		<title>iFrame 2.0 - Cloud IFRS17 Closing Services</title>
+		
+		<link rel="stylesheet" href="css/jquery-ui-1.13.3/jquery-ui.css" type="text/css" />
+		<link rel="stylesheet" href="js/slickgrid/dist/styles/css/slick.grid.css" type="text/css" />
+		<link rel="stylesheet" href="js/slickgrid/dist/styles/css/slick-alpine-theme.css" type="text/css" />
+		<link rel="stylesheet" href="js/slickgrid/dist/styles/css/slick-icons.css" type="text/css" />
+
+		<!-- // tabler framework css files import -->
+		<link href="css/css-tabler/tabler.min.css?1692870487" rel="stylesheet" />
+		<link href="css/css-tabler/tabler-flags.min.css?1692870487" rel="stylesheet" />
+		<link href="css/css-tabler/tabler-payments.min.css?1692870487" rel="stylesheet" />
+		<link href="css/css-tabler/tabler-vendors.min.css?1692870487" rel="stylesheet" />
+		<link href="css/css-tabler/demo.min.css?1692870487" rel="stylesheet" />
+		
+		<!-- // custom css for this page -->
+		<link href="css/file-css.css" rel="stylesheet" />
+		<link href="css/common-css.css" rel="stylesheet" />
+		
+	    <script src="js/libs-tabler/bootstrap/dist/js/bootstrap.bundle.min.js" ></script>
+	    
+		<script src="js/jquery-3.7.1.min.js"></script>
+		<script src="js/jquery-ui.min.js"></script>
+		
+		<script src="js/slickgrid/lib/jquery.event.drag-2.3.0.js"></script>
+		<script src="js/slickgrid/dist/browser/slick.core.js"></script>
+		<script src="js/slickgrid/dist/browser/slick.interactions.js"></script>
+		<script src="js/slickgrid/dist/browser/slick.grid.js"></script>
+		<script src="js/slickgrid/dist/browser/plugins/slick.autotooltips.js"></script>
+		<script src="js/slickgrid/dist/browser/plugins/slick.cellrangedecorator.js"></script>
+		<script src="js/slickgrid/dist/browser/plugins/slick.cellrangeselector.js"></script>
+		<script src="js/slickgrid/dist/browser/plugins/slick.cellexternalcopymanager.js"></script>
+		<script src="js/slickgrid/dist/browser/plugins/slick.cellselectionmodel.js"></script>
+		<script src="js/slickgrid/dist/browser/slick.editors.js"></script>
+		<script src="js/slickgrid/dist/browser/slick.formatters.js"></script>
+		<script src="js/slickgrid/dist/browser/slick.dataview.js"></script>
+		<script src="js/slickgrid/dist/browser/plugins/slick.checkboxselectcolumn.js"></script>
+		<script src="js/slickgrid/dist/browser/plugins/slick.rowselectionmodel.js"></script>
+		<script src="js/slickgrid/dist/browser/slick.compositeeditor.js"></script>
+		<script src="js/slickgrid/dist/browser/controls/slick.pager.js"></script>
+		<script src="js/slickgrid/dist/browser/plugins/slick.checkboxselectcolumn.js"></script>
+		<script src="js/slickgrid/dist/browser/controls/slick.columnpicker.js"></script>
+		<script src="js/xlsx.full.min.js"></script>
+		
+		<!-- <script src="js/js-tabler/demo-theme.min.js?1692870487"></script> -->
+		<script src="js/js-tabler/tabler.min.js?1692870487" defer></script>		
+		<script src="js/libs-tabler/apexcharts/dist/apexcharts.min.js?1692870487" defer></script>
+		<script src="js/libs-tabler/jsvectormap/dist/js/jsvectormap.min.js?1692870487" defer></script>
+		<script src="js/libs-tabler/jsvectormap/dist/maps/world.js?1692870487" defer></script>
+		<script src="js/libs-tabler/jsvectormap/dist/maps/world-merc.js?1692870487" defer></script>
+        <script src="js/utils.js" defer></script>
+
+		<!-- tabler library for making a select box -->
+		<script src="js/slickgrid/lib/select2.js?1692870487" defer></script>
+
+		<!-- litepicker library for making a datepicker -->
+		<script src="js/libs-tabler/nouislider/dist/nouislider.min.js?1692870487" defer></script>
+		<script src="js/libs-tabler/litepicker/dist/litepicker.js?1692870487" defer></script>
+		<script src="js/libs-tabler/tom-select/dist/js/tom-select.base.min.js?1692870487" defer></script>
+		
+		<!--importing a loading animation util script -->
+		<script src="js/spinnerUtil.js"></script>
+
+		<!-- chartjs library for making a charts --> 
+		<script src="js/chart.js"></script>
+
+		<!-- spin js library-->
+		<script src="js/spin.js"></script>
+		<link href="css/spin.css" rel="stylesheet"> </link>
+
+		<!-- alert library -->
+		<!-- <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script> -->
+		<!-- <link rel="stylesheet" href="https://unpkg.com/sweetalert/dist/sweetalert.css"> -->
+
+		<style>
+			@import url("css/inter.css");
+			
+			:root {
+				--tblr-font-sans-serif: "Inter Var", -apple-system, BlinkMacSystemFont,
+					San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+			}
+			
+			body {
+				font-feature-settings: "cv03", "cv04", "cv11";
+			}
+			.select-month-year {
+				width: 150px;
+				height: 30px;
+			}
+			.select-options {
+				width: 250px;
+				height: 30px
+			}
+			.search-button-file {
+				width: 60px;
+				height: 30px;
+			}
+			.search-button {
+				width: 60px;
+				height: 30px;
+				margin-top: 27px;
+			}
+			.file-attach {
+				width: 400px;
+				font-size: 13px;
+			}
+			.select-date {
+				width: 210px;
+				height: 30px;
+			}
+			.toggle {
+				cursor: pointer;
+				height: 1em;
+				width: 1em;
+				display: inline-block;
+				font-size: 15px;
+			}
+			.no-top-border {
+				border-top: none !important;
+			}
+			.form-group {
+				display: flex;
+				flex-wrap: wrap; /* 여러 요소를 한 줄에 배치 */
+				align-items: center;
+			}
+
+			.privacy-policy-link {
+				text-decoration: none;
+				cursor: pointer;
+				transition: color 0.3s ease;
+			}
+			.privacy-policy-link:hover {
+				color: #007bff !important; /* Change this to your preferred hover color */
+				text-decoration: underline;
+			}
+			.chartcontainer {
+				position:relative;
+				min-height:auto;
+				width:100%;
+				display: flex;
+				flex-grow:1;
+			}
+			.chartcontainer canvas {
+				width: 100% !important;
+				height: auto !important;
+			}
+
+			
+
+		</style>
+		<!-- litepicker library for making a datepicker -->
+		<script>
+			document.addEventListener("DOMContentLoaded",
+			function() {
+			  // this will only when the input date type is avaible in the DOM
+			  let dateLitePickerIcon = document.getElementById('datepicker-icon');
+			  if (dateLitePickerIcon && window.Litepicker) {
+		  
+				new Litepicker({
+				  element: dateLitePickerIcon,
+				  buttonText: {
+					previousMonth: `<!-- Download SVG icon from http://tabler-icons.io/i/chevron-left -->
+				<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 6l-6 6l6 6" /></svg>`,
+						nextMonth: `<!-- Download SVG icon from http://tabler-icons.io/i/chevron-right -->
+				<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6l-6 6" /></svg>`,
+					},
+				});
+				}
+				});
+				// @formatter: on
+		</script>
+		<script>
+			// @formatter:off
+			document.addEventListener("DOMContentLoaded",
+			function() {
+			  // this will only when the input date type is avaible in the DOM
+			  let dateLitePickerPrepend = document.getElementById('datepicker-icon-prepend');
+			  if (dateLitePickerPrepend && window.Litepicker) {
+				new Litepicker({
+				  element: dateLitePickerPrepend,
+				  buttonText: {
+					previousMonth: `<!-- Download SVG icon from http://tabler-icons.io/i/chevron-left -->
+				<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 6l-6 6l6 6" /></svg>`,
+						nextMonth: `<!-- Download SVG icon from http://tabler-icons.io/i/chevron-right -->
+				<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6l-6 6" /></svg>`,
+					},
+				});
+				}
+				});
+				// @formatter: on
+		</script>
+		<script>
+			var gv_today = "[[${today}]]";
+			var gv_closingYm = "[[${closingYm}]]";
+			var gv_todayDayOfWeek = "[[${todayDayOfWeek}]]";
+			var gv_year = gv_closingYm.substring(0,4);
+			var gv_month = Number(gv_closingYm.substring(4,6));
+		</script>
+	</head>
+</th:block>
+</html>

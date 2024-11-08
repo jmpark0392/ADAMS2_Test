@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rds.adams.web.adm.usr.dao.ADMUSR001M0DAO">
+    <select id="selectCompList" parameterType="com.rds.adams.web.adm.usr.dto.ADMUSR001M0P0DTO" resultType="com.rds.adams.web.adm.usr.dto.ADMUSR001M0R0DTO">
+        /* web.amd.usr.dao.ADMUSR001M0DAO.selectUsrList */
+        SELECT
+               A.CS_NO                                             AS CsNo             /* 고객번호 */
+             , A.COMP_NO_DV_CD                                     AS CompNoDvCd       /* 회사번호구분 */
+             , A.COMP_NO                                           AS CompNo           /* 회사번호 */
+             , A.COMP_NM                                           AS CompNm           /* 회사명 */
+             , A.CPR_DV_CD                                         AS CprDvCd          /* 법인구분코드 */
+             , A.REP_PH_NO                                         AS RepPhNo          /* 대표전화번호 */
+             , A.REPER_NM                                          AS ReperNm          /* 대표자명 */
+             , A.PTB_NM                                            AS PtbNm            /* 담당자명 */
+             , A.PTB_PH_NO                                         AS PtbPhNo          /* 담당자전화번호 */
+             , A.PTB_EMAIL                                         AS PtbEmail         /* 담당자이메일 */
+             , A.POST_NO                                           AS PostNo           /* 우편번호 */
+             , A.COMP_HMPG_URL                                     AS CompHmpgUrl      /* 홈페이지 */
+             , A.ADDRS                                             AS Addrs            /* 기본주소 */
+             , A.DTLS_ADDRS                                        AS DtlsAddrs        /* 상세주소 */
+             , A.STAT_DV_CD                                        AS StatDvCd         /* 상태구분코드 */
+             , CONVERT(CHAR(10), A.USE_STR_DTM     , 23)           AS UseStrDtm        /* 사용시작일시 */
+             , CONVERT(CHAR(10), A.USE_END_DTM     , 23)           AS UseEndDtm        /* 사용종료일시 */
+             , A.COUNTRY_CD                                        AS CountryCd        /* 국가코드 */
+             , A.COUNTRY_NM_KOR                                    AS CountryNmKor     /* 한글국가명 */
+             , A.COUNTRY_NM_ENG                                    AS CountryNmEng     /* 영문국가명 */
+             , A.FNL_UPD_EMP_NO                                    AS FnlUpdEmpNo      /* 최종변경사용자 */
+             , CONVERT(CHAR(10), A.FNL_UPD_DTM     , 23)           AS FnlUpdDtm        /* 사용변경일시 */
+             , A.FRST_REG_EMP_NO                                   AS FrstRegEmpNo     /* 최초요청사용자 */
+             , CONVERT(CHAR(10), A.FRST_REG_DTM    , 23)           AS FrstRegDtm       /* 최초요청일시 */
+          FROM [RDSDB].[dbo].[TB_CS_MNG_LST]    A  /* 사용자관리 */
+         WHERE 1=1
+           AND A.CS_NO = #{csNo}
+    </select>
+    
+    <update id="updateCompList" parameterType="com.rds.adams.web.adm.usr.dto.ADMUSR001M0P1DTO" >
+        /* web.amd.usr.dao.ADMUSR001M0DAO.updateCompList */
+        UPDATE TB_CS_MNG_LST
+           SET 
+               COMP_NM        = #{compNm}
+             <!-- , COMP_NO_DV_CD  = #{compNoDvCd} -->
+             <!-- , COMP_NO        = #{compNo} -->
+             , COUNTRY_NM_ENG = #{countryNmEng}
+             , ADDRS          = #{addrs}
+             , DTLS_ADDRS     = #{dtlsAddrs}
+             , POST_NO        = #{postNo}
+             , REPER_NM       = #{reperNm}
+             , REP_PH_NO      = #{repPhNo}
+             <!-- , USE_STR_DTM    = #{useStrDtm} -->
+             , COMP_HMPG_URL  = #{compHmpgUrl}
+             , FNL_UPD_EMP_NO = #{fnlUpdEmpNo}
+             , FNL_UPD_DTM    = GETDATE()
+         WHERE CS_NO = #{csNo}
+    </update>
+    
+        <update id="updateServiceCode" parameterType="com.rds.adams.web.adm.usr.dto.ADMUSR001M0P1DTO" >
+        /* web.amd.usr.dao.ADMUSR001M0DAO.updateServiceCode */
+        UPDATE TB_CS_MNG_LST
+           SET 
+               STAT_DV_CD     = CASE WHEN STAT_DV_CD = '0' THEN '8' 
+                                     WHEN STAT_DV_CD = '8' THEN '0'
+                                     ELSE STAT_DV_CD 
+                                END
+             , FNL_UPD_EMP_NO = #{fnlUpdEmpNo}
+             , FNL_UPD_DTM    = GETDATE()
+         WHERE CS_NO = #{csNo}
+    </update>
+
+</mapper>

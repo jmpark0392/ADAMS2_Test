@@ -1,0 +1,441 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+<th:block layout:fragment="content">
+	<script src="js/js-tabler/demo-theme.min.js?1692870487"></script>
+	<div class="page-wrapper" id="page-wrapper">
+		<div class="container" id="container">
+			<h2>[[${menuNm}]]</h2>
+			<div class="ptag-container">
+				<span>[[${navigator}]]</span>
+				<div class="form-container">
+					<div class="form-box">
+						<form id="divSearch" name="divSearch" method="post" action="/WRKFIL001M0SelectList" onsubmit="return false;">
+							<div class="row align-items-center">
+								<div class="col-auto">
+									<label for="lblUploadFileList" class="form-label">File Name : </label>
+									<select id="cmbUploadFileList" name="cmbUploadFileList" required="required" class="form-select select-options p-1">
+										<option selected="selected" value="">- File -</option>
+									</select>
+								</div>
+								<div class="col-auto">
+									<label class="form-label">Load Date : </label>
+									<div class="input-icon">
+										<input class="form-control select-date p-1" placeholder="Select a date" id="datepicker-icon" value="" style="padding: 3px" size=15 />
+											<span class="input-icon-addon "> <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+												<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+												<path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z" />
+												<path d="M16 3v4" />
+												<path d="M8 3v4" />
+												<path d="M4 11h16" />
+												<path d="M11 15h1" />
+												<path d="M12 15v3" />
+											</svg>
+										</span>
+									</div>
+								</div>
+								<div class="col-auto mt-4 g-0">
+									<div class="">~</div>
+								</div>
+								<div class="col-auto">
+									<label class="form-label">&nbsp; </label>
+									<div class="input-icon">
+										<input class="form-control  select-date p-1" placeholder="Select a date" id="datepicker-icon-prepend" value="2020-06-20" size=15 />
+										<span class="input-icon-addon">
+											<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+												<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+												<path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z" />
+												<path d="M16 3v4" />
+												<path d="M8 3v4" />
+												<path d="M4 11h16" />
+												<path d="M11 15h1" />
+												<path d="M12 15v3" />
+											</svg>
+										</span>
+									</div>
+								</div>
+								<div class="col-auto">
+									<label class="form-label" style="flex-basis: 100%; margin-bottom: 0.5rem;">Standard Year / Month :</label>
+									<div class="form-group">
+										<select name="user[year]" class="form-select select-month-year p-1" id="inpStartStdYr" style="display: flex; width: 100px; margin-right: 10px">
+											<option selected value="">- Year -</option>
+											<!-- Year Options -->
+											<option value="2024">2024</option>
+										</select>
+										<select name="user[month]" class="form-select select-month-year p-1" id="inpStartMnth" style="display: flex; width: 120px;">
+											<option selected value="">- Month -</option>
+											<!-- Month Options -->
+											<option value="1">January</option>
+											<option value="2">February</option>
+											<option value="3">March</option>
+											<option value="4">April</option>
+											<option value="5">May</option>
+											<option value="6">June</option>
+											<option value="7">July</option>
+											<option value="8">August</option>
+											<option value="9">September</option>
+											<option value="10">October</option>
+											<option value="11">November</option>
+											<option value="12">December</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-auto mt-4 g-0">
+									<div class="">~</div>
+								</div>
+								<div class="col-auto">
+									<label class="form-label" style="flex-basis: 100%; margin-bottom: 0.5rem;">&nbsp;</label>
+									<div class="form-group">
+										<select name="user[year]" class="form-select select-month-year p-1" id="inpEndStdYr" style="display: flex; width: 100px; margin-right: 10px">
+											<option selected value="">- Year -</option>
+											<!-- Year Options -->
+											<option value="2024">2024</option>
+										</select>
+										<select name="user[month]" class="form-select select-month-year p-1" id="inpEndMnth" style="display: flex; width: 120px;">
+											<option selected value="">- Month -</option>
+											<!-- Month Options -->
+											<option value="1">January</option>
+											<option value="2">February</option>
+											<option value="3">March</option>
+											<option value="4">April</option>
+											<option value="5">May</option>
+											<option value="6">June</option>
+											<option value="7">July</option>
+											<option value="8">August</option>
+											<option value="9">September</option>
+											<option value="10">October</option>
+											<option value="11">November</option>
+											<option value="12">December</option>
+										</select>
+									</div>
+								</div>
+								<div class="col">
+									<button name="btnSearch" type="button" class="btn btn-primary search-button p-1" onclick="getSearchList()" data-test="create-button">Search</button>
+								</div>
+								<div class="row mt-3"></div>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div style="padding-bottom: 25px;"></div>
+			</div>
+			<div class="card card-md">
+				<div align="center" id="divMyGrid">
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+
+		//$("#datepicker-icon").val(gv_today);
+		// gv_closingYm으로 연도와 월을 추출하고, 일자를 01로 고정
+		let year = gv_year; // header.html에서 가져온 값 사용
+		let month = String(gv_month).padStart(2, '0'); // 월은 01-12로 고정
+		let day = "01"; // 일자는 항상 01로 고정
+	
+		// 날짜 값을 yyyy-mm-01 형식으로 설정
+		let fixedDate = `${year}-${month}-${day}`;
+	
+		// datepicker-icon의 값을 고정된 날짜로 설정
+		$("#datepicker-icon").val(fixedDate);
+		$("#datepicker-icon-prepend").val(gv_today);
+		$("#inpStartStdYr").val(gv_year);
+		$("#inpStartMnth").val(gv_month);
+		$("#inpEndStdYr").val(gv_year);
+		$("#inpEndMnth").val(gv_month);
+
+		// mwthod that flips the date format
+		const flipDate = (input) => {
+			let date = input.split("/");
+		return date[1] + date[0];
+		}
+		console.log("flipDate :"+flipDate);
+
+		// method that clears the input field
+		function clearInputField(inputValue) {
+			let value  = String(inputValue.value);
+			let cleanedValue = value.replace(/[_\/\s]/g, '');
+			if(cleanedValue === "") {
+				inputValue.value = "";
+			} 
+		}
+
+		/*
+		let clearedinptStartYm, clearedinptEndYm;
+		let inputStartStdYear = document.getElementById('inpStartStdYr');
+		let inputStartStdMonth = document.getElementById('inpStartMnth');
+		let inputEndStdYear = document.getElementById('inpEndStdYr');
+		let inputEndStdMonth = document.getElementById('inpEndMnth');
+		
+		let inputStartStdYm = inputStartStdYear + String(inputStartStdMonth).padStart(2, "0");
+		let inputEndStdYm = inputEndStdYear + String(inputEndStdMonth).padStart(2, "0");
+		*/
+		
+
+		// we check based on whether the input value is inserted or not 
+		/*
+ */
+		
+
+		
+		function getFileList(input) {
+			console.log("getFileList input : " + input);
+			var option = {
+						  id          : "SelectFileList"
+						, type        : "post"
+						, url         : "/WRKFIL003M0SelectFileList"
+						, async       : false
+						, dataType    : "json"
+						, contentType : "application/json; charset=utf-8"
+						, data        : input = JSON.stringify({ uploadFile: "", stdYymm: "" })
+			};
+	
+			gf_Transaction(option, fn_callback);
+		}
+		
+		function getList(input) {
+			console.log("getList input : " + input);
+			var option = {
+						  id          : "SelectList"
+						, type        : "post"
+						, url         : "/WRKFIL004M0SelectList"
+						, async       : false
+						, dataType    : "json"
+						, contentType : "application/json; charset=utf-8"
+						, data        : input
+			};
+	
+			gf_Transaction(option, fn_callback);
+		}
+	</script>
+	<script src="js/utils.js"></script>
+	<script>
+		$(document).ready(function () {
+			console.log("Document is ready.");
+			getSearchList();
+			$("input").on("keyup", function (key) {
+				if (key.keyCode == 13) {
+					getSearchList();
+				}
+			});
+			getFileList();
+		});
+
+		// DropDown 리스트에 FILE_NM 값을 추가하는 함수
+		function populateDropdown(data) {
+			console.log("select Dropdown box")
+			var dropdown = $("#cmbUploadFileList");
+			data.forEach(function (item) {
+				var option = $("<option></option>").attr("value", item.seqNo).text(item.tblId );
+				dropdown.append(option);
+			});
+		}
+		
+	
+
+		var grid;
+		var dataView;
+		var data;
+		var unqId = "seqNo";
+		var xcpt_cols = [ ];
+		var check_cols = [ ];
+		var columns = [
+				{ id: "seqNo",			name: "Seq",				field: "seqNo",			width:80,	sortable: true, editor: Slick.Editors.Text, headerCssClass: "slick-header-columns", cssClass: "slick-column-center",	},
+				{ id: "tblId",			name: "Table ID",			field: "tblId",			width:240,	sortable: true, editor: Slick.Editors.Text, headerCssClass: "slick-header-columns", cssClass: "slick-column-left",		},
+				{ id: "fileNm",			name: "File Name",			field: "fileNm",		width:240,	sortable: true, editor: Slick.Editors.Text, headerCssClass: "slick-header-columns", cssClass: "slick-column-left",		},
+				{ id: "loadCnt",		name: "Load Count",			field: "loadCnt",		width:100,	sortable: true, editor: Slick.Editors.Text, headerCssClass: "slick-header-columns", cssClass: "slick-column-right",		},
+				{ id: "fileSize",		name: "File Size(kb)",		field: "fileSize",		width:100,	sortable: true, editor: Slick.Editors.Text, headerCssClass: "slick-header-columns", cssClass: "slick-column-right",		},
+				{ id: "stdYymm",		name: "Standard YYYY/MM",	field: "stdYymm",		width:150,	sortable: true, editor: Slick.Editors.Text, headerCssClass: "slick-header-columns", cssClass: "slick-column-center",	},
+				{ id: "frstRegEmpNo",	name: "Registrant",			field: "frstRegEmpNo",	width:120,	sortable: true, editor: Slick.Editors.Text, headerCssClass: "slick-header-columns", cssClass: "slick-column-left",		},
+				{ id: "loadStrDtm",		name: "Load Start Date",	field: "loadStrDtm",	width:150,	sortable: true, editor: Slick.Editors.Text, headerCssClass: "slick-header-columns", cssClass: "slick-column-center",	},
+				{ id: "loadEndDtm",		name: "Load End Date",		field: "loadEndDtm",	width:150,	sortable: true, editor: Slick.Editors.Text, headerCssClass: "slick-header-columns", cssClass: "slick-column-center",	},
+				{ id: "loadSuccYn",		name: "Load Success",		field: "loadSuccYn",	width:120,	sortable: true, editor: Slick.Editors.Text, headerCssClass: "slick-header-columns", cssClass: "slick-column-center",	},
+		];
+	
+	         /*
+	             var keys    = Object.keys(grdData[0]);
+	             for (var i = 0; i < keys.length; i++) {
+	                columns.push({ id: keys[i], name: keys[i], field: keys[i], sortable: true, editor: Slick.Editors.Text });
+	             }
+	           */
+	
+		// 그리드 옵션
+		var options = {
+			enableCellNavigation: true,
+			enableColumnReorder: false,
+			forceFitColumns: false,
+			multiColumnSort: true,
+			numberedMultiColumnSort: true,
+			tristateMultiColumnSort: true,
+			sortColNumberInSeparateSpan: true,
+			enableAutoSizeColumns: true,
+			editable: false,
+			enableAddRow: false,
+			asyncEditorLoading: false,
+			autoEdit: false,
+			autoEditNewRow: false,
+			//enableAutoSizeColumns: true,
+			rowHeight: 35,
+		};
+	
+		var newRowIds = 0;
+	
+		var pluginOptions = {
+			clipboardCommandHandler: function (editCommand) {
+				undoRedoBuffer.queueAndExecuteCommand.call( undoRedoBuffer, editCommand);
+			},
+			readOnlyMode: false,
+			includeHeaderWhenCopying: false,
+			newRowCreator: function (count) {
+				for (var i = 0; i < count; i++) {
+					var item = { id: "newRow_" + newRowIds++, };
+					grid.getData().addItem(item);
+				}
+			},
+		};
+	
+		function getSearchList() {
+			console.log("Sending AJAX request...");
+			let inputStartStdYear = document.getElementById('inpStartStdYr').value;
+			let inputStartStdMonth = document.getElementById('inpStartMnth').value;
+			let inputEndStdYear = document.getElementById('inpEndStdYr').value;
+			let inputEndStdMonth = document.getElementById('inpEndMnth').value;
+	
+			let inputStartStdYm = inputStartStdYear + String(inputStartStdMonth).padStart(2, "0");
+			let inputEndStdYm = inputEndStdYear + String(inputEndStdMonth).padStart(2, "0");
+			console.log("inputStartStdYm & inputEndStdYm : "+inputStartStdYm+" & "+inputEndStdYm);	
+			
+			// here we are removing the - from the date and joining the date after split
+			const inputStartLoadDate = $("#datepicker-icon").val().split("-").join("");
+			const inputEndLoadDate = $("#datepicker-icon-prepend").val().split("-").join("");
+			console.log("inputStartLoadDate :"+inputStartLoadDate);
+
+			   // 이후 getList() 호출
+			getList(input = JSON.stringify({
+											 uploadFile    : $("#cmbUploadFileList").val(),
+											 startLoadDate : inputStartLoadDate,
+											 endLoadDate   : inputEndLoadDate,
+											 startStdYymm  : inputStartStdYm,
+											 endStdYymm    : inputEndStdYm,
+											}),);
+		}
+		/**
+		 * Transaction callback 함수
+		 **/
+		function fn_callback(result){
+			console.log("fn_callback : " + result.id);
+			if( result.resultCd == "S" ){
+				let resultData = typeof result.data === "string" ? JSON.parse(result.data) : result.data;
+				switch (result.id){
+					case "SelectFileList" :
+						console.log("selectFileList");
+						populateDropdown(resultData);
+						break;
+					case "SelectList" :
+						console.log("selectList grid");
+						fn_setGrid(resultData);
+						break;
+				}	  
+			} else if( result.resultCd == "E") {
+			} else {
+				console.log("fn_callback result : ", result);
+			}
+		}
+
+		function fn_setGrid(data){
+			//dataView = new Slick.Data.DataView( { idField: unqId });
+			dataView = new Slick.Data.DataView();
+			grid     = new Slick.Grid("#divMyGrid", dataView, columns, options);
+
+			// Make the grid respond to DataView change events.
+			dataView.onRowCountChanged.subscribe(function (e, args) {
+				grid.updateRowCount();
+				grid.render();
+			});
+
+			dataView.onRowsChanged.subscribe(function (e, args) {
+				grid.invalidate();
+				grid.render();
+			});
+
+			// setItems의 두번째 argument를 통해 unique id에 해당하는 컬럼 지정가능
+			dataView.setItems(data, unqId);
+
+			// when "onBeforeSort" returns false, the "onSort" won't execute (for example a backend server error while calling backend query to sort)
+			grid.onBeforeSort.subscribe(function (e, args) {
+			return true;
+			});                   
+
+			// 정렬
+			grid.onSort.subscribe(function (e, args) {
+				var cols = args.sortCols;
+	
+				data.sort(function (dataRow1, dataRow2) {
+					for (var i = 0, l = cols.length; i < l; i++) {
+						var field  = cols[i].sortCol.field;
+						var sign   = cols[i].sortAsc ? 1 : -1;
+						var value1 = dataRow1[field],
+						value2 = dataRow2[field];
+						var result = (value1 == value2 ? 0 : value1 > value2 ? 1 : -1) * sign;
+						if (result != 0) {
+						return result;
+						}
+					}
+				return 0;
+				});
+				grid.render();
+			});
+
+			grid.setSelectionModel(new Slick.CellSelectionModel());
+			grid.registerPlugin(new Slick.AutoTooltips());
+
+			// set keyboard focus on the grid
+			//grid.getCanvasNode().focus();
+			grid.registerPlugin(new Slick.CellExternalCopyManager(pluginOptions));
+	
+			grid.onAddNewRow.subscribe(function (e, args) {
+				var newItem = args.item;
+				var column = args.column;
+				dataView.beginUpdate();
+				dataView.setItems(data);
+				dataView.endUpdate();
+				grid.updateRowCount();
+				grid.render();
+			});
+
+			grid.onBeforeEditCell.subscribe(function (e, args) {
+				console.log("onBeforeEditCell");
+			});
+
+			grid.onCellChange.subscribe(function (e, args) {
+				dataView.beginUpdate();
+				dataView.setItems(data);
+				dataView.endUpdate();
+				grid.updateRowCount();
+				grid.render();
+			});
+
+			grid.onValidationError.subscribe(function (e, args) {
+				// handle validation errors originating from the CompositeEditor
+				if (args.validationResults) {
+					let errorMsg = args.validationResults.msg || "";
+					if (args.editor && args.editor instanceof Slick.CompositeEditor) {
+						if (args.validationResults.errors) {
+							errorMsg += "\n";
+							args.validationResults.errors.forEach(function (error, errorIndex) {
+								const columnName = error.editor.args.column.id;
+								errorMsg += `${columnName.toUpperCase()}: ${error.msg}`;
+							});
+						}
+						console.log(errorMsg);
+					}
+				} else {
+					alert(errorMessages);
+				}
+			});
+			//grid.setActiveCell(0, 0);
+			console.log("SlickGrid initialized.");
+		}
+		</script>
+	</th:block>
+</html>

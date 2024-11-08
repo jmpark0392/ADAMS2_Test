@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rds.adams.web.mst.sys.dao.MSTSYS002M1DAO">
+    <select id="selectList" parameterType="com.rds.adams.web.mst.sys.dto.MSTSYS002M1P0DTO" resultType="com.rds.adams.web.mst.sys.dto.MSTSYS002M1R0DTO">
+        SELECT
+               CD_ID       /* 코드ID */
+             , VLVL_CD     /* 유효값코드 */
+             , VLVL_NM     /* 유효값명 */
+             , VLVL_DESC   /* 유효값설명 */
+             , USE_YN      /* 사용여부 */
+             , ETC_1_DESC  /* 기타1내용 */
+             , ETC_2_DESC  /* 기타2내용 */
+             , ETC_3_DESC  /* 기타3내용 */
+             , REG_ID      /* 등록자 */
+             , REG_DT      /* 등록일 */
+             , UPD_ID      /* 수정자 */
+             , UPD_DT      /* 수정일 */
+          FROM TB_CO_CD_DTLS_LST
+         WHERE 1=1
+         <if test='cdIdTxt != ""'>
+           AND CD_ID = #{cdIdTxt}
+         </if>
+    </select>
+    <insert id="multipleInsertList" parameterType="com.rds.adams.web.mst.sys.dto.MSTSYS002M1P1DTO">
+        INSERT INTO [dbo].[TB_CO_CD_DTLS_LST]
+           ([CD_ID]
+           ,[VLVL_CD]
+           ,[VLVL_NM]
+           ,[VLVL_DESC]
+           ,[USE_YN]
+           ,[ETC_1_DESC]
+           ,[ETC_2_DESC]
+           ,[ETC_3_DESC]
+           ,[REG_ID]
+           ,[REG_DT]
+           ,[UPD_ID]
+           ,[UPD_DT]
+           )
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            ( #{item.cdId}      
+            , #{item.vlvlCd}      
+            , #{item.vlvlNm}
+            , #{item.vlvlDesc}
+            , #{item.useYn}
+            , #{item.etc1Desc}
+            , #{item.etc2Desc}
+            , #{item.etc3Desc}
+            , 'admin'
+            , CONVERT(CHAR(10), getdate(), 23)
+            , 'admin'
+            , CONVERT(CHAR(10), getdate(), 23)
+            )
+        </foreach>
+    </insert>
+    <update id="multipleUpdateList" parameterType="com.rds.adams.web.mst.sys.dto.MSTSYS002M1P1DTO">
+        <foreach collection="list" item="item" separator=";">
+            UPDATE TB_CO_CD_DTLS_LST
+               SET VLVL_NM    = #{item.vlvlNm},
+                   VLVL_DESC  = #{item.vlvlDesc},
+                   USE_YN     = #{item.useYn},
+                   ETC_1_DESC = #{item.etc1Desc},
+                   ETC_2_DESC = #{item.etc2Desc},
+                   ETC_3_DESC = #{item.etc3Desc},
+                   UPD_ID     = 'admin',
+                   UPD_DT     = CONVERT(CHAR(10), getdate(), 23)
+             WHERE 1=1 
+               AND CD_ID      = #{item.cdId}
+               AND VLVL_CD    = #{item.vlvlCd}
+         </foreach>
+    </update>
+</mapper>

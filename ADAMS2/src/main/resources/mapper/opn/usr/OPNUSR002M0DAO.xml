@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rds.adams.web.opn.usr.dao.OPNUSR002M0DAO">
+    <select id="selectCsNoList" parameterType="com.rds.adams.web.opn.usr.dto.OPNUSR002M0P0DTO" resultType="com.rds.adams.web.opn.usr.dto.OPNUSR002M0R0DTO">
+        /* web.opn.usr.dao.OPNUSR002M0DAO.selectCsNoList */
+        SELECT 
+               ROW_NUMBER() OVER(ORDER BY A.CS_NO)    AS seqNo
+             , A.CS_NO                                AS csNo           /* 고객사번호 */
+             , A.COMP_NO_DV_CD                        AS compNoDvCd     /* 회사번호구분코드 */
+             , A.COMP_NO                              AS compNo         /* 회사번호 */
+             , A.COMP_NM                              AS compNm         /* 회사명 */
+             , A.REP_PH_NO                            AS repPhNo        /* 대표전화번호 */
+             , A.REPER_NM                             AS reperNm        /* 대표자명 */
+             , A.PTB_NM                               AS ptbNm          /* 담당자명 */
+             , A.PTB_PH_NO                            AS ptbPhNo        /* 담당자전화번호 */
+             , A.PTB_EMAIL                            AS ptbEmail       /* 담당자이메일 */
+             , A.PTB_DEPT_NM                          AS ptbDeptNm      /* 담당자부서명 */
+             , A.ADMIN_ID                             AS adminId        /* 관리자ID */
+             , ''                                     AS adminPassword  /* 관리자비밀번호 */
+             , A.COMP_HMPG_URL                        AS compHmpgUrl    /* 회사홈페이지URL */
+             , A.POST_NO                              AS postNo         /* 우편번호 */
+             , A.ADDRS                                AS addrs          /* 주소 */
+             , A.DTLS_ADDRS                           AS dtlsAddrs      /* 상세주소 */
+             , A.STAT_DV_CD                           AS statDvCd       /* 상태구분코드 */
+             , A.STAT_DV_CD                           AS oldStatDvCd    /* old상태구분코드 */
+             , CONVERT(CHAR(10), A.USE_STR_DTM, 23)   AS useStrDtm      /* 사용시작일시 */
+             , CONVERT(CHAR(10), A.USE_END_DTM, 23)   AS useEndDtm      /* 사용종료일시 */
+             , A.COUNTRY_CD                           AS countryCd      /* 국가코드 */
+             , A.COUNTRY_NM_KOR                       AS countryNmKor   /* 국가명_한글 */
+             , A.COUNTRY_NM_ENG                       AS countryNmEng   /* 국가명_영문 */
+             , CONVERT(CHAR(10), A.FRST_REG_DTM, 23)  AS frstRegDtm     /* 최초등록일시 */
+          FROM [RDSDB].[dbo].[TB_CS_MNG_LST] A
+         WHERE 1=1
+        <if test='compNoDvCd != "" and compNoDvCd != null'>
+           AND A.COMP_NO_DV_CD = #{compNoDvCd}
+        </if>
+        <if test='compNoNm != "" and compNoNm != null'>
+           AND ( A.COMP_NO     LIKE '%' + #{compNoNm} + '%' OR A.COMP_NM LIKE '%' + #{compNoNm} + '%' )
+        </if>
+        <if test='countryNm != "" and countryNm != null'>
+           AND ( A.COUNTRY_CD  LIKE '%' + #{countryNm} + '%' OR A.COUNTRY_NM_KOR  LIKE '%' + #{countryNm} + '%' OR A.COUNTRY_NM_ENG  LIKE '%' + #{countryNm} + '%' )
+        </if>
+        <if test='ptbNm != "" and ptbNm != null'>
+           AND A.PTB_NM  LIKE '%' + #{ptbNm} + '%'
+        </if>
+         ORDER BY A.CS_NO
+    </select>
+    
+    <update id="updateCsNo">
+        <selectKey keyProperty="newCsNo" resultType="String" order="BEFORE">
+            SELECT TOP (1)
+                   FORMAT( ISNULL(MAX( CAST( CS_NO  AS numeric(5,0) )), 0) + 1, '000') AS newCsNo
+              FROM [RDSDB].[dbo].[TB_CS_MNG_LST]
+             WHERE 1=1
+               AND CS_NO <![CDATA[<>]]> '999'
+        </selectKey>
+        /* web.opn.usr.dao.OPNUSR002M0DAO.updateCsNo */
+        MERGE INTO [RDSDB].[dbo].[TB_CS_MNG_LST] A
+        USING (
+                SELECT
+                       #{csNo}                          AS CS_NO
+                     , #{compNoDvCd}                    AS COMP_NO_DV_CD
+                     , #{compNo}                        AS COMP_NO
+                     , #{compNm}                        AS COMP_NM
+                     , #{repPhNo}                       AS REP_PH_NO
+                     , #{reperNm}                       AS REPER_NM
+                     , #{ptbNm}                         AS PTB_NM
+                     , #{ptbPhNo}                       AS PTB_PH_NO
+                     , #{ptbEmail}                      AS PTB_EMAIL
+                     , #{ptbDeptNm}                     AS PTB_DEPT_NM
+                     , #{adminId}                       AS ADMIN_ID
+                     , #{compHmpgUrl}                   AS COMP_HMPG_URL
+                     , #{postNo}                        AS POST_NO
+                     , #{addrs}                         AS ADDRS
+                     , #{dtlsAddrs}                     AS DTLS_ADDRS
+                     , #{statDvCd}                      AS STAT_DV_CD
+                     , CASE WHEN #{useStrDtm} IS NULL OR #{useStrDtm} = '' THEN NULL ELSE CONVERT(DATE, #{useStrDtm}, 23) END  AS USE_STR_DTM
+                     , CASE WHEN #{useEndDtm} IS NULL OR #{useEndDtm} = '' THEN NULL ELSE CONVERT(DATE, #{useEndDtm}, 23) END  AS USE_END_DTM
+                     , #{countryCd}                     AS COUNTRY_CD
+                     , #{countryNmKor}                  AS COUNTRY_NM_KOR
+                     , #{countryNmEng}                  AS COUNTRY_NM_ENG
+              ) B
+        ON    (
+                A.CS_NO = B.CS_NO
+              )
+        WHEN MATCHED THEN
+             UPDATE
+                SET A.COMP_NO_DV_CD   = B.COMP_NO_DV_CD
+                  , A.COMP_NO         = B.COMP_NO
+                  , A.COMP_NM         = B.COMP_NM
+                  , A.REP_PH_NO       = B.REP_PH_NO
+                  , A.REPER_NM        = B.REPER_NM
+                  , A.PTB_NM          = B.PTB_NM
+                  , A.PTB_PH_NO       = B.PTB_PH_NO
+                  , A.PTB_EMAIL       = B.PTB_EMAIL
+                  , A.PTB_DEPT_NM     = B.PTB_DEPT_NM
+                  , A.ADMIN_ID        = B.ADMIN_ID
+                  , A.COMP_HMPG_URL   = B.COMP_HMPG_URL
+                  , A.POST_NO         = B.POST_NO
+                  , A.ADDRS           = B.ADDRS
+                  , A.DTLS_ADDRS      = B.DTLS_ADDRS
+                  , A.STAT_DV_CD      = B.STAT_DV_CD
+                  , A.USE_STR_DTM     = CASE WHEN B.USE_STR_DTM IS NULL THEN A.USE_STR_DTM ELSE B.USE_STR_DTM END
+                  , A.USE_END_DTM     = B.USE_END_DTM
+                  , A.COUNTRY_CD      = B.COUNTRY_CD
+                  , A.COUNTRY_NM_KOR  = B.COUNTRY_NM_KOR
+                  , A.COUNTRY_NM_ENG  = B.COUNTRY_NM_ENG
+                  , A.FNL_UPD_EMP_NO  = #{usrId}
+                  , A.FNL_UPD_DTM     = GETDATE()
+        WHEN NOT MATCHED THEN
+             INSERT
+                  (
+                    CS_NO
+                  , COMP_NO_DV_CD
+                  , COMP_NO
+                  , COMP_NM
+                  , REP_PH_NO
+                  , REPER_NM
+                  , PTB_NM
+                  , PTB_PH_NO
+                  , PTB_EMAIL
+                  , PTB_DEPT_NM
+                  , ADMIN_ID
+                  , ADMIN_PASSWORD
+                  , COMP_HMPG_URL
+                  , POST_NO
+                  , ADDRS
+                  , DTLS_ADDRS
+                  , STAT_DV_CD
+                  , USE_STR_DTM
+                  , USE_END_DTM
+                  , COUNTRY_CD
+                  , COUNTRY_NM_KOR
+                  , COUNTRY_NM_ENG
+                  , FNL_UPD_EMP_NO
+                  , FNL_UPD_DTM
+                  , FRST_REG_EMP_NO
+                  , FRST_REG_DTM
+                  )
+             VALUES
+                  (
+                    #{newCsNo}
+                  , B.COMP_NO_DV_CD
+                  , B.COMP_NO
+                  , B.COMP_NM
+                  , B.REP_PH_NO
+                  , B.REPER_NM
+                  , B.PTB_NM
+                  , B.PTB_PH_NO
+                  , B.PTB_EMAIL
+                  , B.PTB_DEPT_NM
+                  , B.ADMIN_ID
+                  , PWDENCRYPT(#{adminPassword})
+                  , B.COMP_HMPG_URL
+                  , B.POST_NO
+                  , B.ADDRS
+                  , B.DTLS_ADDRS
+                  , B.STAT_DV_CD
+                  , CASE WHEN B.USE_STR_DTM IS NULL THEN GETDATE() ELSE B.USE_STR_DTM END
+                  , B.USE_END_DTM
+                  , B.COUNTRY_CD
+                  , B.COUNTRY_NM_KOR
+                  , B.COUNTRY_NM_ENG
+                  , #{usrId}
+                  , GETDATE()
+                  , #{usrId}
+                  , GETDATE()
+                  );
+    </update>
+    
+    <update id="updateUsrEnd">
+        UPDATE [RDSDB].[dbo].[TB_USR_MNG_LST]
+           SET STAT_DV_CD     = '9'
+             , USE_END_DTM    = CONVERT(DATE, #{useEndDtm}, 23)
+             , FNL_UPD_EMP_NO = #{usrId}
+             , FNL_UPD_DTM    = GETDATE()
+         WHERE 1=1
+           AND CS_NO = #{csNo}
+    </update>
+    
+    <insert id="insertAdmUsr">
+        INSERT INTO [RDSDB].[dbo].[TB_USR_MNG_LST]
+               (
+                 CS_NO
+               , USR_DV_CD
+               , USR_ID
+               , USR_NM
+               , USR_PASSWORD
+               , USR_PH_NO
+               , USR_EMAIL
+               , USR_DEPT_NM
+               , EMP_NO
+               , STAT_DV_CD
+               , USE_STR_DTM
+               , USE_END_DTM
+               , PASSWORD_UPD_DTM
+               , PASSWORD_INIT_YN
+               , FNL_UPD_EMP_NO
+               , FNL_UPD_DTM
+               , FRST_REG_EMP_NO
+               , FRST_REG_DTM
+               )
+        SELECT
+               #{csNo}          AS CS_NO
+             , '2'              AS USR_DV_CD
+             , A.PTB_EMAIL      AS USR_ID
+             , A.PTB_NM         AS USR_NM
+             , A.ADMIN_PASSWORD AS USR_PASSWORD
+             , A.PTB_PH_NO      AS USR_PH_NO
+             , A.PTB_EMAIL      AS USR_EMAIL
+             , A.PTB_DEPT_NM    AS USR_DEPT_NM
+             , NULL             AS EMP_NO
+             , '0'              AS STAT_DV_CD
+             , GETDATE()        AS USE_STR_DTM
+             , NULL             AS USE_END_DTM
+             , GETDATE()        AS PASSWORD_UPD_DTM
+             , 'N'              AS PASSWORD_INIT_YN
+             , #{usrId}         AS FNL_UPD_EMP_NO
+             , GETDATE()        AS FNL_UPD_DTM
+             , #{usrId}         AS FRST_REG_EMP_NO
+             , GETDATE()        AS FRST_REG_DTM
+          FROM [RDSDB].[dbo].[TB_CS_MNG_LST] A
+         WHERE 1=1
+           AND A.CS_NO = #{csNo}
+    </insert>
+</mapper>
