@@ -157,6 +157,11 @@
 		    <artifactId>thymeleaf-layout-dialect</artifactId>
 		</dependency>
 
+		<dependency>
+	        <groupId>com.rds.rsf.</groupId>
+	        <artifactId>RSF</artifactId>
+	        <version>0.0.1</version>
+	    </dependency>
 		
     </dependencies>
     

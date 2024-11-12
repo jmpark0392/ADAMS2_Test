@@ -125,24 +125,7 @@ public class AdamsWebConfigurer implements WebMvcConfigurer {
 
 	@Override
 	public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {
-		Properties prop = new Properties();
-		prop.setProperty("org.springframework.dao.DataAccessException", "egovSampleError");
-		prop.setProperty("org.springframework.transaction.TransactionException", "egovSampleError");
-		prop.setProperty("org.springframework.security.AccessDeniedException", "egovSampleError");
-		prop.setProperty("java.lang.Throwable", "error/error");
 
-		Properties statusCode = new Properties();
-		statusCode.setProperty("error/error_400", "400");
-		statusCode.setProperty("error/error_500", "500");
-		statusCode.setProperty("error/error_400", "404");
-		statusCode.setProperty("error/error_400", "403");
-		statusCode.setProperty("error/error_500", "503");
-
-		SimpleMappingExceptionResolver smer = new SimpleMappingExceptionResolver();
-		smer.setDefaultErrorView("error/error");
-		smer.setExceptionMappings(prop);
-		smer.setStatusCodes(statusCode);
-		resolvers.add(smer);
 	}
 
 }
