@@ -47,7 +47,7 @@ public class WRKFIL003M0Controller {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value="/WRKFIL003M0SelectList", method=RequestMethod.POST, consumes="application/json")
+	@RequestMapping(value="/WRKFIL003M0SelectList", method=RequestMethod.POST)
 	public HashMap<String, Object> select(@RequestBody WRKFIL003M0P0DTO inVo, HttpServletRequest request) {
 
 		AdamsLoginDTO sAdamsLoginDTO = (AdamsLoginDTO) request.getSession().getAttribute(RsfConstant.SESSION_LOGIN_INFO);

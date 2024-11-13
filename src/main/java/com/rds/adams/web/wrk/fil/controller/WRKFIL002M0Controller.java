@@ -33,7 +33,7 @@ public class WRKFIL002M0Controller {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value="/WRKFIL002M0SelectList", method=RequestMethod.POST, consumes="application/json")
+	@RequestMapping(value="/WRKFIL002M0SelectList", method=RequestMethod.POST)
 	public List<WRKFIL002M0R0DTO> select(@RequestBody WRKFIL002M0P0DTO inVo, HttpServletRequest request) {
 		
 		

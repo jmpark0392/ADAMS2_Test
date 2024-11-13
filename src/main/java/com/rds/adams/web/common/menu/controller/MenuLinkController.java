@@ -3,6 +3,7 @@
  */
 package com.rds.adams.web.common.menu.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +26,9 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 public class MenuLinkController {
 	
+	@Autowired
+	CSRFTokenManager crsfTokenManager;
+	
 	private static String CSRF_PARAMETER_NAME = "CSRF_TOKEN";
 	private static String CSRF_HEADER_NAME = "X-CSRF-Token";
 	
@@ -37,7 +41,7 @@ public class MenuLinkController {
 	}
 	
 	private String csrfGenerate(HttpSession session) {
-		return CSRFTokenManager.getTokenForSession(session, true);
+		return crsfTokenManager.getTokenForSession(session, true);
 	}
 	
 	// 새로운 메소드: GetMapping("/") 경로로 접근 시 로그인 페이지로 CSRF 토큰 전달
@@ -88,7 +92,7 @@ public class MenuLinkController {
 		
 		String newPageName = pageName.split("&")[0].split("=")[1];
 		HttpSession session = request.getSession(true); 
-		String token = CSRFTokenManager.getTokenForSession(session, false);
+		String token = crsfTokenManager.getTokenForSession(session, false);
 		csrfEnroll(model, token);
 		
 		if ( "myPage".equals(newPageName) ) {
