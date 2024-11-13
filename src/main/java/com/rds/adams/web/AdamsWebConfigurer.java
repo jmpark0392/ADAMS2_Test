@@ -22,6 +22,7 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import com.rds.rsf.core.interceptor.AuthenticInterceptor;
 import com.rds.rsf.core.interceptor.AuthorizInterceptor;
+import com.rds.rsf.core.interceptor.CSRFInterceptor;
 
 import lombok.RequiredArgsConstructor;
 
@@ -52,6 +53,9 @@ public class AdamsWebConfigurer implements WebMvcConfigurer {
 	
 	@Autowired
 	AuthorizInterceptor authorizInterceptor;
+	
+	@Autowired
+	CSRFInterceptor csrfInterceptor;
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
@@ -88,6 +92,9 @@ public class AdamsWebConfigurer implements WebMvcConfigurer {
 		registry.addInterceptor(authorizInterceptor)
 			.addPathPatterns("/menuLink")
 			.excludePathPatterns(excludePathList);
+		registry.addInterceptor(csrfInterceptor)
+			.addPathPatterns("/**/*", "/*")
+			.excludePathPatterns(resourceExcludePathList);
 
 	}
 
