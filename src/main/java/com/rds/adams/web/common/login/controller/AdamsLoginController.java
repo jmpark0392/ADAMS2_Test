@@ -41,8 +41,8 @@ import com.rds.adams.web.common.login.dto.AdamsUploadCntTotalDTO;
 import com.rds.adams.web.common.login.service.AdamsLoginService;
 import com.rds.adams.web.core.utils.StringUtil;
 import com.rds.rsf.core.common.ResponseCode;
-import com.rds.rsf.core.common.RsfProperties;
 import com.rds.rsf.core.constant.RsfConstant;
+import com.rds.rsf.core.util.RsfPropertiesUtil;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -146,7 +146,7 @@ public class AdamsLoginController {
 	public HashMap<String, Object> selectAdminLoginInfo(@RequestBody AdamsLoginDTO adamsLoginDTO, HttpServletRequest request) throws Exception {
 		
 		// ADMIN LOGIN의 경우 CS_NO를 '999' 
-		adamsLoginDTO.setCsNo(RsfProperties.getProperty("Globals.sysadm.csno"));
+		adamsLoginDTO.setCsNo(RsfPropertiesUtil.getProperty("Globals.sysadm.csno"));
 		
 	    HashMap<String, Object> resultMap = processLogin(adamsLoginDTO, request, false);
 	    String nextPage = ""; 
