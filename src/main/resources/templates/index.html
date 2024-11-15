@@ -269,7 +269,7 @@
 				</script>
 				<form id="form" name="form" method="post" action="/menuLink">
 					<input type="hidden" id="pageName" name="pageName" />
-					<input type="hidden" th:name="${csrfParameterName}" th:value="${csrfToken}" />
+					<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 				</form>
 				<div class="collapse navbar-collapse" id="sidebar-menu">
 					<ul class="navbar-nav pt-lg-3">

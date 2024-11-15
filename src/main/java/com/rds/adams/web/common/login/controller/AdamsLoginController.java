@@ -7,8 +7,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +26,7 @@ import com.rds.adams.web.common.login.dto.AdamsLastLoginDtmDTO;
 import com.rds.adams.web.common.login.dto.AdamsLastUploadDtmDTO;
 import com.rds.adams.web.common.login.dto.AdamsLoginCntTotalDTO;
 import com.rds.adams.web.common.login.dto.AdamsLoginDTO;
+import com.rds.adams.web.common.login.dto.AdamsLogoutDTO;
 import com.rds.adams.web.common.login.dto.AdamsMenuDTO;
 import com.rds.adams.web.common.login.dto.AdamsMonthBatCntDTO;
 import com.rds.adams.web.common.login.dto.AdamsMonthLoginCntDTO;
@@ -54,6 +55,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
+
 
 /**
  * 일반 로그인을 처리하는 컨트롤러 클래스
@@ -85,6 +87,8 @@ public class AdamsLoginController {
 	/** JWT */
 	@Autowired
     private AdamsJwtTokenUtil adamsJwtTokenUtil;
+	
+	private CsrfTokenRepository csrfTokenRepository;
 
 	/**
 	 * 일반 로그인을 처리한다
@@ -317,16 +321,16 @@ public class AdamsLoginController {
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "로그아웃 성공"),
 	})
-	@GetMapping(value = "/auth/adamsLogout")
-	public AdamsResultDTO actionLogoutJSON(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
+	@RequestMapping(value = "/auth/adamsLogout", method=RequestMethod.POST, consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_HTML_VALUE})
+	public AdamsResultDTO actionLogoutJSON(@RequestBody AdamsLogoutDTO adamsLogoutDTO, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
 		AdamsResultDTO adamsResultDTO = new AdamsResultDTO();
 
 		new SecurityContextLogoutHandler().logout(request, response, null);
 
 		adamsResultDTO.setResultCode(ResponseCode.SUCCESS.getCode());
 		adamsResultDTO.setResultMessage(ResponseCode.SUCCESS.getMessage());
-
+		
 		return adamsResultDTO;
 	}
 

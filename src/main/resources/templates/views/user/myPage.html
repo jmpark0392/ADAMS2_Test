@@ -138,7 +138,7 @@
 						<div class="tab-content">
 							<div class="tab-pane active show" id="tabs-profile">
 							    <form id="userProfileForm" name="userProfileForm" method="post" action="/auth/adamsNewCs" autocomplete="off" onsubmit="return false;">
-							    	<input type="hidden" th:name="${csrfParameterName}" th:value="${csrfToken}" />
+							    	<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 									<div class="row">
 										<div class="col-xl-4">
 											<div class="form-floating mb-2">
@@ -194,7 +194,7 @@
 							</div>
 							<div class="tab-pane" id="tabs-password">
 							    <form id="userPasswordForm" name="userPasswordForm" method="post" action="/auth/adamsNewCs" autocomplete="off" onsubmit="return false;">
-						    	<input type="hidden" th:name="${csrfParameterName}" th:value="${csrfToken}" />
+						    	<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 									<div class="row">
 										<div class="col-xl-4">
 											<div class="form-floating mb-2">

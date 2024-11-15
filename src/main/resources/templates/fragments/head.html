@@ -5,9 +5,8 @@
 		<meta charset="UTF-8">
 		
 		<!-- CSRF Token -->
-		<meta name="_csrf_token" th:content="${csrfToken}">
-		<meta name="_csrf_parameter" th:content="${csrfParameterName}">
-		<meta name="_csrf_header" th:content="${csrfHeaderName}">
+		<meta name="_csrf" th:content="${_csrf.token}"/>
+		<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 		
 		<title>iFrame 2.0 - Cloud IFRS17 Closing Services</title>
 		

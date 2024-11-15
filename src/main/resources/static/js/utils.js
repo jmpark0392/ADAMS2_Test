@@ -676,18 +676,6 @@ function gf_errorHandler(xhr) {
 	} else {
 		$("#pageName").val("error/error");
 	}
-	/*
-	$.get("/TokenRefresh", function(data) {
-	    var newCsrfToken = data;  // 새로운 CSRF 토큰
-
-	    // 기존 메타 태그 및 hidden input에서 CSRF 토큰을 업데이트
-	    $("meta[name='_csrf_token']").attr("content", newCsrfToken);
-	    
-	    // /login 페이지로 이동
-	    $("input[name='CSRF_TOKEN']").val(newCsrfToken);  // th:name="CSRF_TOKEN"태크의 csrf 토큰 값을 업데이트
-	    $("#pageName").val("/login");  // 이동할 페이지 설정
-	    $("#form").submit();  // 폼 전송
-	});
-	*/
+	
 	$("#form").submit();
 }

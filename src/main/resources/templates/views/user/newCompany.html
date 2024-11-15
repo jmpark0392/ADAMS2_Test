@@ -3,9 +3,8 @@
  	<head>
 		<meta charset="utf-8"/>
 		<meta http-equiv="X-UA-Compatible" content="ie=edge; chrome=1"/>
-		<meta name="_csrf_token" th:content="${csrfToken}">
-		<meta name="_csrf_parameter" th:content="${csrfParameterName}">
-		<meta name="_csrf_header" th:content="${csrfHeaderName}">
+		<meta name="_csrf" th:content="${_csrf.token}">
+		<meta name="_csrf_header" th:content="${_csrf.headerName}">
 		<title>iFrame 2.0 - Cloud IFRS17 Closing Services</title>
 		<!-- CSS file -->
 		<link href="css/css-tabler/tabler.min.css?1692870487" rel="stylesheet"/>
@@ -34,7 +33,7 @@
 					</span>
 				</div>
 			    <form class="card card-md" id="companyInfoForm" name="companyInfoForm" method="post" action="/auth/adamsNewCs" autocomplete="off" onsubmit="return false;">
-			    	<input type="hidden" th:name="${csrfParameterName}" th:value="${csrfToken}" />
+			    	<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 					<div class="card-body text-center">
 						<span class="fs-1 fw-bold">Sign up for a new contract</span>
 						<div class="hr-text text-success fs-4">Company Information</div>
@@ -419,7 +418,7 @@
 			</div>
 			<form id="form" name="form" method="post" action="/menuLink">
 				<input type="hidden" id="pageName" name="pageName" />
-				<input type="hidden" th:name="${csrfParameterName}" th:value="${csrfToken}" />
+				<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 			</form>
 
 	<script>
@@ -441,7 +440,7 @@
 	    	var vPostNo       = $("#postalCode").val();
 	    	var vAddrs        = $("#basicAddress").val();
 	    	var vDtlsAddrs    = $("#detailedAddress").val();
-	    	var csrfToken     = $("meta[name='_csrf_token']").attr("content");
+	    	var csrfToken     = $("meta[name='_csrf']").attr("content");
 	    	var csrfHeader    = $("meta[name='_csrf_header']").attr("content");
 	    	
 	    	if ( isNull(vCompNm) == "" ) {
