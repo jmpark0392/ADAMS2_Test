@@ -2,6 +2,9 @@
  * 
  */
 package com.rds.adams.web.common.menu.controller;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -46,13 +49,15 @@ public class MenuLinkController {
 	
 	@GetMapping("/TokenRefresh")
 	@ResponseBody
-	public String refreshCsrfToken(HttpServletRequest request, Model model) {
+	public Map<String, String> refreshCsrfToken(HttpServletRequest request, Model model) {
 		
 		CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
 		csrfEnroll(model, csrfToken);
 		
-		// 새로 발급된 CSRF 토큰을 클라이언트로 반환
-		return csrfToken.getToken();
+		Map<String, String> result = new HashMap<String, String>();
+		result.put("token", csrfToken.getToken());
+		
+		return result;
 	}
 	
 	
