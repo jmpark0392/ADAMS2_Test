@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -1228,7 +1229,7 @@ public class StringUtil
     
     public static double round( double val, int scale )
     {
-    	return BigDecimal.valueOf( val ).setScale( scale, BigDecimal.ROUND_HALF_UP ).doubleValue();
+    	return BigDecimal.valueOf( val ).setScale( scale, RoundingMode.HALF_UP ).doubleValue();
     }
     
     public static double getCurrencyAmtRound( String currency, double amt )

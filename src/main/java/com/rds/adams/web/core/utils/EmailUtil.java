@@ -3,16 +3,9 @@
  */
 package com.rds.adams.web.core.utils;
 
-import java.time.Duration;
-
 import com.azure.communication.email.EmailClient;
 import com.azure.communication.email.EmailClientBuilder;
 import com.azure.communication.email.models.EmailMessage;
-import com.azure.communication.email.models.EmailSendResult;
-import com.azure.communication.email.models.EmailSendStatus;
-import com.azure.core.util.polling.LongRunningOperationStatus;
-import com.azure.core.util.polling.PollResponse;
-import com.azure.core.util.polling.SyncPoller;
 import com.rds.adams.web.core.utils.dto.EmailDTO;
 
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class EmailUtil {
 	
-	private static final Duration POLLER_WAIT_TIME = Duration.ofSeconds(10);
 	private static final String CONNECTION_URL = "https://rds-prod-sns.korea.communication.azure.com/";
 	private static final String ACCESS_KEY = "Em8Hm3Jut22EUbbdFX7ZYPKBzemFe2qwMIkxyFmxzmaE6lsP3424JQQJ99AHACULyCpVgJAtAAAAAZCSW5L6"; 
 	private static final String CONNECTION_STRING = "endpoint="+CONNECTION_URL+";accesskey="+ACCESS_KEY;
@@ -46,7 +38,7 @@ public class EmailUtil {
 
         try {
         	
-            SyncPoller<EmailSendResult, EmailSendResult> poller = client.beginSend(message, null);
+            client.beginSend(message, null);
             /*
             PollResponse<EmailSendResult> pollResponse = null;
 

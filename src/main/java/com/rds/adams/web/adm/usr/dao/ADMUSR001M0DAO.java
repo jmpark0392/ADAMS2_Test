@@ -3,7 +3,6 @@ package com.rds.adams.web.adm.usr.dao;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 
 import com.rds.adams.web.adm.usr.dto.ADMUSR001M0P0DTO;
 import com.rds.adams.web.adm.usr.dto.ADMUSR001M0P1DTO;
