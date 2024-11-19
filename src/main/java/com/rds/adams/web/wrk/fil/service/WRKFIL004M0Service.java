@@ -16,9 +16,11 @@ public class WRKFIL004M0Service {
 	WRKFIL004M0DAO wRKFIL004M0DAO;
 	
 	public List<WRKFIL004M0R0DTO> selectList(WRKFIL004M0P0DTO inVo) {
-		
 		return wRKFIL004M0DAO.selectList(inVo);
-		
+	}
+	
+	public int selectListCount(WRKFIL004M0P0DTO inVo) {
+		return wRKFIL004M0DAO.selectListCount(inVo);
 	}
 
 }

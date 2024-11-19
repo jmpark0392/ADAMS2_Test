@@ -212,3 +212,8 @@ a.nav-link.active {
     font-size: 0.7rem;
   }
 }
+.pagination-center {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}

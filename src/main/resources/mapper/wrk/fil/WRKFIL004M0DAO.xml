@@ -3,54 +3,97 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.rds.adams.web.wrk.fil.dao.WRKFIL004M0DAO">
+	<select id="selectListCount" parameterType="com.rds.adams.web.wrk.fil.dto.WRKFIL004M0P0DTO" resultType="java.lang.Integer">
+	        SELECT
+	        	   COUNT(*) AS totalRowCnt
+	          FROM RDSDB.dbo.TB_UPL_HIST A
+	         INNER JOIN (
+	                      SELECT
+	                             CS_NO
+	                           , DB_ID
+	                           , TBL_ID
+	                        FROM RDSDB.dbo.TB_UPL_FILE_LST
+	                       WHERE 1=1
+	                         AND USE_YN = 'Y'
+	                       <if test= 'csNo != "999"'>
+	                         AND CS_NO  = #{csNo}
+	                       </if>  
+	                       <if test='uploadFile != ""'>
+	                         AND SEQ_NO = #{uploadFile}
+	                       </if>
+	                    ) B
+	                 ON 1=1
+	                AND A.DB_ID  = B.DB_ID
+	                AND A.TBL_ID = B.TBL_ID
+	                AND A.CS_NO  = B.CS_NO
+	          LEFT OUTER JOIN RDSDB.dbo.TB_USR_MNG_LST C
+	                       ON A.FNL_UPD_EMP_NO = C.USR_ID
+	          LEFT OUTER JOIN RDSDB.dbo.TB_UUID_FILE_INF D
+	                       ON A.CS_NO = D.CS_NO
+	                      AND A.UUID  = D.UUID
+	         WHERE 1=1
+	             <if test= 'csNo != "999"'>
+	               AND A.CS_NO   = #{csNo}
+	             </if>
+	             <if test="startLoadDate != null and startLoadDate != '' and endLoadDate != null and endLoadDate != ''">
+	               AND  CONVERT(CHAR(8), A.LOAD_STR_DTM, 112) BETWEEN #{startLoadDate} AND #{endLoadDate}
+	             </if>
+	             <if test="startStdYymm != null and startStdYymm != '' and endStdYymm != null and endStdYymm != ''">
+	               AND A.STD_YYMM BETWEEN REPLACE(#{startStdYymm}, '-', '') AND REPLACE(#{endStdYymm}, '-', '')
+	             </if>
+	             --ORDER BY A.FNL_UPD_DTM DESC, A.SEQ_NO DESC
+    </select>
+    
     <select id="selectList" parameterType="com.rds.adams.web.wrk.fil.dto.WRKFIL004M0P0DTO" resultType="com.rds.adams.web.wrk.fil.dto.WRKFIL004M0R0DTO">
-        SELECT
-               A.SEQ_NO                               AS seqNo        /* 순번 */
-             , A.DB_ID                                AS dbId         /* 데이터베이스ID */
-             , A.TBL_ID                               AS tblId        /* 테이블ID */
-             , A.FILE_NM                              AS fileNm       /* 파일명 */
-             , A.LOAD_CNT                             AS loadCnt      /* 적재건수 */
-             , A.STD_YYMM                             AS stdYymm      /* 기준년월 */
-             , C.USR_NM                               AS frstRegEmpNo /* 최초등록자번호 */
-             , CONVERT(CHAR(19), A.LOAD_STR_DTM, 20)  AS loadStrDtm   /* 적재시작일시 */
-             , CONVERT(CHAR(19), A.LOAD_END_DTM, 20)  AS loadEndDtm   /* 적재종료일시 */
-             , A.LOAD_SUCC_YN                         AS loadSuccYn   /* 적재성공여부 */
-             , FLOOR((D.FILE_SIZE / 1024)*100)/100    AS fileSize     /* 파일사이즈 */
-          FROM RDSDB.dbo.TB_UPL_HIST A
-         INNER JOIN (
-                      SELECT
-                             CS_NO
-                           , DB_ID
-                           , TBL_ID
-                        FROM RDSDB.dbo.TB_UPL_FILE_LST
-                       WHERE 1=1
-                         AND USE_YN = 'Y'
-                       <if test= 'csNo != "999"'>
-                         AND CS_NO  = #{csNo}
-                       </if>  
-                       <if test='uploadFile != ""'>
-                         AND SEQ_NO = #{uploadFile}
-                       </if>
-                    ) B
-                 ON 1=1
-                AND A.DB_ID  = B.DB_ID
-                AND A.TBL_ID = B.TBL_ID
-                AND A.CS_NO  = B.CS_NO
-          LEFT OUTER JOIN RDSDB.dbo.TB_USR_MNG_LST C
-                       ON A.FNL_UPD_EMP_NO = C.USR_ID
-          LEFT OUTER JOIN RDSDB.dbo.TB_UUID_FILE_INF D
-                       ON A.CS_NO = D.CS_NO
-                      AND A.UUID  = D.UUID
-         WHERE 1=1
-             <if test= 'csNo != "999"'>
-               AND A.CS_NO   = #{csNo}
-             </if>
-             <if test="startLoadDate != null and startLoadDate != '' and endLoadDate != null and endLoadDate != ''">
-               AND  CONVERT(CHAR(8), A.LOAD_STR_DTM, 112) BETWEEN #{startLoadDate} AND #{endLoadDate}
-             </if>
-             <if test="startStdYymm != null and startStdYymm != '' and endStdYymm != null and endStdYymm != ''">
-               AND A.STD_YYMM BETWEEN REPLACE(#{startStdYymm}, '-', '') AND REPLACE(#{endStdYymm}, '-', '')
-             </if>
-             ORDER BY A.FNL_UPD_DTM DESC, A.SEQ_NO DESC
+	    SELECT
+	    	   ROW_NUMBER() OVER(ORDER BY (SELECT 1)) AS rowNumber    /* 행번호 */
+	         , A.SEQ_NO                               AS seqNo        /* 순번 */
+	         , A.DB_ID                                AS dbId         /* 데이터베이스ID */
+	         , A.TBL_ID                               AS tblId        /* 테이블ID */
+	         , A.FILE_NM                              AS fileNm       /* 파일명 */
+	         , A.LOAD_CNT                             AS loadCnt      /* 적재건수 */
+	         , A.STD_YYMM                             AS stdYymm      /* 기준년월 */
+	         , C.USR_NM                               AS frstRegEmpNo /* 최초등록자번호 */
+	         , CONVERT(CHAR(19), A.LOAD_STR_DTM, 20)  AS loadStrDtm   /* 적재시작일시 */
+	         , CONVERT(CHAR(19), A.LOAD_END_DTM, 20)  AS loadEndDtm   /* 적재종료일시 */
+	         , A.LOAD_SUCC_YN                         AS loadSuccYn   /* 적재성공여부 */
+	         , FLOOR((D.FILE_SIZE / 1024)*100)/100    AS fileSize     /* 파일사이즈 */
+	      FROM RDSDB.dbo.TB_UPL_HIST A
+	     INNER JOIN (
+	                  SELECT
+	                         CS_NO
+	                       , DB_ID
+	                       , TBL_ID
+	                    FROM RDSDB.dbo.TB_UPL_FILE_LST
+	                   WHERE 1=1
+	                     AND USE_YN = 'Y'
+	                   <if test= 'csNo != "999"'>
+	                     AND CS_NO  = #{csNo}
+	                   </if>  
+	                   <if test='uploadFile != ""'>
+	                     AND SEQ_NO = #{uploadFile}
+	                   </if>
+	                ) B
+	             ON 1=1
+	            AND A.DB_ID  = B.DB_ID
+	            AND A.TBL_ID = B.TBL_ID
+	            AND A.CS_NO  = B.CS_NO
+	      LEFT OUTER JOIN RDSDB.dbo.TB_USR_MNG_LST C
+	                   ON A.FNL_UPD_EMP_NO = C.USR_ID
+	      LEFT OUTER JOIN RDSDB.dbo.TB_UUID_FILE_INF D
+	                   ON A.CS_NO = D.CS_NO
+	                  AND A.UUID  = D.UUID
+	     WHERE 1=1
+	         <if test= 'csNo != "999"'>
+	           AND A.CS_NO   = #{csNo}
+	         </if>
+	         <if test="startLoadDate != null and startLoadDate != '' and endLoadDate != null and endLoadDate != ''">
+	           AND  CONVERT(CHAR(8), A.LOAD_STR_DTM, 112) BETWEEN #{startLoadDate} AND #{endLoadDate}
+	         </if>
+	         <if test="startStdYymm != null and startStdYymm != '' and endStdYymm != null and endStdYymm != ''">
+	           AND A.STD_YYMM BETWEEN REPLACE(#{startStdYymm}, '-', '') AND REPLACE(#{endStdYymm}, '-', '')
+	         </if>
+	     ORDER BY A.FNL_UPD_DTM DESC, A.SEQ_NO DESC
+	    OFFSET (#{pageRowCnt} * (#{pageNum} - 1)) ROWS FETCH NEXT #{pageRowCnt} ROWS ONLY
     </select>
 </mapper>

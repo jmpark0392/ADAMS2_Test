@@ -14,8 +14,13 @@
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
       </form>
       <script>
-      	$(document).ready(function () {
-      		
+      
+      	var gvPageRowCnt = 10;
+		var gvTotalRowCnt = 0;
+		var gvPageNum = 1;
+		var gvPageCnt = 1;
+      
+      	$(document).ready(function () {      		
       		var csrfToken = $("meta[name='_csrf']").attr("content");
     	    var csrfHeader = $("meta[name='_csrf_header']").attr("content");
       		

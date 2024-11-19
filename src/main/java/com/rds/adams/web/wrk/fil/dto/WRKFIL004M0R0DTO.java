@@ -2,6 +2,8 @@ package com.rds.adams.web.wrk.fil.dto;
 
 import java.math.BigDecimal;
 
+import com.rds.rsf.core.dto.RsfPagingDTO;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,7 +26,7 @@ import lombok.ToString;
 @ToString
 @Getter
 @Setter
-public class WRKFIL004M0R0DTO {
+public class WRKFIL004M0R0DTO extends RsfPagingDTO {
 	
 	@Schema(description = "고객사번호")
 	private String csNo;
