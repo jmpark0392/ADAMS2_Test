@@ -309,12 +309,13 @@
 
 		function fn_setGrid(data){
 
-			// Make the grid respond to DataView change events.
+			// DataView에서 RowCount 수가 변할 경우 동작하는 함수로 어떤 로직 수행할 것인지 정의 필요
 			dataView.onRowCountChanged.subscribe(function (e, args) {
 				grid.updateRowCount();
 				grid.render();
 			});
-				
+			
+			// DataView에서 Rows가 변할 경우 동작하는 함수로 어떤 로직 수행할 것인지 정의 필요
 			dataView.onRowsChanged.subscribe(function (e, args) {
 				grid.invalidate();
 				grid.render();
@@ -323,12 +324,12 @@
 			// setItems의 두번째 argument를 통해 unique id에 해당하는 컬럼 지정가능
 			dataView.setItems(data, unqId);
 				
-			// when "onBeforeSort" returns false, the "onSort" won't execute (for example a backend server error while calling backend query to sort)
+			// Grid에서 정렬을 수행하려면 true를 반환, 그렇지 않으면 false로 반환 --> false로 반환시 onSort 가 실행되지 않음.
 			grid.onBeforeSort.subscribe(function (e, args) {
 				return true;
 			});				   
 	
-			// 정렬
+			// Grid 정렬기능 수행시 동작하는 함수로 data객체를 직접 sorting 했을때, DataView를 사용한다면 `setItems` 메소드를 사용
 			grid.onSort.subscribe(function (e, args) {
 				var cols = args.sortCols;
 	
@@ -349,30 +350,14 @@
 				dataView.setItems(data, unqId);
 			});
 	
+			// Grid에서 Cell을 선택하는 기능추가
 			grid.setSelectionModel(new Slick.CellSelectionModel());
+			
+			// Grid에서 데이터를 복사 후 엑셀의 grid에 그대로 붙여넣는 기능 추가
 			grid.registerPlugin(new Slick.AutoTooltips());
-	
-			// set keyboard focus on the grid
 			grid.registerPlugin(new Slick.CellExternalCopyManager(pluginOptions));
-	
-			grid.onAddNewRow.subscribe(function (e, args) {
-				var newItem = args.item;
-				var column = args.column;
-				dataView.beginUpdate();
-				dataView.setItems(data);
-				dataView.endUpdate();
-				grid.updateRowCount();
-				grid.render();
-			});
-	
-			grid.onCellChange.subscribe(function (e, args) {
-				dataView.beginUpdate();
-				dataView.setItems(data);
-				dataView.endUpdate();
-				grid.updateRowCount();
-				grid.render();
-			});
-	
+			
+			// grid에서 각 컬럼별 검증로직에 의해 에러가 발생하면, 해당 메세지를 보여주는 함수
 			grid.onValidationError.subscribe(function (e, args) {
 				// handle validation errors originating from the CompositeEditor
 				if (args.validationResults) {
