@@ -169,7 +169,7 @@
 		var xcpt_cols = [unqId, "frstRegEmpNo", "frstRegDtm"];
 		var check_cols = ["seqNo", "fileNm", "dbId", "tblId", "fileDsc", "fileDelYn", "uiSelYn", "useYn", "vrfUseYn"];
 		var columns = [
-			{ id: "seqNo",			name: "Seq",				field: "seqNo",			width: 40,					editor: Slick.Editors.Text, validator: createValidator, headerCssClass: "slick-header-columns", cssClass: "slick-column-center" },
+			{ id: "seqNo",			name: "Seq",				field: "seqNo",			width: 40,	sortable: true,	editor: Slick.Editors.Text, validator: createValidator, headerCssClass: "slick-header-columns", cssClass: "slick-column-center" },
 			{ id: "fileNm",			name: "File Name",			field: "fileNm",		width: 250,	sortable: true, editor: Slick.Editors.Text, validator: (value, args) => complexValidator(value, args, [ createValidator, noWhitespaceValidator ]), headerCssClass: "slick-header-columns", cssClass: "slick-column-left" },
 			{ id: "dbId",			name: "Database ID",		field: "dbId",			width: 100,	sortable: true, editor: Slick.Editors.Text, validator: createValidator, headerCssClass: "slick-header-columns", cssClass: "slick-column-left" },
 			{ id: "tblId",			name: "Table ID",			field: "tblId",			width: 150,	sortable: true, editor: Slick.Editors.Text, validator: (value, args) => complexValidator(value, args, [ createValidator, noWhitespaceValidator ]), headerCssClass: "slick-header-columns", cssClass: "slick-column-left" },
@@ -187,9 +187,6 @@
 				enableColumnReorder: false,
 				forceFitColumns: false,
 				multiColumnSort: true,
-				numberedMultiColumnSort: true,
-				tristateMultiColumnSort: true,
-				sortColNumberInSeparateSpan: true,
 				enableAutoSizeColumns: true,
 				editable: false, // grid도 편집가능.. grid 편집 기능 제거 필요..
 				enableAddRow: true,
@@ -214,6 +211,9 @@
 				}
 			},
 		};
+		
+		dataView = new Slick.Data.DataView();
+		grid     = new Slick.Grid("#divMyGrid", dataView, columns, options);
 
 		function main() {
 			// 그리드 초기화 및 데이터 로드
@@ -223,12 +223,10 @@
 					);
 		}
 
-			
 		/**
 		* Transaction callback 함수
 		**/
 		function fn_callback(result){
-			//console.log("fn_callback : " + result.id);
 			if( result.resultCd == "S" ){
 				let resultData = typeof result.data === "string" ? JSON.parse(result.data) : result.data;
 				switch (result.id){
@@ -267,10 +265,6 @@
 		}
 
 		function fn_setGrid(data){
-			//dataView = new Slick.Data.DataView( { idField: unqId });
-			dataView = new Slick.Data.DataView();
-			grid     = new Slick.Grid("#divMyGrid", dataView, columns, options);
-
 			// Make the grid respond to DataView change events.
 			dataView.onRowCountChanged.subscribe(function (e, args) {
 				grid.updateRowCount();
@@ -287,80 +281,75 @@
 
 			// when "onBeforeSort" returns false, the "onSort" won't execute (for example a backend server error while calling backend query to sort)
 			grid.onBeforeSort.subscribe(function (e, args) {
-			return true;
-			});                   
+				return true;
+			});
 
 			// 정렬
 			grid.onSort.subscribe(function (e, args) {
-			var cols = args.sortCols;
-
-			data.sort(function (dataRow1, dataRow2) {
-				for (var i = 0, l = cols.length; i < l; i++) {
-					var field  = cols[i].sortCol.field;
-					var sign   = cols[i].sortAsc ? 1 : -1;
-					var value1 = dataRow1[field],
-					value2 = dataRow2[field];
-					var result = (value1 == value2 ? 0 : value1 > value2 ? 1 : -1) * sign;
-					if (result != 0) {
-					return result;
+				var cols = args.sortCols;
+				
+				data.sort(function (dataRow1, dataRow2) {
+					for (var i = 0, l = cols.length; i < l; i++) {
+						var field  = cols[i].sortCol.field;
+						var sign   = cols[i].sortAsc ? 1 : -1;
+						var value1 = dataRow1[field], value2 = dataRow2[field];
+						var result = (value1 == value2 ? 0 : value1 > value2 ? 1 : -1) * sign;
+						if (result != 0) {
+							return result;
+						}
 					}
-				}
-			return 0;
+				
+					return 0;
+				});
+				
+				dataView.setItems(data, unqId);
 			});
-			grid.render();
-		});
 
-		grid.setSelectionModel(new Slick.CellSelectionModel());
-		grid.registerPlugin(new Slick.AutoTooltips());
-
-		// set keyboard focus on the grid
-		//grid.getCanvasNode().focus();
-		grid.registerPlugin(new Slick.CellExternalCopyManager(pluginOptions));
-
-		grid.onAddNewRow.subscribe(function (e, args) {
-			var newItem = args.item;
-			var column = args.column;
-			dataView.beginUpdate();
-			dataView.setItems(data);
-			dataView.endUpdate();
-			grid.updateRowCount();
-			grid.render();
-		});
-
-		grid.onBeforeEditCell.subscribe(function (e, args) {
-			console.log("onBeforeEditCell");
-		});
-
-		grid.onCellChange.subscribe(function (e, args) {
-			dataView.beginUpdate();
-			dataView.setItems(data);
-			dataView.endUpdate();
-			grid.updateRowCount();
-			grid.render();
-		});
-
-		grid.onValidationError.subscribe(function (e, args) {
-			// handle validation errors originating from the CompositeEditor
-			if (args.validationResults) {
-				let errorMsg = args.validationResults.msg || "";
-				if (args.editor && args.editor instanceof Slick.CompositeEditor) {
-					if (args.validationResults.errors) {
-						errorMsg += "\n";
-						args.validationResults.errors.forEach(function (error, errorIndex) {
-							const columnName = error.editor.args.column.id;
-							errorMsg += `${columnName.toUpperCase()}: ${error.msg}`;
-						});
+			grid.setSelectionModel(new Slick.CellSelectionModel());
+			grid.registerPlugin(new Slick.AutoTooltips());
+	
+			// set keyboard focus on the grid
+			grid.registerPlugin(new Slick.CellExternalCopyManager(pluginOptions));
+	
+			grid.onAddNewRow.subscribe(function (e, args) {
+				var newItem = args.item;
+				var column = args.column;
+				dataView.beginUpdate();
+				dataView.setItems(data);
+				dataView.endUpdate();
+				grid.updateRowCount();
+				grid.render();
+			});
+	
+			grid.onCellChange.subscribe(function (e, args) {
+				dataView.beginUpdate();
+				dataView.setItems(data);
+				dataView.endUpdate();
+				grid.updateRowCount();
+				grid.render();
+			});
+	
+			grid.onValidationError.subscribe(function (e, args) {
+				// handle validation errors originating from the CompositeEditor
+				if (args.validationResults) {
+					let errorMsg = args.validationResults.msg || "";
+					if (args.editor && args.editor instanceof Slick.CompositeEditor) {
+						if (args.validationResults.errors) {
+							errorMsg += "\n";
+							args.validationResults.errors.forEach(function (error, errorIndex) {
+								const columnName = error.editor.args.column.id;
+								errorMsg += `${columnName.toUpperCase()}: ${error.msg}`;
+							});
+						}
+						console.log(errorMsg);
 					}
-					console.log(errorMsg);
+				} else {
+					alert(errorMessages);
 				}
-			} else {
-				alert(errorMessages);
-			}
-		});
-
-		//grid.setActiveCell(0, 0);
-		console.log("SlickGrid initialized.");
-		}
+			});
+	
+			console.log("SlickGrid initialized.");
+		};
 
 		// Download Excel functionality
 		document.getElementById("downloadExcel").addEventListener("click", function () {
@@ -393,7 +382,7 @@
 			let originalData = null;
 
 			if (grid.getEditorLock().isActive() && !grid.getEditorLock().commitCurrentEdit()) {
-			return;
+				return;
 			}
 
 			if (modalType === "create") { 
@@ -406,31 +395,22 @@
 			// 선택된 cell이 없을 경우
 			if (!activeCell) {
 				alert('Click the row you want to modify, and then click the "Edit" button');
-			return;
+				return;
 			}
 			
 			//get the active cell index
 			let activeCellIndex = activeCell.cell;
-
-			//let column = grid.getColumns()[activeCellIndex];
 
 			// setting the active row to the first row if the active row is undefined
 			var activeRow = (activeCell && activeCell.row) || 0;
 			const dataContext = grid.getDataItem(activeRow);
 
 			// alert for the edit popup if the user doesn't select the column value in the grid
-			/*
-			if ((modalType === "edit" && !dataContext) || !activeCell || !column) {
-				alert("Please select a cell to edit the data.");
-			return;
-			} */
-
 			if (!options.enableCellNavigation) {
 				throw new Error('Composite Editor requires the flag "enableCellNavigation" to be set to True in your Grid Options.');
 			} else {
 				console.log("enableCellNavigation is set to true.");
 			}
-			// renewOptions(false);
 
 			const modalElement = new bootstrap.Modal(document.getElementById("exampleModal"), {
 				backdrop: 'static',
@@ -486,7 +466,6 @@
 							// delete the selected row
 							dataView.deleteItem(dataContext[unqId]);
 							deleteList(JSON.stringify(dataContext));
-							//location.reload(true);
 							modalElement.hide();
 						}
 						};
@@ -570,8 +549,7 @@
 						inputElem.disabled = true;
 					}
 				}
-				//formGroupElem.appendChild(inputElem);
-	
+				
 				colElem.appendChild(formGroupElem);
 				currentRow.appendChild(colElem);
 			});
@@ -616,8 +594,6 @@
 					// Add new item to grid data
 					if (checkData(formData)) {
 						console.log(formData);
-						//formData[unqId] = grid.getDataLength() + 1;
-						// dataView.insertItem(grid.getDataLength(), formData);
 
 						if (confirm("Do you want to register?") == true) {
 							console.log("등록테스트");
@@ -642,8 +618,7 @@
 
 					if (isChanged) {
 						formData[unqId] = originalData[unqId];
-						// dataView.updateItem(originalData[unqId], formData);
-
+						
 						if (confirm("Do you want to modify?") == true) {
 							// updateFile(formData);
 							updateList(JSON.stringify(formData));
@@ -657,23 +632,6 @@
 				grid.render();
 				modalElement.hide(); // Hide the modal after saving\
 			};
-
-			// // we prevent modal from closing when clicking outside
-			// const modalDialog = document.querySelector('.modal-dialog');
-			// modalDialog.addEventListener('click', (e) => {
-			// 	e.stopPropagation(); // Prevent click from bubbling up
-			// });
-
-			// // we prevent the modal not to close when the user clicks esc button
-			// modalElement._element.addEventListener('keydown', (e) => {
-			// 	if (e.key === 'Escape') {
-			// 		e.stopPropagation();
-			// 		e.preventDefault(); 
-			// 	}
-			// });
-
-			// modalElement._config.backdrop = 'static';
-			// modalElement._config.keyboard = false;
 
 			// Close button logic
 			const closeBtn = document.querySelector(".modal-footer .btn-link");
