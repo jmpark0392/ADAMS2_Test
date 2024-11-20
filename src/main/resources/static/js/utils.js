@@ -328,7 +328,7 @@ function focusOnFirstCellWithEditor(columns, rowIndex, isWithMassUpdate) {
 
 // grid options 수정 함수
 function renewOptions(isEdit = true) {
-    grid.setOptions({ editable: isEdit }, true, true, true);
+    grid.setOptions({ editable: isEdit, enableAddRow: isEdit }, true, true, true);
 }
 
 function renewOptionsGrids(grid, isEdit = true) {
