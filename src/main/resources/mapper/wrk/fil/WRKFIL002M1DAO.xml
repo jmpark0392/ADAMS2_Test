@@ -3,10 +3,24 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.rds.adams.web.wrk.fil.dao.WRKFIL002M1DAO">
+	<select id="selectListCount" parameterType="com.rds.adams.web.wrk.fil.dto.WRKFIL002M1P0DTO" resultType="java.lang.Integer">
+        <if test='tblIdTxt != ""'>
+        SELECT
+        	   ISNULL(COUNT(*), 0) AS totalRowCnt
+          FROM TB_UPL_ITM_LST
+         WHERE 1=1
+         	<if test='csNo != "999"'>
+           AND CS_NO  = #{csNo}
+           </if>
+           AND TBL_ID = #{tblIdTxt}    /* 테이블ID로 필터링 */
+        </if>
+    </select>
+    
     <select id="selectList" parameterType="com.rds.adams.web.wrk.fil.dto.WRKFIL002M1P0DTO" resultType="com.rds.adams.web.wrk.fil.dto.WRKFIL002M1R0DTO">
         <if test='tblIdTxt != ""'>
-        SELECT 
-               TBL_ID              AS tblId     /* 테이블ID */
+        SELECT
+        	   ROW_NUMBER() OVER(ORDER BY (SELECT 1)) AS rowNumber    /* 행번호 */ 
+             , TBL_ID              AS tblId     /* 테이블ID */
              , ITM_NM              AS itmNm     /* 칼럼명 */
              , CLMN_ID             AS itmId     /* 칼럼ID */
              , DATA_TP_CD          AS dataTpCd  /* 데이터타입ID */
@@ -23,6 +37,7 @@
            </if>
            AND TBL_ID = #{tblIdTxt}    /* 테이블ID로 필터링 */
          ORDER BY TBL_ID, ORD_SEQ
+        OFFSET (#{pageRowCnt} * (#{pageNum} - 1)) ROWS FETCH NEXT #{pageRowCnt} ROWS ONLY
         </if>
     </select>
 </mapper>

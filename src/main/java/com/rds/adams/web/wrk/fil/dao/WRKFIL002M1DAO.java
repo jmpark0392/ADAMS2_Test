@@ -11,5 +11,6 @@ import com.rds.adams.web.wrk.fil.dto.WRKFIL002M1R0DTO;
 public interface WRKFIL002M1DAO {
 	
 	public List<WRKFIL002M1R0DTO> selectList(WRKFIL002M1P0DTO inVo);
+	public int selectListCount(WRKFIL002M1P0DTO inVo);
 
 }

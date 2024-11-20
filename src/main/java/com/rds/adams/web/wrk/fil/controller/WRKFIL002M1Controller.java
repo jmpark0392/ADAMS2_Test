@@ -1,6 +1,8 @@
 package com.rds.adams.web.wrk.fil.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,20 +34,27 @@ public class WRKFIL002M1Controller {
 	 * @return
 	 */
 	@RequestMapping(value="/WRKFIL002M1SelectList", method=RequestMethod.POST)
-	public List<WRKFIL002M1R0DTO> select(@RequestBody WRKFIL002M1P0DTO inVo, HttpServletRequest request) {
+	public Map<String, Object> select(@RequestBody WRKFIL002M1P0DTO inVo, HttpServletRequest request) {
+		
+		Map<String, Object> resultMap = new HashMap<String, Object>();
 		
 		AdamsLoginDTO sAdamsLoginDTO = (AdamsLoginDTO) request.getSession().getAttribute(RsfConstant.SESSION_LOGIN_INFO);
 		inVo.setCsNo(sAdamsLoginDTO.getCsNo());
-		
 		log.info(inVo.toString());
+		
+		int totalRowCnt = wRKFIL002M1Service.selectListCount(inVo); 
 
-		List<WRKFIL002M1R0DTO> result = wRKFIL002M1Service.selectList(inVo);
+		List<WRKFIL002M1R0DTO> resultList = wRKFIL002M1Service.selectList(inVo);
 
-		for (WRKFIL002M1R0DTO wRKFIL002M1R0DTO : result) {
+		for (WRKFIL002M1R0DTO wRKFIL002M1R0DTO : resultList) {
 				log.info(wRKFIL002M1R0DTO.toString());
 		}
+		
+		resultMap.put("resultList", resultList);
+		resultMap.put("resultCnt", totalRowCnt);
+		resultMap.put("resultPage", inVo.getPageNum());
 
-		return result;
+		return resultMap;
 		
 	}
 

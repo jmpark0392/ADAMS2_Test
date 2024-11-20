@@ -1,5 +1,7 @@
 package com.rds.adams.web.wrk.fil.dto;
 
+import com.rds.rsf.core.dto.RsfPagingDTO;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,7 +24,7 @@ import lombok.ToString;
 @ToString
 @Getter
 @Setter
-public class WRKFIL002M1R0DTO {
+public class WRKFIL002M1R0DTO extends RsfPagingDTO {
 	
 	@Schema(description = "칼럼명")
 	private String itmNm;

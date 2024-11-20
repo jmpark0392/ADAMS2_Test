@@ -360,7 +360,18 @@
 						gvPageCnt = Math.ceil(gvTotalRowCnt / gvPageRowCnt);
 						gvPageNum = resultData.resultPage;
 						
-						createPagination();
+						createPagination("pageList", gvPageCnt, gvPageNum);
+						
+						$(document).one("click", ".page-link", function(e) {
+							var tmpPageNum = this.text;
+							if (tmpPageNum == "prev") {
+								tmpPageNum = gvPageNum - 1;
+							} else if (tmpPageNum == "next") {
+								tmpPageNum = gvPageNum + 1;
+							}
+							getSearchList(tmpPageNum);
+						});
+						
 						break;
 						
 				}	  
@@ -464,71 +475,7 @@
 			//grid.setActiveCell(0, 0);
 			console.log("SlickGrid initialized.");
 		}
-		
-		function createPagination() {
-			
-			var pageObj = $("#pageList");
-			var prevDisabled = false;
-			var nextDisabled = false;
-			
-			var prevObj = "<li class='page-item'>";
-			prevObj += "<a class='page-link'>";
-			prevObj += "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='icon'>";
-			prevObj += "<path stroke='none' d='M0 0h24v24H0z' fill='none'></path><path d='M15 6l-6 6l6 6'></path>";
-			prevObj += "</svg>";
-			prevObj += "prev";
 
-			var nextObj = "<li class='page-item'>";
-			nextObj += "<a class='page-link'>";
-			nextObj += "next";
-			nextObj += "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='icon'>";
-			nextObj += "<path stroke='none' d='M0 0h24v24H0z' fill='none'></path><path d='M9 6l6 6l-6 6'></path>";
-			nextObj += "</svg>";
-			
-			pageObj.children().remove();
-			
-			pageObj.append(prevObj);
-			for (var i=1; i<=gvPageCnt; i++) {
-				var tmpObj = "";
-				if (i == gvPageNum) {
-					tmpObj = "<li class='page-item active'><a class='page-link'>"+i+"</a></li>";
-					if (i == 1) {
-						prevDisabled = true;
-					} 
-					if (gvPageCnt == gvPageNum) {
-						nextDisabled = true;
-					}
-				} else {
-					tmpObj = "<li class='page-item'><a class='page-link'>"+i+"</a></li>";
-				}
-				pageObj.append(tmpObj);
-			}
-			pageObj.append(nextObj);
-			
-			if (gvPageCnt == 0) {
-				prevDisabled = true;
-				nextDisabled = true;
-			}
-			
-			if (prevDisabled) {
-				pageObj.children().first().attr("class", "page-item disabled");
-			}
-			
-			if (nextDisabled) {
-				pageObj.children().last().attr("class", "page-item disabled");
-			}
-			
-			$(document).one("click", ".page-link", function(e) {
-				var tmpPageNum = this.text;
-				if (tmpPageNum == "prev") {
-					tmpPageNum = gvPageNum - 1;
-				} else if (tmpPageNum == "next") {
-					tmpPageNum = gvPageNum + 1;
-				}
-				getSearchList(tmpPageNum);
-			});
-			
-		}
 		</script>
 	</th:block>
 </html>
