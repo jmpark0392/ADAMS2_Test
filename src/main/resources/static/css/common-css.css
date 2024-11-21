@@ -217,3 +217,7 @@ a.nav-link.active {
 	justify-content: center;
 	align-items: center;
 }
+.page-link {
+	cursor: pointer;
+	font-weight: bold;
+}
