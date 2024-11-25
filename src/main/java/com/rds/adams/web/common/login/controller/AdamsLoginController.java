@@ -3,6 +3,7 @@ package com.rds.adams.web.common.login.controller;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -42,6 +43,7 @@ import com.rds.adams.web.common.login.dto.AdamsUploadCntTotalDTO;
 import com.rds.adams.web.common.login.service.AdamsLoginService;
 import com.rds.adams.web.core.utils.StringUtil;
 import com.rds.rsf.core.common.ResponseCode;
+import com.rds.rsf.core.common.RsfMessageSource;
 import com.rds.rsf.core.constant.RsfConstant;
 import com.rds.rsf.core.util.RsfPropertiesUtil;
 
@@ -83,6 +85,9 @@ public class AdamsLoginController {
 	/** EgovLoginService */
 	@Resource(name = "adamsLoginService")
 	private AdamsLoginService adamsLoginService;
+	
+	@Autowired
+	RsfMessageSource rsfMessageSource;
 
 	/** JWT */
 	@Autowired
@@ -204,7 +209,7 @@ public class AdamsLoginController {
 			
 			if ( "1".equals(sChkCd) ) {
 				resultMap.put("resultCode"   , "400");
-				//resultMap.put("resultMessage", rsfMessageSource.getMessage("fail.common.login"));
+				resultMap.put("resultMessage", rsfMessageSource.getMessage("fail.common.login", Locale.ENGLISH));
 				return resultMap;
 			}
 			
@@ -222,7 +227,7 @@ public class AdamsLoginController {
 				} else {
 					if (!adamsLoginResultDTO.getCsNo().equals(adamsLoginDTO.getCsNo())) {
 						resultMap.put("resultCode"   , "300");
-						//resultMap.put("resultMessage", rsfMessageSource.getMessage("fail.common.login"));
+						resultMap.put("resultMessage", rsfMessageSource.getMessage("fail.common.login", Locale.ENGLISH));
 						return resultMap;
 					}
 				}
@@ -242,7 +247,7 @@ public class AdamsLoginController {
 	    	 
 	    	//서버사이드 권한 체크 통과를 위해 삽입
 	    	//EgovUserDetailsHelper.isAuthenticated() 가 그 역할 수행. DB에 정보가 없으면 403을 돌려 줌. 로그인으로 튕기는 건 프론트 쪽에서 처리
-	    	request.getSession().setAttribute(RsfConstant.SESSION_LOGIN_INFO		, adamsLoginResultDTO);
+	    	request.getSession().setAttribute(RsfConstant.SESSION_LOGIN_INFO	, adamsLoginResultDTO);
 	    	request.getSession().setAttribute(RsfConstant.SESSION_MENU_FLATLIST	, adamsMenuDTOs);
 	    	request.getSession().setAttribute(RsfConstant.SESSION_MENU_TREELIST	, adamsMenuTreeDTOs);
 	    	//request.getSession().setAttribute("LoginVO", loginResultVO);
@@ -260,7 +265,7 @@ public class AdamsLoginController {
 			//resultMap.put("resultMenuVO"    , adamsMenuDTOs);
 			//resultMap.put("resultMenuTreeVO", adamsMenuTreeDTOs);
 			resultMap.put("resultCode"   , "300");
-			//resultMap.put("resultMessage", rsfMessageSource.getMessage("fail.common.login"));
+			resultMap.put("resultMessage", rsfMessageSource.getMessage("fail.common.login", Locale.ENGLISH));
 		}
 
 		return resultMap;
@@ -365,7 +370,7 @@ public class AdamsLoginController {
 		} else {
 			resultMap.put("resultVO"    , adamsCsNoDTOs);
 			resultMap.put("resultCode"   , "300");
-			//resultMap.put("resultMessage", rsfMessageSource.getMessage("fail.common.login"));
+			resultMap.put("resultMessage", rsfMessageSource.getMessage("fail.common.login", Locale.ENGLISH));
 		}
 
 		return resultMap;
@@ -425,7 +430,7 @@ public class AdamsLoginController {
 			resultMap.put("resultMessage", "성공 !!!");
 		} else {
 			resultMap.put("resultCode"   , "300");
-			//resultMap.put("resultMessage", rsfMessageSource.getMessage("fail.common.login"));
+			resultMap.put("resultMessage", rsfMessageSource.getMessage("fail.common.login", Locale.ENGLISH));
 		}
 
 		return resultMap;
@@ -466,7 +471,7 @@ public class AdamsLoginController {
 			resultMap.put("resultMessage", "성공 !!!");
 		} else {
 			resultMap.put("resultCode"   , "300");
-			//resultMap.put("resultMessage", rsfMessageSource.getMessage("fail.common.login"));
+			resultMap.put("resultMessage", rsfMessageSource.getMessage("fail.common.login", Locale.ENGLISH));
 		}
 
 		return resultMap;
@@ -507,7 +512,7 @@ public class AdamsLoginController {
 			resultMap.put("resultMessage", "성공 !!!");
 		} else {
 			resultMap.put("resultCode"   , "300");
-			//resultMap.put("resultMessage", rsfMessageSource.getMessage("fail.common.login"));
+			resultMap.put("resultMessage", rsfMessageSource.getMessage("fail.common.login", Locale.ENGLISH));
 		}
 
 		return resultMap;
