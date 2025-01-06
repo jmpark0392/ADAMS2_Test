@@ -18,6 +18,40 @@
     </properties>
 
     <packaging>war</packaging>
+
+    <!-- Nexus Setting -->
+    <repositories>
+    
+        <repository>
+            <id>rsf-repo-proxy</id>
+            <url>http://10.240.51.13:8081/repository/rsf-proxy/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </releases>
+            <snapshots><enabled>false</enabled></snapshots>
+        </repository>
+        
+        <repository>
+            <id>rsf-repo-public</id>
+            <url>http://10.240.51.13:8081/repository/rsf-public/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </releases>
+            <snapshots><enabled>false</enabled></snapshots>
+        </repository>
+
+    </repositories>
+    
+    <pluginRepositories>
+        <pluginRepository>
+            <id>rsf-repo-public</id>
+            <url>http://10.240.51.13:8081/repository/rsf-public/</url>
+            <releases><enabled>true</enabled></releases>
+            <snapshots><enabled>false</enabled></snapshots>
+        </pluginRepository>
+    </pluginRepositories>
     
 	<dependencies>
         <dependency>
