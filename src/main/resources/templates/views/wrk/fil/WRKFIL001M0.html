@@ -19,7 +19,7 @@
 									<button type="button" class="btn btn-primary" style="padding: 4px 10px; color: white; font-size: 13px" onclick="main()">Search</button>
 								</div>
 								<div class="col text-end">
-									<button form="new-form" type="button" class="btn btn-primary" style="padding: 4px 10px; color: white; font-size: 13px" onclick="renewOptions(true);openDetails('create');{(ev) => {if (ev.detail === 0) {ev.preventDefault();}}}" data-test="create-button" onsubmit="return false;">Create</button>
+									<button form="new-form" type="button" class="btn btn-primary" style="padding: 4px 10px; color: white; font-size: 13px" id="btn_new" data-test="create-button" onsubmit="return false;">Create</button>
 									<button type="button" class="btn btn-lime" style="padding: 4px 10px; color: white; font-size: 13px" id="downloadExcel">Download</button>
 									<button form="new-form" type="button" class="btn btn-secondary" style="padding: 4px 10px; color: white; font-size: 13px" onclick="renewOptions(true);openDetails('edit');{(ev) => {if (ev.detail === 0) {ev.preventDefault();}}}" data-test="edit-button" onsubmit="return false;">Edit</button>
 								</div>
@@ -28,9 +28,14 @@
 					</div>
 				</div>
 				<div style="padding-top: 2em"></div>
+				<!--
+				[SpreadJS] SpreadJS 적용을 위해 Slickgrid용 div 주석 처리
 				<div class="card card-md" id="divMyGrid">
 					<table class="table" align="center" style="width: 1284px; height: 500px"></table>
 				</div>
+				-->
+				<!-- [SpreadJS] SpreadJS용 div -->
+				<div id="dataGrid" style="height:520px;"></div>
 			</div>
 			<div class="popupDataForm">
 				<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="display: none">Launch modal with form</button>
@@ -92,6 +97,20 @@
 
 			gf_Transaction(option, fn_callback);
 		}
+		
+		function insertList2(addedRow) {
+			var option = {
+						  id          : "insertList2"
+						, type        : "post"
+						, url         : "/WRKFIL001M0InsertList2"
+						, async       : false
+						, dataType    : "text"
+						, contentType : "application/json; charset=utf-8"
+						, data        : addedRow,
+			};
+
+			gf_Transaction(option, fn_callback);
+		}
 
 		function updateList(input) {
 			console.log("updateList input : " + input);
@@ -126,8 +145,16 @@
 	</script>
 	<script src="js/utils.js"></script>
 	<script>
+		/* [SpreadJS] 전역변수 선언 */
+		var spread;
+		var sheet;
+		var header;
+		var ds = new DataSet();	
+	
 		$(document).ready(function () {
 			console.log("Document is ready.");
+			/* [SpreadJS] SpreadJS 초기화처리 함수 */
+			fn_initialSpread();
 			//화면 접속시 바로 조회
 			main();
 			//send버튼 누르면, 조건적용하여 검색
@@ -137,6 +164,10 @@
 				if (key.keyCode == 13) {
 					main();
  				}
+			});
+			/* [SpreadJS] 저장 이벤트처리 함수 - sheet의 내용을 바탕으로 JSON데이터로 변환하여 통신 */
+			$("#btn_new").click(function () {
+				insertList2(ds.gridSerialize(sheet, "seqNo"));
 			});
 		});
 
@@ -212,8 +243,33 @@
 			},
 		};
 		
-		dataView = new Slick.Data.DataView();
-		grid     = new Slick.Grid("#divMyGrid", dataView, columns, options);
+		//dataView = new Slick.Data.DataView();
+		//grid     = new Slick.Grid("#divMyGrid", dataView, columns, options);
+		
+		/* [SpreadJS] SpreadJS 초기화처리 함수 */
+		function fn_initialSpread() {
+			
+			/* [SpreadJS] Page Load 시 초기화 */
+			spread = new GC.Spread.Sheets.Workbook(document.getElementById('dataGrid'), { sheetCount: 1 });
+			
+			header = [
+				  { name: "Seq",				field: "seqNo",			width: 60,  visible:true  }
+				, { name: "File Name",			field: "fileNm",		width: 200, visible:true  }
+				, { name: "Database ID",		field: "dbId",			width: 100, visible:true  }
+				, { name: "Table ID",			field: "tblId",			width: 250, visible:true  }
+				, { name: "File Info",			field: "fileDsc",		width: 200, visible:true  }
+				, { name: "File Del YN",		field: "fileDelYn",		width: 100, visible:true  }
+				, { name: "UI View YN",			field: "uiSelYn",		width: 100, visible:true  }
+				, { name: "Use YN",				field: "useYn",			width: 80,  visible:true  }
+				, { name: "Validation YN",		field: "vrfUseYn",		width: 110, visible:true  }
+				, { name: "Registrant",			field: "usrNm",			width: 120, visible:true  }
+				, { name: "Registration Date",	field: "frstRegDtm",	width: 120, visible:true  }
+				, { name: "Status",				field: "rowStatus",		width: 100, visible:false }
+			];
+			
+			ds.setHeader(header);
+			
+		}
 
 		function main() {
 			// 그리드 초기화 및 데이터 로드
@@ -228,10 +284,12 @@
 		**/
 		function fn_callback(result){
 			if( result.resultCd == "S" ){
-				let resultData = typeof result.data === "string" ? JSON.parse(result.data) : result.data;
+				//let resultData = typeof result.data === "string" ? JSON.parse(result.data) : result.data;
 				switch (result.id){
 					case "SelectList" :
-						fn_setGrid(resultData);
+						/* [SpreadJS] SpreadJS 적용을 위해 fn_setGrid->fn_setExcelGrid 교체 */
+						//fn_setGrid(result.data);
+						fn_setExcelGrid(result.data);
 						break;
 					case "insertList" :
 						if ( resultData.resultCode == "200" ) {
@@ -335,6 +393,16 @@
 	
 			console.log("SlickGrid initialized.");
 		};
+		
+		/* [SpreadJS] JSON DATA를 Spread Grid에 Set */
+		function fn_setExcelGrid(data) {
+			sheet = spread.getActiveSheet();
+			sheet.setRowCount(data.length);
+			
+			ds.drawGrid(sheet, data, 30, 25);
+			
+			console.log("SpreadJS : grid resumePaint!!");
+		}
 
 		// Download Excel functionality
 		document.getElementById("downloadExcel").addEventListener("click", function () {

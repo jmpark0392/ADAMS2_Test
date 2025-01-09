@@ -1,5 +1,7 @@
 package com.rds.adams.web.wrk.fil.dto;
 
+import com.rds.rsf.core.dto.RsfSpreadDTO;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,7 +25,7 @@ import lombok.ToString;
 @ToString
 @Getter
 @Setter
-public class WRKFIL001M0P1DTO {
+public class WRKFIL001M0P1DTO extends RsfSpreadDTO {
 	
 	@Schema(description = "순번")
 	private int seqNo;

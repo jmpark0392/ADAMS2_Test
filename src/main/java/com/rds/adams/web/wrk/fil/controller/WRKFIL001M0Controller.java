@@ -72,6 +72,16 @@ public class WRKFIL001M0Controller {
 		}
 		return resultMap;
 	}
+	
+	@RequestMapping(value="/WRKFIL001M0InsertList2", method=RequestMethod.POST, consumes="application/json")
+	public void insert2(@RequestBody List<WRKFIL001M0P1DTO> inVoList, HttpServletRequest request) {
+		
+		for (WRKFIL001M0P1DTO inVo : inVoList) {
+			log.debug(inVo.toString()+" : ["+inVo.getRowStatus()+"]");
+		}
+
+		return;
+	}
 
 	@RequestMapping(value="/WRKFIL001M0UpdateList", method=RequestMethod.POST, consumes="application/json")
 	public HashMap<String, Object> update(@RequestBody WRKFIL001M0P1DTO inVo, HttpServletRequest request) {
