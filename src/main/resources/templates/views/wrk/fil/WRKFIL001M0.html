@@ -248,10 +248,11 @@
 		
 		/* [SpreadJS] SpreadJS 초기화처리 함수 */
 		function fn_initialSpread() {
-			
+
 			/* [SpreadJS] Page Load 시 초기화 */
-			spread = new GC.Spread.Sheets.Workbook(document.getElementById('dataGrid'), { sheetCount: 1 });
-			
+			spread = new GC.Spread.Sheets.Workbook(document.getElementById('dataGrid'), { sheetCount: 1 });			
+			spread.options.newTabVisible = false;
+
 			header = [
 				  { name: "Seq",				field: "seqNo",			width: 60,  visible:true  }
 				, { name: "File Name",			field: "fileNm",		width: 200, visible:true  }
@@ -284,7 +285,7 @@
 		**/
 		function fn_callback(result){
 			if( result.resultCd == "S" ){
-				//let resultData = typeof result.data === "string" ? JSON.parse(result.data) : result.data;
+				//let result = typeof result.data === "string" ? JSON.parse(result.data) : result.data;
 				switch (result.id){
 					case "SelectList" :
 						/* [SpreadJS] SpreadJS 적용을 위해 fn_setGrid->fn_setExcelGrid 교체 */
@@ -292,27 +293,35 @@
 						fn_setExcelGrid(result.data);
 						break;
 					case "insertList" :
-						if ( resultData.resultCode == "200" ) {
+						if ( JSON.parse(result.data).resultCode == "200" ) {
 						alert("Successfully Insert");
 						main();
 						} else {
-							alert( "Save Fail Error : " + resultData.resultMessage );
+							alert( "Save Fail Error : " + JSON.parse(result.data).resultMessage );
+						}
+						break;
+					case "insertList2" :
+						if ( JSON.parse(result.data).resultCode == "200" ) {
+							alert("Successfully Save");
+							main();
+						} else {
+							alert( "Save Fail Error : " + JSON.parse(result.data).resultMessage );
 						}
 						break;
 					case "updateList" :
-						if ( resultData.resultCode == "200" ) {
+						if ( JSON.parse(result.data).resultCode == "200" ) {
 						alert("Successfully Updated");
 						main();
 						} else {
-							alert( "Save Fail Error : " + resultData.resultMessage );
+							alert( "Save Fail Error : " + JSON.parse(result.data).resultMessage );
 						}
 						break;
 					case "deleteList" :
-						if ( resultData.resultCode == "200" ) {
+						if ( JSON.parse(result.data).resultCode == "200" ) {
 						alert("Successfully Deleted");
 						main();
 						} else {
-							alert( "Save Fail Error : " + resultData.resultMessage );
+							alert( "Save Fail Error : " + JSON.parse(result.data).resultMessage );
 						}
 						break;
 				}

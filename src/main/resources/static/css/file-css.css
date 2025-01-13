@@ -58,7 +58,7 @@ h2 {
 
 table {
   /* to make the table scrollable */
-  overflow-y: scroll;
+  /* overflow-y: scroll; */
   height: 100%;
   display: block;
   padding: 5px;

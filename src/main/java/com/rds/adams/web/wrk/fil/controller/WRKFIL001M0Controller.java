@@ -74,13 +74,43 @@ public class WRKFIL001M0Controller {
 	}
 	
 	@RequestMapping(value="/WRKFIL001M0InsertList2", method=RequestMethod.POST, consumes="application/json")
-	public void insert2(@RequestBody List<WRKFIL001M0P1DTO> inVoList, HttpServletRequest request) {
+	public HashMap<String, Object> insert2(@RequestBody List<WRKFIL001M0P1DTO> inVoList, HttpServletRequest request) throws Exception {
 		
-		for (WRKFIL001M0P1DTO inVo : inVoList) {
-			log.debug(inVo.toString()+" : ["+inVo.getRowStatus()+"]");
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		AdamsLoginDTO sAdamsLoginDTO = (AdamsLoginDTO) request.getSession().getAttribute(RsfConstant.SESSION_LOGIN_INFO);
+		
+		try {
+			
+			for (WRKFIL001M0P1DTO inVo : inVoList) {
+				
+				log.debug(inVo.toString()+" : ["+inVo.getRowStatus()+"]");
+				inVo.setFrstRegEmpNo(sAdamsLoginDTO.getUsrId());
+				inVo.setCsNo(sAdamsLoginDTO.getCsNo());
+				
+				if (RsfConstant.PROCESS_TYPE_ADD.equals(inVo.getRowStatus())) {
+					wRKFIL001M0Service.insertList(inVo);
+				} else if (RsfConstant.PROCESS_TYPE_MODIFY.equals(inVo.getRowStatus())) {
+					wRKFIL001M0Service.updateList(inVo);
+				} else if (RsfConstant.PROCESS_TYPE_DELETE.equals(inVo.getRowStatus())) {
+					wRKFIL001M0Service.deleteList(inVo);
+				} else {
+					continue;
+				}
+					
+			}
+			
+			resultMap.put("resultCode"   , "200");
+			resultMap.put("resultMessage", "Success !!!");
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			resultMap.put("resultCode"   , "300");
+			resultMap.put("resultMessage", e.getMessage());
+			throw e;
 		}
+		
+		return resultMap;
 
-		return;
 	}
 
 	@RequestMapping(value="/WRKFIL001M0UpdateList", method=RequestMethod.POST, consumes="application/json")
