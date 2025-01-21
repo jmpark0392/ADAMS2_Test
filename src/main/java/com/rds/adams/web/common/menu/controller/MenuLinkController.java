@@ -3,8 +3,10 @@
  */
 package com.rds.adams.web.common.menu.controller;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.rds.rsf.core.common.RsfMessageSource;
+
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 /**
@@ -22,6 +27,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Controller
 public class MenuLinkController {
+	
+	@Autowired
+	RsfMessageSource rsfMessageSource;
 	
 	private void csrfEnroll(Model model, CsrfToken csrfToken) {
 		if (csrfToken != null || model != null) {
@@ -94,9 +102,9 @@ public class MenuLinkController {
 	@PostMapping("/FailAuthentic")
 	public ModelAndView failAuthentic() {
 		
-		ModelAndView modelAndView = new ModelAndView("error/error_auth");
-		modelAndView.addObject("errorTitle", "Session Expired!");
-		modelAndView.addObject("errorMessage", "We're sorry, but your session has expired. Please log in again to continue.");
+		ModelAndView modelAndView = new ModelAndView("error/error_cmm");
+		modelAndView.addObject("errorTitle", rsfMessageSource.getMessage("authentic.fail.session.expire.title", Locale.ENGLISH));
+		modelAndView.addObject("errorMessage", rsfMessageSource.getMessage("authentic.fail.session.expire.message", Locale.ENGLISH));
 		
 		return modelAndView;
 		
@@ -105,7 +113,7 @@ public class MenuLinkController {
 	@PostMapping("/FailCsrfCertificattion")
 	public ModelAndView failCsrfCertificattion() {
 		
-		ModelAndView modelAndView = new ModelAndView("error/error_auth");
+		ModelAndView modelAndView = new ModelAndView("error/error_cmm");
 		modelAndView.addObject("errorTitle", "Fail CSRF Certification!!");
 		modelAndView.addObject("errorMessage", "CSRF authentication failed. Please contact the administrator.");
 		

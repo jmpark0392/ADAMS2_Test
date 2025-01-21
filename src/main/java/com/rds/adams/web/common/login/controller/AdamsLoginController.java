@@ -8,7 +8,6 @@ import java.util.Locale;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,7 +41,6 @@ import com.rds.adams.web.common.login.dto.AdamsUpdatePwDTO;
 import com.rds.adams.web.common.login.dto.AdamsUploadCntTotalDTO;
 import com.rds.adams.web.common.login.service.AdamsLoginService;
 import com.rds.adams.web.core.utils.StringUtil;
-import com.rds.rsf.core.common.ResponseCode;
 import com.rds.rsf.core.common.RsfMessageSource;
 import com.rds.rsf.core.constant.RsfConstant;
 import com.rds.rsf.core.util.RsfPropertiesUtil;
@@ -92,8 +90,6 @@ public class AdamsLoginController {
 	/** JWT */
 	@Autowired
     private AdamsJwtTokenUtil adamsJwtTokenUtil;
-	
-	private CsrfTokenRepository csrfTokenRepository;
 
 	/**
 	 * 일반 로그인을 처리한다
@@ -333,8 +329,8 @@ public class AdamsLoginController {
 
 		new SecurityContextLogoutHandler().logout(request, response, null);
 
-		adamsResultDTO.setResultCode(ResponseCode.SUCCESS.getCode());
-		adamsResultDTO.setResultMessage(ResponseCode.SUCCESS.getMessage());
+		adamsResultDTO.setResultCode(200);
+		adamsResultDTO.setResultMessage("성공 !!!");
 		
 		return adamsResultDTO;
 	}

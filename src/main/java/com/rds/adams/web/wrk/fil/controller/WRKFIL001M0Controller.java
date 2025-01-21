@@ -15,6 +15,7 @@ import com.rds.adams.web.wrk.fil.dto.WRKFIL001M0P1DTO;
 import com.rds.adams.web.wrk.fil.dto.WRKFIL001M0R0DTO;
 import com.rds.adams.web.wrk.fil.service.WRKFIL001M0Service;
 import com.rds.rsf.core.constant.RsfConstant;
+import com.rds.rsf.core.exception.BizException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +47,7 @@ public class WRKFIL001M0Controller {
 		
 		for (WRKFIL001M0R0DTO wRKFIL001M0R0DTO : result) {
 				log.info(wRKFIL001M0R0DTO.toString());
+				throw new BizException("억까중");
 		}
 		
 		return result;

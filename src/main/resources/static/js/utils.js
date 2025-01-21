@@ -665,19 +665,22 @@ function treeFilter(item) {
  * @param obj   xhr
  ===========================================*/
 function gf_errorHandler(xhr) {
-	if (xhr.status == "403" || xhr.status == "404") {
-		$("#pageName").val("error/error_400");
-	} else if (xhr.status == "500" || xhr.status == "503") {
-		$("#pageName").val("error/error_500");
-	} else if (xhr.responseText == "FAIL_AUTHENTIC") {
-		$("#form").attr("action","/FailAuthentic");	
-	} else if (xhr.responseText == "FAIL_CSRFCERT") {
-		$("#form").attr("action","/FailCsrfCertificattion");
+	if (xhr.status == "422") {
+		alert(xhr.responseJSON.message);
 	} else {
-		$("#pageName").val("error/error");
+		if (xhr.status == "404") {
+			$("#pageName").val("error/error_400");
+		} else if (xhr.status == "500" || xhr.status == "503") {
+			$("#pageName").val("error/error_500");
+		} else if (xhr.responseText == "FAIL_AUTHENTIC") {
+			$("#form").attr("action","/FailAuthentic");	
+		} else if (xhr.responseText == "FAIL_CSRFCERT") {
+			$("#form").attr("action","/FailCsrfCertificattion");
+		} else {
+			$("#pageName").val("error/error");
+		}
+		$("#form").submit();
 	}
-	
-	$("#form").submit();
 }
 
 function createPagination(objId, vPageCnt, vPageNum) {
