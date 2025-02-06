@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-  <th:block th:replace="fragments/head :: headFragment"></th:block>
+  <th:block th:replace="~{fragments/head :: headFragment}"></th:block>
   <body class="bg-white" id="bg-white" oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
     <div class="page">
       <script>
@@ -33,10 +33,10 @@
     	    });
     	});
 	  </script>
-      <th:block th:replace="fragments/sidebar :: sidebarFragment"></th:block>
-      <th:block th:replace="fragments/header :: headerFragment"></th:block>
+      <th:block th:replace="~{fragments/sidebar :: sidebarFragment}"></th:block>
+      <th:block th:replace="~{fragments/header :: headerFragment}"></th:block>
       <th:block layout:fragment="content"></th:block>
-      <th:block th:replace="fragments/footer :: footerFragment"></th:block>
+      <th:block th:replace="~{fragments/footer :: footerFragment}"></th:block>
     </div>
   </body>
 </html>

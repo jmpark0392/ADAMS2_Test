@@ -4,77 +4,114 @@ function DataSet() {
 	var ds_header;
 	var ds_body = [];
 	var org_ds_body = [];
+	var gridId = "";
+	var key = "";
 	
 	this.setHeader = function (header) {
 		this.ds_header = header;
 	}
 	
-	this.drawGrid = function (sheet, data, headerHeight, rowHeight) {
+	this.setGrid = function (id, key) {
+		this.gridId = id;
+		this.key = key;
+	}
+	
+	this.drawGrid = function (data, afterFn) {
 		if (this.ds_header == undefined || this.ds_header.length <= 0) {
 			return false;
 		}
 		
-		var colSize = this.ds_header.length;
-		this.ds_body = [];
-		this.org_ds_body = [];
-
-		sheet.setColumnCount(colSize);
-		sheet.setRowCount(data.length);
-		
-		for (var idx=0; idx<colSize; idx++) {
-			sheet.setValue(0, idx, this.ds_header[idx].name, GC.Spread.Sheets.SheetArea.colHeader);
-			sheet.setColumnWidth(idx, this.ds_header[idx].width);
-			if (!this.ds_header[idx].visible) {
-				sheet.setColumnVisible(idx, false);
-			} else {
-				sheet.setColumnVisible(idx, true);
-			}
+		if (this.gridId == undefined || this.gridId == "") {
+			return false;
 		}
 		
-		sheet.getRange(0, 0, 1, colSize, GC.Spread.Sheets.SheetArea.colHeader).font = "11pt 맑은 고딕";
-		sheet.getRange(0, 0, 1, colSize).hAlign(GC.Spread.Sheets.HorizontalAlign.center);
-		sheet.getRange(0, 0, 1, colSize).vAlign(GC.Spread.Sheets.VerticalAlign.center);
-		sheet.setRowHeight(0, headerHeight, GC.Spread.Sheets.SheetArea.colHeader);
+		this.ds_body = [];
+		this.org_ds_body = [];
 		
-		for (var i=0; i<data.length; i++) {
+		$("#"+this.gridId).empty();
+
+		var tmp_thead = "<thead><tr>";
+		for (idx in this.ds_header) {
+			if (this.ds_header[idx].visible == true) {
+				tmp_thead += "<th field='"+this.ds_header[idx].field+"' style='width:"+this.ds_header[idx].width+"px; text-align:center;'>"+this.ds_header[idx].name+"</th>";
+			}
+		}
+		tmp_thead += "</tr></thead>";
+		
+		$("#"+this.gridId).append(tmp_thead);
+
+		var tmp_tbody = "<tbody>";
+		for (i in data) {
 			var rowData = data[i];
 			var currBody = {};
 			var orgBody = {};
-			for (var j = 0; j<this.ds_header.length; j++) {
-				var cellValue = eval("rowData."+this.ds_header[j].field);
-				sheet.setValue(i, j, cellValue);
+			var tmp_tr = "<tr>";
+			for (j in this.ds_header) {
+				if (this.ds_header[j].visible == true) {
+					var cellValue = String(eval("rowData."+this.ds_header[j].field));
+					var editable = "";
+					//sheet.setValue(i, j, cellValue);
+					if (this.ds_header[j].type == "text") {
+						if (this.ds_header[j].editable == false) {
+							editable = "readonly";
+						} else {
+							editable = "";
+						}
+						tmp_tr += "<td><input type='text' name='"+this.ds_header[j].field+"' value='"+cellValue+"' "+editable+"/></td>";
+					} else if (this.ds_header[j].type == "check") {
+						var checked="";
+						if (cellValue == "Y") {
+							checked = "checked='checked'";
+						}
+						if (this.ds_header[j].editable == false) {
+							editable = "disabled";
+						}
+						tmp_tr += "<td>";
+						tmp_tr += "<input type='checkbox' name='"+this.ds_header[j].field+"' "+checked+" "+editable+" value='Y'/>";
+						tmp_tr += "<input type='hidden' name='_"+this.ds_header[j].field+"' value='N'/>";
+						tmp_tr += "</td>";
+					} else {
+						if (this.ds_header[j].field == "rowStatus") {
+							var circle_color = "";
+							if (cellValue == "A") {
+								circle_color = "blue";
+							} else if (cellValue == "M") {
+								circle_color = "yellow";
+							} else if (cellValue == "D") {
+								circle_color = "red";
+							} else {
+								circle_color = "white";
+							}
+							tmp_tr += "<td>"
+							tmp_tr += "<span data-index='0' data-value='1' class='gl-active'>"
+							tmp_tr += "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='currentColor' class='icon gl-star-full text-"+circle_color+" icon-3' style='pointer-events: none;'>"
+							tmp_tr += "<path d='M7 3.34a10 10 0 1 1 -4.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 4.995 -8.336z'>"
+							tmp_tr += "</path></svg></span>"
+							tmp_tr += "</td>";
+							//tmp_tr += "<td>"+cellValue+"</td>";
+						} else {
+							tmp_tr += "<td>"+cellValue+"</td>";
+						}
+					}
+				}
 				currBody[this.ds_header[j].field] = cellValue;
 				orgBody[this.ds_header[j].field] = cellValue;
 			}
-			sheet.setRowHeight(i, rowHeight);
+			tmp_tr+="</tr>";
+			tmp_tbody+=tmp_tr;
+
 			this.ds_body.push(currBody);
 			this.org_ds_body.push(orgBody);
 		}
+		tmp_tbody+="</tbody>";
+		$("#"+this.gridId).append(tmp_tbody);
 		
-		sheet.getRange(0, 0, data.length, colSize).hAlign(GC.Spread.Sheets.HorizontalAlign.center);
-		sheet.getRange(0, 0, data.length, colSize).vAlign(GC.Spread.Sheets.VerticalAlign.center);
-		spread.options.allowDragHeaderToMove = GC.Spread.Sheets.AllowDragHeaderToMove.both;
-		
-		spread.resumePaint();
+		$(document).on("change", "input[type=text],input[type=checkbox]", function () {
+			eval(afterFn+"()");
+		});
 	}
 	
-	this.gridSerialize = function (sheet, key) {
-		var rowCount = sheet.getRowCount();
-		var columnCount = this.ds_header.length;
-		this.ds_body = [];
-		
-		for (var row=0; row<rowCount; row++) {
-		    var body = {};
-		    for (var col=0; col<columnCount; col++) {
-				var name = this.ds_header[col].name;
-				var field = this.ds_header[col].field;
-		        body[field] = sheet.getValue(row, this.getCIndex(sheet,name));
-		    }
-			this.ds_body.push(body);
-		}
-
-		this.setStatus(key);
-		
+	this.gridSerialize = function () {
 		if (this.ds_body.length>0) {
 			return JSON.stringify(this.ds_body);	
 		} else {
@@ -82,34 +119,29 @@ function DataSet() {
 		}
 	}
 	
-	this.getCIndex = function(sheet,name) {
-		var columnCount = sheet.getColumnCount();
-		for (var col=0; col<columnCount; col++) {
-			if (sheet.getValue(0,col,GC.Spread.Sheets.SheetArea.colHeader)==name) {
+	this.getCIndex = function(name) {
+		var columns = $("#"+this.gridId).find("th");
+		for (var col=0; col<columns.length; col++) {
+			if (columns.eq(col).html()==name) {
 				return col;
 			}
 		}
 	}
 	
-	this.setStatus = function(key) {
-		var orgRowCnt = this.org_ds_body.length;
-		var currRowCnt = this.ds_body.length;
-		
-		for (var rowIdx=0; rowIdx<currRowCnt; rowIdx++) {
+	this.setStatus = function() {
+		for (rowIdx in this.ds_body) {
 			var currBody = this.ds_body[rowIdx];
-			if (currBody[key] == null || currBody[key] === "") {
+			if (currBody[this.key] == null || currBody[this.key] === "") {
 				currBody[statusName] = "A";
 			}
 		}
-
-		for (var rowIdx=0; rowIdx<orgRowCnt; rowIdx++) {
+		for (rowIdx in this.org_ds_body) {
 			var orgBody = this.org_ds_body[rowIdx];
-			var currBody = this.getBodyMatchKey(key, orgBody[key]);
+			var currBody = this.getBodyMatchKey(orgBody[this.key]);
 			
-			if (currBody === "") {
+			if (currBody == "") {
 				currBody = orgBody;
 				currBody[statusName] = "D";
-				console.log(currBody);
 				this.ds_body.push(currBody);
 			} else {
 				if (this.isModified(orgBody, currBody)) {
@@ -121,10 +153,10 @@ function DataSet() {
 		}
 	}
 	
-	this.getBodyMatchKey = function(key, value) {
-		for (var i=0; i<this.ds_body.length; i++) {
+	this.getBodyMatchKey = function(value) {
+		for (i in this.ds_body) {
 			var tempBody = this.ds_body[i];
-			if (tempBody[key] == value) {
+			if (tempBody[this.key] == value) {
 				return tempBody;
 			} else {
 				continue;
@@ -134,11 +166,12 @@ function DataSet() {
 	}
 	
 	this.isModified = function(orgBody, currBody) {
-		for (var colIdx=0; colIdx<this.ds_header.length; colIdx++) {
-			if (this.ds_header[colIdx] == statusName) {
+		for (colIdx in this.ds_header) {
+			if (this.ds_header[colIdx].field == statusName) {
 				continue;
 			} else {
 				if (orgBody[this.ds_header[colIdx].field] != currBody[this.ds_header[colIdx].field]) {
+					console.log(this.ds_header[colIdx].field+"="+orgBody[this.ds_header[colIdx].field]+"||"+currBody[this.ds_header[colIdx].field]);
 					return true;
 				} else {
 					continue;
@@ -146,5 +179,62 @@ function DataSet() {
 			}
 		}
 		return false;
+	}
+	
+	this.applyStatus = function(idxStatus) {
+		var rows = $("#"+this.gridId).find("tbody").children("tr");
+		this.ds_body = [];
+		
+		for (var rowIdx=0; rowIdx<rows.length; rowIdx++) {
+		    var body = {};
+		    for (col in this.ds_header) {
+				var name = this.ds_header[col].name;
+				var field = this.ds_header[col].field;
+				var type = this.ds_header[col].type;
+				var tmpObj = rows.eq(rowIdx).find("input[name="+field+"]");
+		        if (field == statusName) {
+					continue;
+				} else {
+					if (type == "text") {
+						body[field] = tmpObj.val();
+					} else if (type == "check") {
+						if (tmpObj.is(':checked')) {
+							body[field] = "Y";
+						} else {
+							body[field] = "N";
+						}
+					}
+				}
+		    }
+			this.ds_body.push(body);
+		}
+
+		this.setStatus();
+
+		for (rowIdx in this.ds_body) {
+			var status = this.ds_body[rowIdx]["rowStatus"];
+			var tmpTD = rows.eq(rowIdx).find("td").eq(idxStatus);
+			var circle_color = "";
+			var tmp_tr = "";
+			
+			tmpTD.empty();
+			
+			if (status == "A") {
+				circle_color = "blue";
+			} else if (status == "M") {
+				circle_color = "yellow";
+			} else if (status == "D") {
+				circle_color = "red";
+			} else if (status == "N") {
+				circle_color = "white";
+			}
+
+			tmp_tr += "<span data-index='0' data-value='1' class='gl-active'>"
+			tmp_tr += "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='currentColor' class='icon gl-star-full text-"+circle_color+" icon-3' style='pointer-events: none;'>"
+			tmp_tr += "<path d='M7 3.34a10 10 0 1 1 -4.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 4.995 -8.336z'>"
+			tmp_tr += "</path></svg></span>"
+
+			tmpTD.append(tmp_tr);			
+		}
 	}
 }

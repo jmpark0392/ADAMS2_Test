@@ -25,7 +25,7 @@ import lombok.Setter;
 @Schema(description = "사용자 정보 DTO")
 @Getter
 @Setter
-public class AdamsLoginDTO extends RsfLoginDTO implements Serializable{
+public class AdamsLoginDTO extends RsfLoginDTO implements Serializable {
 	
 	/**
 	 * 

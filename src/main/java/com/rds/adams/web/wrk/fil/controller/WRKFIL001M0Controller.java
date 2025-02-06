@@ -47,7 +47,7 @@ public class WRKFIL001M0Controller {
 		
 		for (WRKFIL001M0R0DTO wRKFIL001M0R0DTO : result) {
 				log.info(wRKFIL001M0R0DTO.toString());
-				throw new BizException("억까중");
+				//throw new BizException("억까중");
 		}
 		
 		return result;
