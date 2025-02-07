@@ -37,22 +37,15 @@
 				<!-- [SpreadJS] SpreadJS용 div 
 				<div id="dataGrid" style="height:520px;"></div>
 				-->
-				<div class="form-container">
-					<div class="form-box">
-						<form id="grid_form" name="form" method="post" action="/WRKFIL001M0SelectList" onsubmit="return false;">
-							<div class="row">
-								<div class="col-auto">
-									<div class="card">
-										<div class="table-responsive">
-											<table class="table table-vcenter card-table table-striped" id="grid01"></table>
-										</div>
-									</div>
-								</div>
-							</div>
-						</form>
+				<div class="col-12">
+					<div class="card card-md">
+						<div class="table-responsive" style="width: 100%; overflow-x: auto;">
+							<table class="table table-vcenter card-table" id="grid01" style="height: 500px;"></table>
+						</div>
 					</div>
 				</div>
 			</div>
+			
 			<div class="popupDataForm">
 				<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="display: none">Launch modal with form</button>
 				<div class="modal fade" id="exampleModal" tabindex="-1" style="display: none">
@@ -292,18 +285,18 @@
 		function fn_initialHTML() {
 
 			header = [
-				  { name: "Status",				field: "rowStatus",		width: 100, type:"none",  visible:true , editable:true   }
-				, { name: "Seq",				field: "seqNo",			width: 60,  type:"text",  visible:true,  editable:false  }
-				, { name: "File Name",			field: "fileNm",		width: 200, type:"text",  visible:true,  editable:true   }
-				, { name: "Database ID",		field: "dbId",			width: 100, type:"text",  visible:true,  editable:true   }
-				, { name: "Table ID",			field: "tblId",			width: 250, type:"text",  visible:true,  editable:true   }
-				, { name: "File Info",			field: "fileDsc",		width: 200, type:"text",  visible:true,  editable:true   }
-				, { name: "File Del YN",		field: "fileDelYn",		width: 100, type:"check", visible:true,  editable:true   }
-				, { name: "UI View YN",			field: "uiSelYn",		width: 100, type:"check", visible:true,  editable:true   }
-				, { name: "Use YN",				field: "useYn",			width: 80,  type:"check", visible:true,  editable:true   }
-				, { name: "Validation YN",		field: "vrfUseYn",		width: 110, type:"check", visible:true,  editable:true   }
-				, { name: "Registrant",			field: "frstRegEmpNo",	width: 120, type:"text",  visible:true,  editable:false  }
-				, { name: "Registration Date",	field: "frstRegDtm",	width: 120, type:"text",  visible:true,  editable:false  }
+				  { name:"Status",				field:"rowStatus",		width:50,  type:"none",      visible:true,  align:"center", editable:true   }
+				, { name:"Seq",					field:"seqNo",			width:80,  type:"none",      visible:true,  align:"center", editable:false  }
+				, { name:"File Name",			field:"fileNm",			width:200, type:"text",      visible:true,  align:"center", editable:true   }
+				, { name:"Database ID",			field:"dbId",			width:200, type:"text",      visible:true,  align:"center", editable:true   }
+				, { name:"Table ID",			field:"tblId",			width:400, type:"text",      visible:true,  align:"center", editable:true   }
+				, { name:"File Info",			field:"fileDsc",		width:300, type:"text",      visible:true,  align:"center", editable:true   }
+				, { name:"File Del YN",			field:"fileDelYn",		width:50,  type:"check",     visible:true,  align:"center", editable:true   }
+				, { name:"UI View YN",			field:"uiSelYn",		width:50,  type:"check",     visible:true,  align:"center", editable:true   }
+				, { name:"Use YN",				field:"useYn",			width:50,  type:"check",     visible:true,  align:"center", editable:true   }
+				, { name:"Validation YN",		field:"vrfUseYn",		width:50,  type:"check",     visible:true,  align:"center", editable:true   }
+				, { name:"Registrant",			field:"frstRegEmpNo",	width:200, type:"text",      visible:true,  align:"center", editable:false  }
+				, { name:"Registration Date",	field:"frstRegDtm",		width:200, type:"calendar",  visible:true,  align:"center", editable:false  }
 			];
 
 			ds.setHeader(header);

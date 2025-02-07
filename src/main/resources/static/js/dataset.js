@@ -31,14 +31,17 @@ function DataSet() {
 		$("#"+this.gridId).empty();
 
 		var tmp_thead = "<thead><tr>";
+		var tbWidth = 0;
 		for (idx in this.ds_header) {
 			if (this.ds_header[idx].visible == true) {
 				tmp_thead += "<th field='"+this.ds_header[idx].field+"' style='width:"+this.ds_header[idx].width+"px; text-align:center;'>"+this.ds_header[idx].name+"</th>";
+				tbWidth += this.ds_header[idx].width
 			}
 		}
 		tmp_thead += "</tr></thead>";
 		
 		$("#"+this.gridId).append(tmp_thead);
+		$("#"+this.gridId).css("width", tbWidth+"px");
 
 		var tmp_tbody = "<tbody>";
 		for (i in data) {
@@ -50,15 +53,19 @@ function DataSet() {
 				if (this.ds_header[j].visible == true) {
 					var cellValue = String(eval("rowData."+this.ds_header[j].field));
 					var editable = "";
-					//sheet.setValue(i, j, cellValue);
-					if (this.ds_header[j].type == "text") {
+					var field = this.ds_header[j].field;
+					var type = this.ds_header[j].type;
+					var align = this.ds_header[j].align;
+
+					tmp_tr += "<td align='"+align+"'>";
+					if ( type == "text") {
 						if (this.ds_header[j].editable == false) {
 							editable = "readonly";
 						} else {
 							editable = "";
 						}
-						tmp_tr += "<td><input type='text' name='"+this.ds_header[j].field+"' value='"+cellValue+"' "+editable+"/></td>";
-					} else if (this.ds_header[j].type == "check") {
+						tmp_tr += "<input type='text' name='"+this.ds_header[j].field+"' value='"+cellValue+"' "+editable+" class='form-control p-1 px-2 w-100 text-wrap' />";
+					} else if (type == "check") {
 						var checked="";
 						if (cellValue == "Y") {
 							checked = "checked='checked'";
@@ -66,33 +73,31 @@ function DataSet() {
 						if (this.ds_header[j].editable == false) {
 							editable = "disabled";
 						}
-						tmp_tr += "<td>";
-						tmp_tr += "<input type='checkbox' name='"+this.ds_header[j].field+"' "+checked+" "+editable+" value='Y'/>";
+						tmp_tr += "<input type='checkbox' name='"+this.ds_header[j].field+"' "+checked+" "+editable+" value='Y' class='form-check-input' />";
 						tmp_tr += "<input type='hidden' name='_"+this.ds_header[j].field+"' value='N'/>";
-						tmp_tr += "</td>";
-					} else {
-						if (this.ds_header[j].field == "rowStatus") {
-							var circle_color = "";
-							if (cellValue == "A") {
-								circle_color = "blue";
-							} else if (cellValue == "M") {
-								circle_color = "yellow";
-							} else if (cellValue == "D") {
-								circle_color = "red";
-							} else {
-								circle_color = "white";
-							}
-							tmp_tr += "<td>"
-							tmp_tr += "<span data-index='0' data-value='1' class='gl-active'>"
-							tmp_tr += "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='currentColor' class='icon gl-star-full text-"+circle_color+" icon-3' style='pointer-events: none;'>"
-							tmp_tr += "<path d='M7 3.34a10 10 0 1 1 -4.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 4.995 -8.336z'>"
-							tmp_tr += "</path></svg></span>"
-							tmp_tr += "</td>";
-							//tmp_tr += "<td>"+cellValue+"</td>";
+					} else if (type == "none") {
+						if (field == statusName) {
+							tmp_tr += "";
 						} else {
-							tmp_tr += "<td>"+cellValue+"</td>";
+							tmp_tr += cellValue;
+							tmp_tr += "<input type='hidden' name='"+this.ds_header[j].field+"' value='"+cellValue+"'/>";
 						}
+					} else if (type == "calendar") {
+						tmp_tr += "<div class='input-icon mb-2'>";
+						tmp_tr += "<input class='form-control' placeholder='Select a date' id='datepicker-icon' value='"+cellValue+"'>";
+						tmp_tr += "<span class='input-icon-addon'>";
+						tmp_tr += "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='icon icon-1'>";
+						tmp_tr += "<path d='M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z'></path>";
+						tmp_tr += "<path d='M16 3v4'></path>";
+						tmp_tr += "<path d='M8 3v4'></path>";
+						tmp_tr += "<path d='M4 11h16'></path>";
+						tmp_tr += "<path d='M11 15h1'></path>";
+						tmp_tr += "<path d='M12 15v3'></path>";
+						tmp_tr += "</svg>";
+						tmp_tr += "</span>";
+						tmp_tr += "</div>";
 					}
+					tmp_tr += "</td>";
 				}
 				currBody[this.ds_header[j].field] = cellValue;
 				orgBody[this.ds_header[j].field] = cellValue;
@@ -106,9 +111,11 @@ function DataSet() {
 		tmp_tbody+="</tbody>";
 		$("#"+this.gridId).append(tmp_tbody);
 		
-		$(document).on("change", "input[type=text],input[type=checkbox]", function () {
-			eval(afterFn+"()");
-		});
+		if (afterFn != "") {
+			$(document).on("change", "input[type=text],input[type=checkbox]", function () {
+				eval(afterFn+"()");
+			});
+		}
 	}
 	
 	this.gridSerialize = function () {
@@ -171,7 +178,6 @@ function DataSet() {
 				continue;
 			} else {
 				if (orgBody[this.ds_header[colIdx].field] != currBody[this.ds_header[colIdx].field]) {
-					console.log(this.ds_header[colIdx].field+"="+orgBody[this.ds_header[colIdx].field]+"||"+currBody[this.ds_header[colIdx].field]);
 					return true;
 				} else {
 					continue;
@@ -192,6 +198,7 @@ function DataSet() {
 				var field = this.ds_header[col].field;
 				var type = this.ds_header[col].type;
 				var tmpObj = rows.eq(rowIdx).find("input[name="+field+"]");
+				
 		        if (field == statusName) {
 					continue;
 				} else {
@@ -203,6 +210,8 @@ function DataSet() {
 						} else {
 							body[field] = "N";
 						}
+					} else if (type == "none") {
+						body[field] = tmpObj.val();
 					}
 				}
 		    }
