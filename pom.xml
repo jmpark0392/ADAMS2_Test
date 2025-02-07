@@ -24,7 +24,7 @@
     
         <repository>
             <id>rsf-repo-proxy</id>
-            <url>http://10.240.51.13:8081/repository/rsf-proxy/</url>
+            <url>http://58.230.205.94:58081/repository/rsf-proxy/</url>
             <releases>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
@@ -34,7 +34,7 @@
         
         <repository>
             <id>rsf-repo-public</id>
-            <url>http://10.240.51.13:8081/repository/rsf-public/</url>
+            <url>http://58.230.205.94:58081/repository/rsf-public/</url>
             <releases>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
@@ -47,7 +47,7 @@
     <pluginRepositories>
         <pluginRepository>
             <id>rsf-repo-public</id>
-            <url>http://10.240.51.13:8081/repository/rsf-public/</url>
+            <url>http://58.230.205.94:58081/repository/rsf-public/</url>
             <releases><enabled>true</enabled></releases>
             <snapshots><enabled>false</enabled></snapshots>
         </pluginRepository>
@@ -75,6 +75,15 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
             <scope>provided</scope>
+        </dependency>
+        <!-- redis -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-data-redis</artifactId>
         </dependency>
 
         <!-- MyBatis Spring Boot Starter -->
@@ -190,6 +199,8 @@
 		    <groupId>nz.net.ultraq.thymeleaf</groupId>
 		    <artifactId>thymeleaf-layout-dialect</artifactId>
 		</dependency>
+		
+		
 
 		<dependency>
 	        <groupId>com.rds.rsf</groupId>
