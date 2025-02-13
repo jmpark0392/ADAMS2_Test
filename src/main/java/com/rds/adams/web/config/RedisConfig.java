@@ -11,7 +11,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 
-@EnableRedisHttpSession(maxInactiveIntervalInSeconds = 1800)
+@EnableRedisHttpSession(redisNamespace = "spring:jsession", maxInactiveIntervalInSeconds = 1800)
 @Configuration
 public class RedisConfig{
 	@Value("${spring.data.redis.host}")
@@ -35,8 +35,8 @@ public class RedisConfig{
 	}
 	
 	@Bean
-	public RedisTemplate<String, String> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
-		RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
+	public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+		RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
 		
 		redisTemplate.setConnectionFactory(redisConnectionFactory);
 		redisTemplate.setKeySerializer(new StringRedisSerializer());
