@@ -9,12 +9,11 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 
 
 
-@EnableRedisHttpSession(redisNamespace = "spring:jsession", maxInactiveIntervalInSeconds = 1800)
 @Configuration
+@EnableRedisHttpSession
 public class RedisConfig{
 	@Value("${spring.data.redis.host}")
 	private String redisHost;
@@ -40,12 +39,9 @@ public class RedisConfig{
 	public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
 		RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
 		
-		redisTemplate.setDefaultSerializer(new GenericJackson2JsonRedisSerializer());
-		redisTemplate.setConnectionFactory(redisConnectionFactory());
-		
-		//redisTemplate.setConnectionFactory(redisConnectionFactory);
-		//redisTemplate.setKeySerializer(new StringRedisSerializer());
-		//redisTemplate.setValueSerializer(new StringRedisSerializer());
+		redisTemplate.setConnectionFactory(redisConnectionFactory);
+		redisTemplate.setKeySerializer(new StringRedisSerializer());
+		redisTemplate.setValueSerializer(new StringRedisSerializer());
 		
 		return redisTemplate;
 	}

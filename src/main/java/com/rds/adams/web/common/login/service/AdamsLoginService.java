@@ -34,6 +34,7 @@ import com.rds.rsf.core.util.RsfStringUtil;
 
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -67,7 +68,7 @@ public class AdamsLoginService {
 	 * @return AdamsLoginDTO
 	 * @exception Exception
 	 */
-	public AdamsLoginDTO selectLoginInfo(AdamsLoginDTO vo) throws Exception {
+	public AdamsLoginDTO selectLoginInfo(AdamsLoginDTO vo,HttpServletRequest request) throws Exception {
 		
 		log.debug(" =====================> AdamsLoginDTO : " + vo.toString() );
 		// 1. 입력한 비밀번호를 암호화한다.
@@ -78,6 +79,18 @@ public class AdamsLoginService {
 
 		// 3. 결과를 리턴한다.
 		if (adamsLoginDTO != null && !adamsLoginDTO.getUsrId().equals("") && !adamsLoginDTO.getUsrDvCd().equals("")) {
+			List<AdamsMenuDTO> menuList = selectMenuList(adamsLoginDTO);
+			
+			// menuId 추출하여 세션에 저장
+			if (menuList != null && !menuList.isEmpty()) {		
+				HttpSession session = request.getSession(true);
+				session.setAttribute("menuList", menuList);
+				
+				// menuId 리스트 저장
+				List<String> menuIdList = menuList.stream().map(AdamsMenuDTO::getMenuId).toList();
+				session.setAttribute("menuId", menuIdList);
+			}
+			
 			return adamsLoginDTO;
 		} else {
 			adamsLoginDTO = new AdamsLoginDTO();
